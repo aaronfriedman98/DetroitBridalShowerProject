@@ -114,12 +114,15 @@ h1 {
 */
 
 @media(max-width: 700px) {
+    .contain {
+        width: 90% !important;
+    }
     .mainText {
         font-size: 16px;
         width: 80%;
     }
     .body {
-        background-image: linear-gradient(to bottom, white 10%, rgba(8,89,104,0.7),rgba(4,9,30,.7)), url('../images/homepageBackground.jpg');
+        background-image: linear-gradient(to bottom, white 3%, rgba(8,89,104,0.7), rgba(8,89,104,0.7), rgba(8,89,104,0.7),rgba(4,9,30,.7)), url('../images/homepageBackground.jpg');
         background-size: cover;
         z-index: 1;
         position: relative;

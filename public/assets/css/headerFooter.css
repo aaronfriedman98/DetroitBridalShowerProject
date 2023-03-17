@@ -588,6 +588,9 @@ body {
     body {
        background: cover; 
     }
+    .drop {
+        display: none !important;
+    }
     .header {
         display: block;
         padding-right: 60px;
