@@ -1046,3 +1046,20 @@ h1 {
 .submenu > li:active {
     background: var(--white-color);
 }
+
+
+
+@media(max-width: 700px) {
+
+    .contain {
+        height: fit-content;
+        width: 90%;
+    }
+    .buttonFlex {
+        margin-top: 0;
+    }
+    .mobileRemove {
+        display: none;
+    }
+
+}
