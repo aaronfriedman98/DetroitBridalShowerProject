@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
+    <!-- icons for mobile menu -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Font awesome icons -->
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+
+    <!-- Styles -->
+    <!-- <link rel="stylesheet" href="main.css"> -->
+    <link rel="stylesheet" href="../assets/css/headerFooter.css">
+    <link rel="stylesheet" href="../assets/css/addCouple.css">
+
+    <title>DetroitBridalShower</title>
+</head>
+
+
+<body>
+
+    <!-- needed for background gradient -->
+    <div class="body">
+
+        
+            <header>
+                <section class="header" id="home">
+                    <section class="logo">
+                            <img src="assets/images/bridalshowerpic.jpg">
+                            <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
+                    </section>
+                    <nav class="headerNav" id="navLinks">
+                        <i class="fa fa-times" onclick="hideMenu()"></i>
+                        <ul>
+                            <li><a href="/">HOME</a></li>
+                            <li><a href="about">ABOUT</a></li>
+                            <li><a href="contact">CONTACT</a></li>
+                            <!-- For Mobile -->
+                            <div class="mobileNav">
+                                <li><a href="addCouple">ADD A COUPLE</a></li>
+                                <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                            </div>
+                            <!--  -->
+                            <li class="drop"><a>MORE</a></li>
+                                <ul class="dropDown">
+                                    <li><a href="hostess">BECOME A HOSTESS</a></li>
+                                    <li><a href="addCouple">ADD A COUPLE</a></li>
+                                    <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                    <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                </ul>
+                        </ul>
+                    </nav>
+                    <!-- For Mobile -->
+                    <i class="fa fa-bars" onclick="showMenu()"></i>
+                </section>
+                <h1 style="color: #648880; font-size: 37px; text-align: center; z-index: 10000;">ADD A COUPLE</h1>
+    
+            
+                    <!-- <section class="form">
+                        <div class="container">
+                            <div class="row100">
+                                <div class="col">
+                                    <div class="inputBox">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fa-solid fa-user"></i> Chosson's Full Name</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="inputBox" id="form">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fa-solid fa-user" placeholder="Rabbi/Mr."></i> Chosson's Father (include title)</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="inputBox">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fa-solid fa-user"></i> Chosson's Mother</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                            <div class="col">
+                                <div class="radio">
+                                    Is the Chosson from Detroit <br>
+                                    Yes: <input type="radio" name="" required>
+                                    No: <input type="radio" name="" required>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div class="row100">
+                                <div class="col">
+                                    <div class="inputBox" id="form">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fa-solid fa-user"></i> Kallah's Full Name</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                            <div class="col">
+                                <div class="inputBox">
+                                    <input type="text" name="" required>
+                                    <span class="text"><i class="fa-solid fa-user" placeholder="Rabbi/Mr."></i> Kallah's Father (include title)</span>
+                                    <span class="line"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="inputBox">
+                                    <input type="text" name="" required>
+                                    <span class="text"><i class="fa-solid fa-user"></i> Kallah's Mother</span>
+                                    <span class="line"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="radio">
+                                    Is the Kallah from Detroit <br>
+                                    Yes: <input type="radio" name="" required>
+                                    No: <input type="radio" name="" required>
+                                </div>
+                            </div>
+                            </div>
+                        
+                            <div class="row100">
+                                <div class="col">
+                                    <div class="inputBox">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fa-solid fa-location-dot"></i> Address</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                               
+                                <div class="col">
+                                    <div class="inputBox">
+                                        <input type="date" name="" required>
+                                        <span class="text"><i class="fa-solid fa-calendar-days"></i> Wedding Date</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="inputBox">
+                                        <input type="text" name="" required>
+                                        <span class="text"><i class="fas fa-envelope"></i> Email</span>
+                                        <span class="line"></span>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="radio">
+                                        Would you like a personal shopper <br>
+                                        Yes: <input type="radio" name="" required>
+                                        No: <input type="radio" name="" required>
+                                    </div>
+                                </div>
+                                </div>
+                        
+                            <div class="row100">
+                                <div class="col">
+                                    <input type="submit" value='Submit'>
+                                </div>
+                            </div>
+                            </div>
+                    </section> -->
+
+            <div id="main">
+                <section id="content" class="main">
+                    <form method="POST" class="addCoupleForm" action="/addCouple/addEntry">
+                        <div class="row gtr-uniform">
+                            <div class=""> Chosson's Full Name:
+                                <input type="text" name="chossonName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class=""> Chosson's Father (include title):
+                                <input type="text" name="chossonFatherName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Chosson's Mother:
+                                <input type="text" name="chossonMotherName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Where is the Chosson from:
+                                <select name="chossonOrigin" id="demo-category">
+                                    <option value="">- -</option>
+                                    <option value="1">Detroit</option>
+                                    <option value="2">Other</option>
+                                    <!-- <option value="1">Administration</option> -->
+                                    <!-- <option value="1">Human Resources</option> -->
+                                </select>
+                            </div>
+                            <div class="">Kallah's Full Name:
+                                <input type="text" name="kallahName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Kallah's Father (include title):
+                                <input type="text" name="kallahFatherName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Kallah's Mother:
+                                <input type="text" name="kallahMotherName" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Where is the Kallah from:
+                                <select name="kallahOrigin" id="demo-category">
+                                    <option value="">- -</option>
+                                    <option value="1">Detroit</option>
+                                    <option value="2">Other</option>
+                                    <!-- <option value="1">Administration</option> -->
+                                    <!-- <option value="1">Human Resources</option> -->
+                                </select>
+                            </div>
+                            <div class="">Address:
+                                <input type="address" name="Address" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Wedding Date:
+                                <input type="date" name="weddingDate" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Email:
+                                <input type="text" name="email" id="demo-name" value="" placeholder="" />
+                            </div>
+                            <div class="">Would you like a personal shopper?
+                                <select name="personalShopper" id="demo-category">
+                                    <option value="">- -</option>
+                                    <option value="1">Yes</option>
+                                    <option value="1">No</option>
+                                    <!-- <option value="1">Administration</option> -->
+                                    <!-- <option value="1">Human Resources</option> -->
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <ul class="actions">
+                                    <li><input type="submit" value="Submit" class="primary" /></li>
+                                    <li><input type="reset" value="Reset" /></li>
+                                </ul>
+                            </div>
+                            <!-- <div class="col-4 col-12-small">Would you like a personal shopper?
+                                <input type="radio" id="demo-priority-high" name="demo-priority">
+                                <label for="demo-priority-high">High</label>
+                            </div> -->
+                            <!-- <div class="col-4 col-12-small">
+                                <input type="radio" id="demo-priority-low" name="demo-priority" checked>
+                                <label for="demo-priority-low">Low</label>
+                            </div>
+                            <div class="col-4 col-12-small">
+                                <input type="radio" id="demo-priority-normal" name="demo-priority">
+                                <label for="demo-priority-normal">Normal</label>
+                            </div>
+                            <div class="col-4 col-12-small">
+                                <input type="radio" id="demo-priority-high" name="demo-priority">
+                                <label for="demo-priority-high">High</label>
+                            </div>
+                            <div class="col-6 col-12-small">
+                                <input type="checkbox" id="demo-copy" name="demo-copy">
+                                <label for="demo-copy">Email me a copy</label>
+                            </div>
+                            <div class="col-6 col-12-small">
+                                <input type="checkbox" id="demo-human" name="demo-human" checked>
+                                <label for="demo-human">Not a robot</label>
+                            </div>
+                            <div class="col-12">
+                                <textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <ul class="actions">
+                                    <li><input type="submit" value="Send Message" class="primary" /></li>
+                                    <li><input type="reset" value="Reset" /></li>
+                                </ul>
+                            </div> -->
+                        </div>
+                    </form>
+                </section>
+            </div>
+    </div>
+
+    
+
+    <footer>
+
+        
+        
+        <div class="footerRow">
+
+            <div class="col-3 col1">
+                <h3>Links <div class="underline"><span></span></div> </h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col-3 col2">
+                <div class="backLogo"><img src="assets/images/bridalshowerpic.jpg" class="miniLogo"></div>
+                    <p>Sign up for the Newsletter to receive updates on detroit engagements and Bridal Shower updates.</p>
+                    <div class="icons">
+                        <a href="contact.html"><i class="iconAffect fas fa-phone"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-envelope"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-solid fa-location-dot"></i></a>
+                    </div>
+            </div>
+
+            <div class="col-3 col3">
+                <h3>Newsletter <div class="underline"><span></span></div> </h3>
+                <form>
+                    <i class="far fa-envelope"></i>
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                </form>
+            </div>
+
+        </div>
+        <!-- mobile icons -->
+        <div class="mobileIcons">
+            <a href="contact.html"><i class="fas fa-phone"></i></a>
+            <a href="contact.html"><i class="fas fa-envelope"></i></a>
+            <a href="contact.html"><i class="fas fa-solid fa-location-dot"></i></a>
+        </div>
+        <hr>
+        <p class="copyright" id="footer">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
+
+    </footer>
+    <!-- <footer class="primary-footer">
+        <span>&copy; Detroit Bridal Shower</span>
+    </footer>
+     -->
+
+    <script src="../assets/js/menu.js"></script>
+    <!-- <script src="fade.js"></script> -->
+    <!-- <script src="../assets/js/smoothScroll.js"></script> -->
+</body>
+</html>

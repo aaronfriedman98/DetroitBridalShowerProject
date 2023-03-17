@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
+    <!-- icons for mobile menu -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- icon for popups -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+    <!-- <link rel="stylesheet" href="href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- font awesome animations -->
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/headerFooter.css">
+    <link rel="stylesheet" href="assets/css/contact.css">
+
+    <title>Detroit Bridal Shower</title>
+</head>
+
+
+<body>
+
+    <div class="body">
+
+
+
+
+            <section class="header" id="top">
+                <section class="logo">
+                        <img src="assets/images/bridalshowerpic.jpg">
+                        <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
+                </section>
+                <nav class="headerNav" id="navLinks">
+                    <i class="fa fa-times" onclick="hideMenu()"></i>
+                    <ul>
+                        <li><a href="/">HOME</a></li>
+                        <li><a href="about">ABOUT</a></li>
+                        <li><a href="contact">CONTACT</a></li>
+                        <!-- For Mobile -->
+                        <div
+                         class="mobileNav">
+                         <li><a href="">BECOME A HOSTESS</a></li>
+                            <li><a href="addCouple">ADD A COUPLE</a></li>
+                            <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                            <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                        </div>
+                        <!--  -->
+                        <li class="drop drop-down">MORE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
+                            <ul class="dropDown">
+                                <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
+                                <li><a href="/#services">ADD A COUPLE</a></li>
+                                <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
+                            </ul>
+                    </ul>
+                    
+                </nav>
+                <i class="fa fa-bars" onclick="showMenu()"></i>
+            </section>
+
+<!-- <h1 style="color: #648880; font-size: 37px; text-align: center; z-index: 10000;">CONTACT</h1>
+        <div class="custom-shape-divider-top-1654779032" style="position: relative;">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M1200 0L0 0 598.97 114.72 1200 0z" class="shape-fill"></path>
+            </svg>
+            
+            
+
+        </div> -->
+        <h1 style="color: #648880; font-size: 37px; text-align: center; z-index: 10000;">CONTACT</h1>
+
+<div class="mainSection">
+    
+    <!-- <div class="mainText from-right slide-in">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
+            pariatur.
+        </p>
+    </div>
+    <div class="middle">
+        <div class="firstArrow">
+            <div class="tooltip">Message</div>
+            <a href="#form"><i class="fa-solid fa-circle-chevron-down"></i></a>
+        </div>
+    </div> -->
+    
+    <!-- action="https://formsubmit.co/7bc1693c40048fcce9d7bd76538d47f5" -->
+    <form class="newForm" method="POST" action="/contact/message"> 
+        <!-- <input type="hidden" name="_next" value="https://yourdomain.co/thankYou">
+        <input type="hidden" name="_subject" value="Message from Bridal Shower Website">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table"> -->
+        <section class="form">
+            <div class="container">
+                <h2>Send A Message</h2>
+                <div class="row100">
+                    <div class="col">
+                        <div class="inputBox">
+                            <input type="text" name="First_Name" required>
+                            <span class="text"><i class="fa-solid fa-user"></i> First Name</span>
+                            <span class="line"></span>
+                        </div>
+                    </div>
+                <div class="col">
+                    <div class="inputBox">
+                        <input type="text" name="Last_Name" required>
+                        <span class="text"><i class="fa-solid fa-user"></i> Last Name</span>
+                        <span class="line"></span>
+                    </div>
+                </div>
+                </div>
+                <div class="row100">
+                    <div class="col">
+                        <div class="inputBox" id="form">
+                            <input type="text" name="Email" required>
+                            <span class="text"><i class="fas fa-envelope"></i> Email</span>
+                            <span class="line"></span>
+                        </div>
+                    </div>
+                <div class="col">
+                    <div class="inputBox">
+                        <input type="text" name="Phone_Number" required>
+                        <span class="text"><i class="fas fa-phone-square-alt"></i> Phone No.</span>
+                        <span class="line"></span>
+                    </div>
+                </div>
+                </div>
+            
+                <div class="row100">
+                    <div class="col">
+                        <div class="inputBox textarea">
+                            <textarea name="Message" required></textarea>
+                            <span class="text"><i class="fas fa-comments"></i> Your Message</span>
+                            <span class="line"></span>
+                        </div>
+                    </div>
+                    </div>
+            
+                <div class="row100">
+                    <div class="col">
+                        <input type="submit" value='Send'>
+                    </div>
+                </div>
+                </div>
+        </section>
+    </form>
+    
+    
+</div>
+<!-- <form>
+
+    <div class="row">
+        <div class="inputGroup">
+            <input type="text" id="name" required>
+            <label for="name"><i class="fa-solid fa-user"></i> Your Name</label>
+        </div>
+        <div class="inputGroup">
+            <input type="text" id="number" required>
+            <label for="number"><i class="fas fa-phone-square-alt"></i> Phone No.</label>
+        </div>
+    </div>
+    
+    <div class="inputGroup">
+        <input type="email" id="email" required>
+        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+    </div>
+    <div class="inputGroup">
+        <textarea id="message" rows="8" required></textarea>
+        <label for="message"><i class="fas fa-comments"></i> Your Message</label>
+    </div>
+
+    <button type="submit">SUBMIT <i class="fas fa-paper-plane"></i></button>
+
+</form> -->
+
+
+
+
+
+
+
+<!-- <div class="mainIcon up">
+    <div class="tooltip2">Back to top</div>
+    <a href="#top" class="link3"><i class="fa-solid fa-circle-chevron-up"></i></a>
+</div>
+
+<section class="form">
+    <div class="container">
+        <h2>Send A Message</h2>
+        <div class="row100">
+            <div class="col">
+                <div class="inputBox">
+                    <input type="text" name="" required>
+                    <span class="text"><i class="fa-solid fa-user"></i> First Name</span>
+                    <span class="line"></span>
+                </div>
+            </div>
+        <div class="col">
+            <div class="inputBox">
+                <input type="text" name="" required>
+                <span class="text"><i class="fa-solid fa-user"></i> Last Name</span>
+                <span class="line"></span>
+            </div>
+        </div>
+        </div>
+        <div class="row100">
+            <div class="col">
+                <div class="inputBox" id="form">
+                    <input type="text" name="" required>
+                    <span class="text"><i class="fas fa-envelope"></i> Email</span>
+                    <span class="line"></span>
+                </div>
+            </div>
+        <div class="col">
+            <div class="inputBox">
+                <input type="text" name="" required>
+                <span class="text"><i class="fas fa-phone-square-alt"></i> Phone No.</span>
+                <span class="line"></span>
+            </div>
+        </div>
+        </div>
+    
+        <div class="row100">
+            <div class="col">
+                <div class="inputBox textarea">
+                    <textarea required></textarea>
+                    <span class="text"><i class="fas fa-comments"></i> Your Message</span>
+                    <span class="line"></span>
+                </div>
+            </div>
+            </div>
+    
+        <div class="row100">
+            <div class="col">
+                <input type="submit" value='send'>
+            </div>
+        </div>
+        </div>
+</section>
+
+
+<div class="mainIcon down">
+    <div class="tooltip3">Newsletter</div>
+    <a href="#footer" class="link"><i class="fa-solid fa-circle-chevron-down"></i></a>
+</div>
+
+
+
+<div class="bottom">
+    <div class="tooltip4">Back to top</div>
+    <a href="#top" class="link4"><i class="fa-solid fa-circle-chevron-up"></i></a>
+</div>
+
+
+</div> -->
+    
+
+
+
+
+
+<!-- <script src="menu.js"></script> -->
+<!-- <script src="popUp.js"></script> -->
+
+
+</div>
+
+<!-- 
+<footer>
+
+        
+    <div class="footerRow">
+
+        <div class="col-3 col1">
+            <h3>Links <div class="underline"><span></span></div> </h3>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+
+        <div class="col-3 col2">
+            <div class="backLogo"><img src="assets/images/bridalshowerpic.jpg" class="miniLogo"></div>
+                <p>Sign up for the Newsletter to receive updates on detroit engagements and Bridal Shower updates.</p>
+                <div class="icons">
+                    <a href="contact.html"><i class="iconAffect fas fa-phone"></i></a>
+                    <a href="contact.html"><i class="iconAffect fas fa-envelope"></i></a>
+                    <a href="contact.html"><i class="iconAffect fas fa-solid fa-location-dot"></i></a>
+                </div>
+        </div>
+
+        <div class="col-3 col3">
+            <h3>Newsletter <div class="underline"><span></span></div> </h3>
+            <form>
+                <i class="far fa-envelope"></i>
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit"><i class="fas fa-arrow-right"></i></button>
+            </form>
+        </div>
+
+    </div>
+    <div class="mobileIcons">
+        <a href="contact.html"><i class="fas fa-phone"></i></a>
+        <a href="contact.html"><i class="fas fa-envelope"></i></a>
+        <a href="contact.html"><i class="fas fa-solid fa-location-dot"></i></a>
+    </div>
+    <hr>
+    <p class="copyright" id="footer">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
+
+</footer> -->
+
+
+    <script src="assets/js/menu.js"></script>
+    <!-- <script src="fade.js"></script> -->
+    <script src="assets/js/smoothScroll.js"></script>
+
+<!-- <footer class="primary-footer">
+<span>&copy; Detroit Bridal Shower</span>
+</footer> -->
+</body>
+</html>

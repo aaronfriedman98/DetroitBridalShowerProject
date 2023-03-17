@@ -1,0 +1,108 @@
+/* Reset */
+.newbutton {
+  margin-top: 170px;
+  margin-left: 250px;
+}
+
+/* Main Styles */
+.buttonscss {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 400px;
+  width: 220px;
+  height: 200px;
+  height: 60px;
+  line-height: 60px;
+  margin: auto;
+  color: #fff;
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.418);
+  transition: all 0.25s cubic-bezier(0.31, -0.105, 0.43, 1.4);
+  color: rgba(235, 246, 244, 0.6588235294) !important;
+  border: #55766f solid 2px;
+}
+.buttonscss .span,
+.buttonscss .icons {
+  display: block;
+  height: 100%;
+  text-align: center;
+  position: absolute;
+  top: 0;
+}
+.buttonscss .span {
+  width: 76%;
+  line-height: inherit;
+  font-size: 20px;
+  font-family: poppins;
+  text-transform: uppercase;
+  left: 0;
+  transition: all 0.25s cubic-bezier(0.31, -0.105, 0.43, 1.4);
+}
+.buttonscss .span:after {
+  content: "";
+  background-color: #415f58;
+  background-color: rgba(255, 255, 255, 0.477);
+  width: 2px;
+  height: 50%;
+  position: absolute;
+  top: 28%;
+  right: 15px;
+}
+.buttonscss .icons {
+  width: 28%;
+  width: 47%;
+  right: 0;
+  transition: all 0.25s cubic-bezier(0.31, -0.105, 0.43, 1.4);
+  right: 300px;
+  top: -95px;
+}
+.buttonscss .icons .fa-angles-down {
+  font-size: 30px;
+  vertical-align: middle;
+  transition: all 0.25s cubic-bezier(0.31, -0.105, 0.43, 1.4), height 0.25s ease;
+}
+.buttonscss .icons .fa-angles-down {
+  height: 36px;
+}
+.buttonscss .icons .fa-check {
+  display: none;
+}
+.buttonscss.success .span, .buttonscss:hover .span {
+  left: -72%;
+  opacity: 0;
+}
+.buttonscss.success .icons, .buttonscss:hover .icons {
+  width: 100%;
+  width: 80%;
+  top: -105px;
+}
+.buttonscss.success .icons .fa-solid, .buttonscss:hover .icons .fa-solid {
+  font-size: 45px;
+  box-shadow: none !important;
+  color: rgba(255, 255, 255, 0.84);
+}
+.buttonscss.success {
+  background-color: #27ae60;
+}
+.buttonscss.success .icons .fa-angles-down {
+  display: none;
+}
+.buttonscss.success .icons .fa-check {
+  display: inline-block;
+}
+.buttonscss:hover {
+  opacity: 0.9;
+}
+.buttonscss:hover .icons .fa-angles-down {
+  height: 46px;
+}
+.buttonscss:active {
+  opacity: 1;
+}/*# sourceMappingURL=button.css.map */

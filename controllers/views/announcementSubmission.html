@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- Created By CodingNepal -->
+<html lang="en" dir="ltr">
+   <head>
+      <meta charset="utf-8">
+      <title>Login Form Design | CodeLab</title>
+      <link rel="stylesheet" href="assets/css/announcementSubmission.css">
+   </head>
+   <body>
+      <div class="wrapper">
+         <div class="title">
+            Announcement Submission
+         </div>
+         <form action="/announcementSubmission/submitAnnouncement" method="POST">
+            <div class="field">
+               <input type="text" name="chossonName" required>
+               <label>Chosson's Name</label>
+            </div>
+            <div class="field">
+               <input type="text" name="kallahName" required>
+               <label>Kallah's Name</label>
+            </div>
+            <!-- <div class="content">
+               <div class="checkbox">
+                  <input type="checkbox" id="remember-me">
+                  <label for="remember-me">Remember me</label>
+               </div>
+               <div class="pass-link">
+                  <a href="#">Forgot password?</a>
+               </div>
+            </div> -->
+            <div class="field">
+               <input type="submit" value="Submit">
+            </div>
+            <!-- <div class="signup-link">
+               Not a member? <a href="#">Signup now</a>
+            </div> -->
+         </form>
+      </div>
+   </body>
+</html>

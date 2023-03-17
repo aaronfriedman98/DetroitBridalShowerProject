@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&family=Source+Sans+Pro:wght@200;300;400&display=swap" rel="stylesheet">
+
+    <!-- icons for mobile menu -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Font awesome icons -->
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/button.css">
+
+    <title>Detroit Bridal Shower Project</title>
+</head>
+
+
+<body>
+
+    <!-- scroll test -->
+    <!-- <div class="scrollWidth" id = "scroll">
+        <a href="#services">
+            <div class= "scrollBackground">
+                <i class="fa-solid fa-angles-down scrollingArrow"></i>
+            </div>
+        </a>   
+    </div> -->
+
+    <div class="scrollWidth scroll2" id = "scroll2">
+        <a href="#footer" class="link">
+            <div class= "scrollBackground">
+                <i class="fa-solid fa-angles-down scrollingArrow"></i>
+            </div>
+        </a>   
+    </div>
+
+    <div class="scrollWidthTop scroll2" id = "scroll3">
+        <a href="#home" class="link3">
+            <div class= "scrollBackgroundTop">
+                <i class="fa-solid fa-angles-up scrollingArrow"></i>
+            </div>
+        </a>   
+    </div>
+    
+
+    <!-- needed for background gradient -->
+    <div class="body">
+        
+            <header>
+                <section class="header" id="home">
+                    <section class="logo">
+                            <img src="../assets/images/bridalshowerpic.jpg">
+                            <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
+                    </section>
+                    <nav class="headerNav" id="navLinks">
+                        <i class="fa fa-times" onclick="hideMenu()"></i>
+                        <ul>
+                            <li><a href="/">HOME</a></li>
+                            <span class="divider">|</span>
+                            <li><a href="about">ABOUT</a></li>
+                            <span class="divider">|</span>
+                            <li><a href="contact">CONTACT</a></li>
+                            <span class="divider">|</span>
+                            <li><a href="#services" class="link2">ADD COUPLE</a></li>
+                            <span class="divider">|</span>
+                            <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                            <span class="divider">|</span>
+                            <li class="drop drop-down">ASSISTANCE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
+                                <ul class="dropDown">
+                                    <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
+                                    <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                    <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
+                                </ul>
+
+                            <style>
+                                .fa-sort-down {
+                                    position: relative;
+                                    bottom: 3px;
+                                    
+                                }
+                                .sortDownContainer {
+                                    transition: 200ms;
+                                    display: inline-block;
+                                }
+                                .rotate {
+                                    transform: rotate(180deg);
+                                }
+                            </style>
+
+                            <!-- For Mobile -->
+                            <div class="mobileNav">
+                                <li><a href="addCouple">ADD A COUPLE</a></li>
+                                <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                            </div>
+                            <!--  -->
+                            <!-- <li class="drop"><a>MORE</a></li> -->
+                                <ul class="dropDown">
+                                    <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
+                                    <li><a href="addCouple">ADD A COUPLE</a></li>
+                                    <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                    <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                </ul>
+                        </ul>
+                    </nav>
+                    <!-- For Mobile -->
+                    <i class="fa fa-bars" onclick="showMenu()"></i>
+                </section>
+
+
+                <div class="overlay"></div>
+    
+            
+                <div class="mainSection">
+                    <div>
+                        <div class="mainIcons fade-in">
+                            <!-- <div class="comingSoon">
+                                <h1>Coming Soon!</h1>
+                            </div> -->
+                            <!-- <a><div class="button">
+                                <span class="buttonHover"></span>Become a hostess
+                            </div></a> -->
+                            <div class="newbutton">
+                            <a class="buttonscss link4" href="#services" role="button">
+                                <span class="span">Services</span>
+                                <div class="icons">
+                                    <i class="fa-solid fa-angles-down"></i>
+                                    <i class="fa fa-check"></i>
+                                </div>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mainText fade-in">
+                    <h1>What we do</h1>
+                    <p>
+                        The Detroit Bridal Shower Project has helped tons of newly married couples 
+                        start off their homes and begin their new life together with ease. 
+                        Our website makes the process of notifying the community of upcoming 
+                        engagements and viewing the hostesses of each simcha so much easier.
+                        Through our website you can add a new engaged couple to the mailing list 
+                        and have the option of having a personal shopper take care of the shopping on your behalf.
+                        The website also provides a shopping guide to help those who are interested
+                        in shopping on their own. Thank you to the Detroit community for making this all possible!
+                        <!-- The women in our community have been involved in helping our newly-weds
+                        for many years. This project has helped new couples 
+                        establish their new homes in a very smart and productive way. 
+
+                        Monies were collected and used to buy all the essentials to start their new kitchen and 
+                        new space.  
+
+                        With this setup, the money was spent appropriately and economically 
+                        so that the new chosson and kallah had the essential tools to facilitate their life 
+                        together.  
+                        
+                        As each year progressed with this project, new ideas were implemented. 
+
+                        (This project is continually growing and advancing) This project is very important to the community and has helped couples
+                        easily begin thier new life with all their necessities and able to focus their life on creating a happy and healthy home.
+
+                        This project was very important to the community and has advanced to today, to the 
+                        next level, to maximize each kallah's potential to be able to set up the new couple 
+                        with all the necessities, so they can focus on building a bayis ne'eman b'yisroel.
+                        (in this way, couples are able to build their home) -->
+                        <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+                        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
+                        reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
+                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+                        qui officia deserunt mollit anim id est laborum. -->
+                    </p>
+                    <!-- <p>
+                        Our website offers an easy way for you to become a 
+                        hostess for Detroit Bridal Showers with the click of a button. 
+                        All of the funds that are collected from the hostesses are used 
+                        to buy the essentials to start a new kitchen and living space for 
+                        the new couple. We offer an option to have a personal shopper take 
+                        care of all of the shopping necessities for each couple. And for 
+                        those of you who would like to take care of the shopping on your own, 
+                        you have that option too. We have a shopping guide and a cheat sheet 
+                        that is available to you on our website that can help guide you on 
+                        setting up the essentials for your home.
+                    </p> -->
+                    </div>
+                    <!-- For Mobile -->
+                    <div class="mobileButton">
+                        <a href="hostess">Become a hostess</a>
+                    </div>
+                </div>
+            </header>
+    
+
+        <div class="serviceBackground fade-in">
+    
+        <h1 class="services">SERVICES</h1>
+
+        
+        <!-- <div class="mainIcon up">
+            <div class="tooltip2">Back to top</div>
+            <a href="#home" class="link3"><i class="fa-solid fa-circle-chevron-up"></i></a>
+        </div> -->
+    
+        <section class="grid fade-in">    
+    
+                <!-- Add a chosson and kallah -->
+            <!-- <section class=" col">
+                <a href="addCouple.html">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Add a couple</span>
+                <p>Add a chosson and kallah to the Bridal Shower list</p></a>
+            </section> -->
+
+        
+                    <!-- Announcements -->
+            <!-- <section class="col" id="services">
+                <a href="announcements.html">
+                    <i class="fa-solid fa-bullhorn"></i>
+                <span>Announcements</span>
+                <p>Thank you to all the donors</p></a>
+            </section> -->
+        
+                    <!-- Buying Guide -->
+            <!-- <section class="col">
+                <a href="shoppingGuide.html">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                <span>Shopping Guide</span>
+                <p>A guide to help with shopping</p></a>
+            </section> -->
+
+            <ul class="features">
+                <li id="services">
+                    <!-- <span class="icon solid major style1 fa-user-group"></span> -->
+                    <!-- <i class="fa-solid fa-user-group"></i> -->
+                    <!-- <span class="icon solid major style1 fa-user-group serviceIcons"></span> -->
+                    <!-- <img src="images/user-group-solid.svg" style="color: blue;"> -->
+                    <i class="major fa-solid fa-user-group"></i>
+                    <h3>Add A Couple</h3>
+                    <p>Add a chosson and kallah to the upcoming simchos list</p>
+                    <a id="showForm" class="button1">Form</a>
+                </li>
+                <li>
+                    <!-- <span class="icon solid major style3 fa-bullhorn serviceIcons"></span> -->
+                    <i class="major fa-solid fa-bullhorn"></i>
+                    <h3>Announcements</h3>
+                    <p>Thank you to all of the hostesses that took part in each and every simcha</p>
+                    <a href="announcements" class="button1">Visit</a>
+                </li>
+                <li>
+                    <!-- <span class="icon major style5 fa-shopping-bag solid serviceIcons"></span> -->
+                    <i class="major fa-solid fa-bag-shopping"></i>
+                    <h3>Shopping Guide</h3>
+                    <p>Enjoy our shopping guide that can make your shopping decisions so much easier</p>
+                    <a href="shoppingGuide" class="button1">Visit</a>
+                </li>
+            </ul>
+
+            <form class="formPopup" method="POST" action="/addEntry">
+                <div id="Form1">
+                    <h3>Enter Chosson's Info</h3>
+                    <input type="text" name="chossonName" placeholder="Chosson's full name" required>
+                    <label class="placeholder placeholder1">Chosson's Full Name:</label>
+                    <div class=combine>
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="chossonFatherTitle">
+                            <option>Title</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Rabbi">Rabbi</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                        <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName">
+                        <label class="placeholder placeholder2">Chosson's Father:</label>
+                    </div>
+                    <div class="combine">
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="chossonMotherTitle">
+                            <option>Title</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Rebbetzin">Rebbetzin</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName">
+                    <label class="placeholder placeholder3">Chosson's Mother:</label>
+                    </div>
+                    <select class="select" name="chossonOrigin">
+                        <option>Where is the chosson from?</option>
+                        <option value="1">Detroit</option>
+                        <option value="2">Other</option>
+                    </select>
+                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+                    <div class="btn-box">
+                        <button type="button" id="close-btn">Cancel</button>
+                        <button type="button" id="Next1">Next</button>
+                    </div>
+
+                </div>
+
+                <div id="Form2">
+                    <h3>Enter Kallah's Info</h3>
+                    <input type="text" placeholder="Kallah's Full Name" name="kallahName"required>
+                    <label class="placeholder placeholder1">Kallah's Full Name:</label>
+                    <div class=combine>
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="kallahFatherTitle">
+                            <option>Title</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Rabbi">Rabbi</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                        <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName">
+                        <label class="placeholder placeholder2">Kallah's Father:</label>
+                    </div>
+                    <div class="combine">
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="kallahMotherTitle">
+                            <option>Title</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Rebbetzin">Rebbetzin</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName">
+                    <label class="placeholder placeholder3">Kallah's Mother:</label>
+                    </div>
+                    <select class="select" name="kallahOrigin">
+                        <option>Where is the kallah from?</option>
+                        <option value="1">Detroit</option>
+                        <option value="2">Other</option>
+                    </select>
+                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+                    <div class="btn-box">
+                        <button type="button" id="Back1">back</button>
+                        <button type="button" id="Next2">Next</button>
+                    </div>
+
+                </div>
+
+                <div id="Form3">
+                    <h3>Other Info</h3>
+                    <input type="text" placeholder="Address" name="address" required>
+                    <label class="placeholder placeholder1">Address:</label>
+                    <div class="combine combine2">
+                        <input type="date" placeholder="Wedding Date" name="weddingDate" required>
+                        <input type="email" placeholder="Email" name="email" required>
+                        <label class="placeholder placeholder4">Email:</label>
+                    </div>
+                    <select class="select" name="personalShopper">
+                        <option>Would you like a personal shopper?</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                    <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
+                    <label class="placeholder placeholder5">Detroit Chesed Package Gift:</label>
+                    <!-- <span class="down-arrow">&blacktriangledown;</span> -->
+
+                    <div class="list">
+
+                        <span class="close-btn">&times;</span>
+    
+                        <label for="task1" class="task">
+                             <input type="checkbox" name="toaster" id="task1" value="Toaster">
+                             Toaster
+                             <!-- <span>10 mins</span> -->
+                      </label>
+                        <label for="task2" class="task">
+                             <input type="checkbox" name="urn" id="task2" value="Urn">
+                             Urn
+                             <!-- <span>20 mins</span> -->
+                      </label>
+                        <label for="task3" class="task">
+                             <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
+                             Kitchen towels
+                             <!-- <span>30 mins</span> -->
+                      </label>
+                        <label for="task4" class="task">
+                             <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
+                             Vacuum
+                             <!-- <span>40 mins</span> -->
+                      </label>
+                      <label for="task5" class="task">
+                        <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
+                        Cholent pot
+                        <!-- <span>40 mins</span> -->
+                        </label>
+                 
+                      </div>
+                    <!-- <select class="select">
+                        <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
+                        <option>Toaster</option>
+                        <option>Urn</option>
+                        <option>Kitchen towels</option>
+                        <option>Vacuum</option>
+                        <option>Cholent pot</option>
+                    </select> -->
+
+                    <div class="btn-box">
+                        <button type="button" id="Back2">back</button>
+                        <button type="submit" value="Submit" onsubmit="handleSubmit()">submit</button>
+                    </div>
+
+                </div>
+
+                <div class="step-row">
+                    <div id="progress"></div>
+                    <div class="step-col"><small>Step 1</small></div>
+                    <div class="step-col"><small>Step 2</small></div>
+                    <div class="step-col"><small>Step 3</small></div>
+                </div>
+
+            </form>
+
+
+            <!-- <div class="modal_wrapper">
+                <div class="shadow"></div>
+                <div class="success_wrap">
+                    <span class="modal_icon">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    <p>Successfully submitted!</p>
+                </div>
+            </div> -->
+
+        
+        </section>
+    </div>
+    <!-- <div class="mainIcon down">
+        <div class="tooltip3">Newsletter</div>
+        <a href="#footer" class="link"><i class="fa-solid fa-circle-chevron-down"></i></a>
+    </div> -->
+
+
+    </div>
+
+    
+
+    <footer>
+
+        <!-- <div class="bottom">
+            <a href="#home" class="link4"><i class="fa-solid fa-angle-up"></i></a>
+        </div>
+         -->
+        <div class="footerRow">
+
+            <div class="col-3 col1">
+                <h3>Newsletter <div class="underline"><span></span></div> </h3>
+                <form class="form" method="POST" action="/addEmail">
+                    <i class="far fa-envelope"></i>
+                    <input type="email" placeholder="Enter your email" name="email" required>
+                    <button type="submit"><i class="fas fa-arrow-right" onsubmit="handleSubmit()"></i></button>
+                </form>
+                <p style="font-family: 'source sans pro'; font-size: 20px; line-height: 23px;">Sign up for the Newsletter to receive updates and information on engagements.</p>
+                
+            </div>
+
+            <div class="col-3 col2">
+                <div class="backLogo"><img src="../assets/images/bridalshowerpic.jpg" class="miniLogo"></div>
+                    <!-- <p>Sign up for the Newsletter to receive updates on detroit engagements and Bridal Shower updates.</p> -->
+                    <!-- <div class="icons">
+                        <a href="contact.html"><i class="iconAffect fas fa-phone"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-envelope"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-solid fa-location-dot"></i></a>
+                    </div> -->
+            </div>
+
+            <div class="col-3 col3">
+                <h3>Get In Touch</h3>
+							<dl class="alt">
+								<dt>Address</dt>
+								<dd>17322 Goldwin Drive &bull; Southfield, MI 48075 &bull; USA</dd>
+								<dt>Phone</dt>
+								<dd><a href="tel:8552524655">248-514-7963</a></dd>
+								<dt>Email</dt>
+								<dd><a href="mailto:bridalshower@detroitbridalshower.org">bridalshower@detroitbridalshower.org</a></dd>
+							</dl>
+            </div>
+
+            
+
+        </div>
+
+        
+        <div class="mobileIcons">
+            <a href="contact"><i class="fas fa-phone"></i></a>
+            <a href="contact"><i class="fas fa-envelope"></i></a>
+            <a href="contact"><i class="fas fa-solid fa-location-dot"></i></a>
+        </div>
+        <hr>
+        <p class="copyright" id="footer">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
+
+    </footer>
+    <!-- <footer class="primary-footer">
+        <span>&copy; Detroit Bridal Shower</span>
+    </footer>
+     -->
+
+     <style>
+        /* Style for the overlay */
+.overlayy {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Style for the modal */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  z-index: 2;
+}
+
+/* Style for the modal content */
+.modal-content {
+  text-align: center;
+}
+
+     </style>
+
+     <script>
+        // let btn_done = document.querySelector("#submit_btn")
+        // let modal_wrapper = document.querySelector(".modal_wrapper")
+        // let shadow = document.querySelector(".shadow")
+
+        // btn_done.addEventListener("click", function() {
+        // function showMessage() {
+        //     modal_wrapper.classList.add("active")
+        // }
+        // })
+        // shadow.addEventListener("click", function() {
+        //     modal_wrapper.classList.remove("active")
+        // })
+
+        // function handleSubmit(event) {
+        //     event.preventDefault()
+        //     fetch('/addEntry', {
+        //         method: 'POST',
+        //         body: new FormData(event.target)
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+
+        //         const modal_wrapper = document.querySelector(".modal_wrapper")
+        //         const modalMessage = document.querySelector('.modal_wrapper p');
+        //         modalMessage.textContent = data.message;
+        //         modal_wrapper.classList.add("active")
+
+        //         let shadow = document.querySelector(".shadow")
+        //         shadow.addEventListener("click", function() {
+        //         modal_wrapper.classList.remove("active")
+        //         });
+        //     })
+        //     .catch(error => {
+        //         console.error(error)
+        //     })
+        // }
+        function handleSubmit(event) {
+  event.preventDefault();
+
+  fetch('/addEntry', {
+    method: 'POST',
+    body: new FormData(event.target),
+  })
+    .then(response => response.text())
+    .then(data => {
+  // Show a success message in a modal with a background overlay
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'modal-content';
+
+  const responseDiv = document.createElement('div');
+  responseDiv.innerHTML = data;
+
+  modalContent.appendChild(responseDiv);
+  modal.appendChild(modalContent);
+
+  const overlayy = document.createElement('div');
+  overlayy.className = 'overlayy';
+  overlayy.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  document.body.appendChild(overlayy);
+  document.body.appendChild(modal);
+})
+
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+     </script>
+
+    
+
+    <script src="../assets/js/smoothScroll.js"></script>
+    <script src="../assets/js/formSlide.js"></script>
+    <script src="../assets/js/fade.js"></script>
+    <script src="../assets/js/menu.js"></script>
+    <script src="../assets/js/scroll.js"></script>
+</body>
+</html>

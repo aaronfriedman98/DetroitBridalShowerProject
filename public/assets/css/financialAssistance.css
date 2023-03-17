@@ -1,0 +1,185 @@
+.body {
+    height: 100vh;
+    background-image: linear-gradient(to bottom, white 11%, rgba(8,89,104,0.7),rgba(8,89,104,0.7)), url('../images/homepageBackground.jpg');
+}
+
+:root {
+    --main-color: rgba(255, 255, 255, 0.585);
+    --accent-color: rgba(5, 110, 158, 0.449);
+}
+
+#singular-form button,
+.container>#singular-form>#input-container>input {
+    font-size: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-family: poppins;
+    font-weight: bold;
+}
+
+.contain {
+    margin-top: 50px;
+}
+input {
+    
+        outline: none;
+        border:none;
+        background-image:none;
+        background-color:transparent;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;  
+      }
+      
+    .container {
+        margin-left: auto; 
+        margin-right: auto;
+    }
+
+.container {
+    width: 19rem;
+    height: 5rem;
+    padding: 10px;
+    background-color: var(--main-color);
+    text-align: center;
+    border-radius: 3rem;
+    overflow: hidden;
+    transition: width .4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform: scale(.7);
+    font-size: 20px !important;
+}
+
+.container>#singular-form {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: --main-color;
+}
+
+.container>#singular-form button {
+    width: 9rem;
+    padding: 0;
+    border: none;
+    outline: none;
+    border-radius: 3rem;
+    cursor: pointer;
+}
+
+.container>#singular-form>button#trigger {
+    padding: 0;
+    width: 100%;
+    color: var(--accent-color);
+    background-color: transparent;
+    z-index: 3;
+}
+
+.container>#singular-form>#input-container {
+    z-index: 2;
+}
+
+.container>#singular-form>#input-container>input {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    background-color: var(--main-color);
+    color:rgba(51, 50, 50, 0.484);
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    padding: 0 26% 0 3%;
+    opacity: 0;
+    transform: scale(0);
+    transition: all .4s ease .4s;
+}
+input.shown {
+    background: transparent !important;
+    border-bottom: none;
+    /* color: transparent !important; */
+}
+
+.container>#singular-form>#input-container>button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background-color: var(--accent-color);
+    color: var(--main-color);
+    opacity: 0;
+    transform: scale(0);
+    transition: all .4s ease .4s;
+}
+
+.container>#singular-form>#success {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--accent-color);
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.container>#singular-form>button#trigger,
+.container>#singular-form>#input-container,
+.container>#singular-form>#success {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: scale(0);
+    opacity: 0;
+}
+
+.container>#singular-form>button#trigger {
+    transition: all .4s ease;
+}
+
+.container>#singular-form>#input-container {
+    transform: scale(1);
+    opacity: 1;
+    transition: all .4s ease .4s;
+}
+
+.container>#singular-form>#success {
+    transition: all .2s ease .4s;
+}
+
+.container>#singular-form>button#trigger.shown,
+.container>#singular-form>#input-container.shown,
+.container>#singular-form>#success.shown,
+.container>#singular-form>#input-container>button.shown,
+.container>#singular-form>#input-container>input.shown {
+    transform: scale(1);
+    opacity: 1;
+    border: none;
+}
+
+
+
+/* FIX NAV HOVER */
+.dropDown li::after {
+    content: '';
+    width: 0;
+    height: 2px !important;
+    background: #648880;
+    display: block;
+    margin: auto;
+    margin-top: 5px;
+    transition: 0.5s;
+}
+.dropDown li:nth-child(3)::after{
+    height: 1px !important;
+}
+.dropDown li:nth-child(4)::after {
+    height: 2px !important;
+}
+
+.headerNav ul li:nth-child(2)::after {
+    width: 0;
+}
+.headerNav .dropDown li:nth-child(4)::after{
+    width: 100%;
+}
+.headerNav ul li:hover::after, .headerNav .dropDown li:nth-child(2):hover::after {
+    width: 100%;
+}

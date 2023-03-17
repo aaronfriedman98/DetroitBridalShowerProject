@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
+    <!-- icons for mobile menu -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Font awesome icons -->
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+
+
+    <!-- bootstrap scrollbar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css" integrity="sha512-6qkvBbDyl5TDJtNJiC8foyEVuB6gxMBkrKy67XpqnIDxyvLLPJzmTjAj1dRJfNdmXWqD10VbJoeN4pOQqDwvRA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/headerFooter.css">
+    <link rel="stylesheet" href="assets/css/hostess.css">
+
+    <title>DetroitBridalShower</title>
+</head>
+
+
+<body>
+
+    <!-- needed for background gradient -->
+    <div class="body">
+
+        
+            <header>
+                <section class="header" id="home">
+                    <section class="logo">
+                            <img src="assets/images/bridalshowerpic.jpg">
+                            <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
+                    </section>
+                    <nav class="headerNav" id="navLinks">
+                        <i class="fa fa-times" onclick="hideMenu()"></i>
+                        <ul>
+                            <li><a href="/">HOME</a></li>
+                            <li><a href="about.html">ABOUT</a></li>
+                            <li><a href="contact.html">CONTACT</a></li>
+                            <!-- For Mobile -->
+                            <div class="mobileNav">
+                                <li><a href="addCouple.html">ADD A COUPLE</a></li>
+                                <li><a href="announcements.html">ANNOUNCEMENTS</a></li>
+                                <li><a href="shoppingGuide.html">SHOPPING GUIDE</a></li>
+                            </div>
+                            <!--  -->
+                            <li class="drop"><a>MORE</a></li>
+                                <ul class="dropDown">
+                                    <li><a>BECOME A HOSTESS</a></li>
+                                    <li><a href="addCouple.html">ADD A COUPLE</a></li>
+                                    <li><a href="shoppingGuide.html">SHOPPING GUIDE</a></li>
+                                    <li><a href="announcements.html">ANNOUNCEMENTS</a></li>
+                                </ul>
+                        </ul>
+                    </nav>
+                    <!-- For Mobile -->
+                    <i class="fa fa-bars" onclick="showMenu()"></i>
+                </section>
+            </header>
+        
+
+                <div class="mainContent">
+                    <div class="main">
+                        <div class="dashboard">
+                            <div class="first">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                                <!-- <div>
+                                    <i class="fa-solid fa-circle-xmark redx"></i>
+                                    <p>Ehud Kogan <br> and <br>Devora Spitz</p>
+                                    <p>$65</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-circle-xmark redx"></i>
+                                    <p>Ehud Kogan <br> and <br>Devora Spitz</p>
+                                    <p>$120</p>
+                                </div> -->
+                            </div>
+                            <div class="second">
+                                <div class="button">
+                                    <button class="payment-button">Complete Payment</button>
+                                </div>
+                                <!-- <div class="button">
+                                    <button>Reset</button>
+                                </div> -->
+                            </div>
+                            <div class="third">
+                                <h3>Click the <i class="fa-solid fa-gift"></i> to add a couple to the cart</h3>
+                                <br>
+                                <h3>To add a chosson and kallah to the list, go to the <a>Add A Couple</a> page</h3>
+                            </div>
+                        </div>
+
+                        <div class="lists">
+
+                            <div class="head">
+                                <h1>Engagements</h1>
+                                <input type="text" placeholder="Search">
+                            </div>
+
+                            <div class="list" >
+                                
+                            
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="chosson"><b>Ehud Kogan</b></span> is engaged to <span class="kallah">Devora Spitz</span>, son of Mr. & Mrs. Mordechai & Drora Kogan</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>Chayala Hirsch</b></span> is engaged to <span class="chosson">Sholom Green</span>, daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i><div></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div class="check"><i class="fa-solid fa-circle-check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>Shifra Zuckerman</b></span> is engaged to <span class="chosson">Avi Sorscher</span>, daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>Aliza Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span>, daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>eliana Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span>, daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>miriam Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>    
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>Avi Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>    
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>yitschak Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>       
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>eliyahu Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>Alex Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>moshe Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>jack Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+                                        <div class="section">
+                                            <div class="couple">
+                                                <p><span class="kallah"><b>chaim Levin</b></span> is engaged to <span class="chosson">Shmuel Peres</span> <br> daughter of Mr. and Mrs. Menachem & Miriam Levin</p>
+                                                <button type="submit"class="openPopup gift"><i class="fa-solid fa-gift"></i></button><div class="check"><i class="fa-solid fa-circle-check"></i></div>
+                                            </div>
+                                            <!-- <div><i class="fa-solid fa-circle-check check"></i></div> -->
+                                        </div>
+
+                                    </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+
+
+            </div>
+
+<!-- popup -->
+<div class="popupBackground">
+    <div class="popup" id="popup">
+        <div><i class="fa-solid fa-gift gift"></i></div>
+        <h2>Enter an amount: </h2>
+        <p>(Minimum of $65 suggested)</p>
+        <input type="number" id="amount" placeholder="$">
+        <div class="buttons">
+            <button type="button" class="cancel" id="closePopup">Cancel</button>
+            <button type="button" class="submit" id="submitPopup">Submit</button>
+        </div>
+        <div id="errorMessage"></div>
+    </div>
+</div>
+
+                
+
+
+
+                    
+    
+            
+                
+
+    </div>
+
+    
+
+    <footer>
+
+        <div class="bottom">
+            <a href="#navLinks" class="link4"><i class="fa-solid fa-angle-up"></i></a>
+        </div>
+        
+        <div class="footerRow">
+
+            <div class="col-3 col1">
+                <h3>Links <div class="underline"><span></span></div> </h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+
+            <div class="col-3 col2">
+                <div class="backLogo"><img src="assets/images/bridalshowerpic.jpg" class="miniLogo"></div>
+                    <p>Sign up for the Newsletter to receive updates on detroit engagements and Bridal Shower updates.</p>
+                    <div class="icons">
+                        <a href="contact.html"><i class="iconAffect fas fa-phone"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-envelope"></i></a>
+                        <a href="contact.html"><i class="iconAffect fas fa-solid fa-location-dot"></i></a>
+                    </div>
+            </div>
+
+            <div class="col-3 col3">
+                <h3>Newsletter <div class="underline"><span></span></div> </h3>
+                <form>
+                    <i class="far fa-envelope"></i>
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                </form>
+            </div>
+
+        </div>
+        <!-- mobile icons -->
+        <div class="mobileIcons">
+            <a href="contact.html"><i class="fas fa-phone"></i></a>
+            <a href="contact.html"><i class="fas fa-envelope"></i></a>
+            <a href="contact.html"><i class="fas fa-solid fa-location-dot"></i></a>
+        </div>
+        <hr>
+        <p class="copyright" id="footer">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
+
+    </footer>
+    <!-- <footer class="primary-footer">
+        <span>&copy; Detroit Bridal Shower</span>
+    </footer>
+     -->
+
+    <script src="assets/js/menu.js"></script>
+    <!-- <script src="fade.js"></script> -->
+    <script src="assets/js/paymentPopup.js"></script>
+    <script src="assets/js/smoothScroll.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js" integrity="sha512-2hIlk2fL+NNHkULe9gGdma/T5vSYk80U5tvAFSy3dGEl8XD4h2i6frQvHv5B+bm/Itmi8nJ6krAcj5FWFcBGig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $(".list").mCustomScrollbar({
+                theme: "rounded-dots"
+                //"rounded-dots-dark"
+                //"rounded-dark"
+                //inset-3-dark"
+                //"3d-dark"
+                //"dark-thin"
+
+            })
+        })
+    </script>
+</body>
+</html>
