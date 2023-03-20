@@ -576,36 +576,40 @@
         //     })
         // }
         function handleSubmit(event) {
-  event.preventDefault();
 
-  fetch('/addEntry', {
-    method: 'POST',
-    body: new FormData(event.target),
-  })
-    .then(response => response.text())
-    .then(data => {
-  // Show a success message in a modal with a background overlay
-  const modal = document.createElement('div');
-  modal.className = 'modal';
+            event.preventDefault();
 
-  const modalContent = document.createElement('div');
-  modalContent.className = 'modal-content';
+            fetch('/addEmail', {
+                method: 'POST',
+                body: new FormData(event.target),
+            })
+                .then(response => response.text())
+                console.log(response)
+                .then(data => {
+            // Show a success message in a modal with a background overlay
+            const modal = document.createElement('div');
+            modal.className = 'modal';
 
-  const responseDiv = document.createElement('div');
-  responseDiv.innerHTML = data;
+            const modalContent = document.createElement('div');
+            modalContent.className = 'modal-content';
 
-  modalContent.appendChild(responseDiv);
-  modal.appendChild(modalContent);
+            const responseDiv = document.createElement('div');
+            responseDiv.innerHTML = data;
 
-  const overlayy = document.createElement('div');
-  overlayy.className = 'overlayy';
-  overlayy.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
+            console.log(data)
 
-  document.body.appendChild(overlayy);
-  document.body.appendChild(modal);
-})
+            modalContent.appendChild(responseDiv);
+            modal.appendChild(modalContent);
+
+            const overlayy = document.createElement('div');
+            overlayy.className = 'overlayy';
+            overlayy.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            document.body.appendChild(overlayy);
+            document.body.appendChild(modal);
+            })
 
     .catch(error => {
       console.error(error);
