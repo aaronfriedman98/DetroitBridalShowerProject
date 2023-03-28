@@ -1,24 +1,39 @@
 const Form1 = document.querySelector("#Form1")
 const Form2 = document.querySelector("#Form2")
 const Form3 = document.querySelector("#Form3")
+const Form = document.querySelector("#Form")
 
 const Next1 = document.querySelector("#Next1")
 const Next2 = document.querySelector("#Next2")
 const Back1 = document.querySelector("#Back1")
 const Back2 = document.querySelector("#Back2")
+const Next = document.querySelector("#Next")
+const Back = document.querySelector("#Back")
 
 const progress = document.querySelector("#progress")
+
+Next.onclick = function() {
+    Form.style.left = "-450px";
+    Form1.style.left = "40px";
+    progress.style.width = "210px";
+}
 
 Next1.onclick = function() {
     Form1.style.left = "-450px";
     Form2.style.left = "40px";
-    progress.style.width = "300px";
+    progress.style.width = "325px";
+}
+
+Back.onclick = function () {
+    Form.style.left = "40px";
+    Form1.style.left = "450px";
+    progress.style.width = "100px";
 }
 
 Back1.onclick = function() {
     Form1.style.left = "40px";
     Form2.style.left = "450px";
-    progress.style.width = "150px";
+    progress.style.width = "210px";
 }
 
 Next2.onclick = function() {
@@ -30,7 +45,7 @@ Next2.onclick = function() {
 Back2.onclick = function() {
     Form2.style.left = "40px";
     Form3.style.left = "450px";
-    progress.style.width = "300px";
+    progress.style.width = "325px";
 }
 
 

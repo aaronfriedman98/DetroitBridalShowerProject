@@ -1,8 +1,13 @@
 // Declare variables
 const express = require('express')
+// const bodyParser = require('body-parser');
 // const fs = require('fs')
 const app = express()
-const PORT = process.env.PORT || 8000
+// const multer = require('multer')
+// const upload = multer();
+
+
+const PORT = process.env.PORT || 8080
 
 const mongoose = require("mongoose")
 
@@ -29,6 +34,8 @@ app.set("view engine", "ejs") //setting up view engine
 app.use(express.static('public')) //use public folder
 app.use(express.urlencoded({extended: true})) // allow data to be sent through url with forms
 app.use(express.json()) // allow json data to be passed through
+// app.use(bodyParser.json());
+
 
 // Set Routes
 app.use('/', homeRoutes)

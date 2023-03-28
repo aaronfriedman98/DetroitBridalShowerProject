@@ -1,11 +1,26 @@
 require("dotenv").config({path: "./config/.env"})
 
 const sgMail = require('@sendgrid/mail')
+const sgClient = require('@sendgrid/client')
+const express = require('express')
+const expressFileUpload = require('express-fileupload')
+const app = express()
+
 
 let test1 = "hello"
 let test2 = "hi there"
 
 sgMail.setApiKey(process.env.API_KEY)
+sgClient.setApiKey(process.env.API_KEY)
+
+sgMail.setApiKey(process.env.API_KEY)
+sgClient.setApiKey(process.env.API_KEY)
+app.use(express.urlencoded({
+ extended: true
+}))
+app.use(express.json())
+app.use(expressFileUpload())
+app.set('view engine', 'ejs')
 
 const message = {
     // to: 'aronfriedman98@gmail.com',

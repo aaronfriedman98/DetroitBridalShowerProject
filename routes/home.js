@@ -5,6 +5,8 @@ const homeController = require('../controllers/home')
 router.get('/', homeController.getIndex)
 router.post('/addEntry', homeController.addEntry)
 router.post('/addEmail', homeController.addEmail)
+router.get('/confirm', homeController.confirmEmail)
+// router.get('/unsubscribe', homeController.unsubscribeEmail)
 
 module.exports = router
 

@@ -3,6 +3,137 @@ const Couples = require('../models/couplesList')
 const mailMod = require("../mailMod")
 const nodemailer = require("nodemailer")
 
+const sgMail = require('@sendgrid/mail')
+const sgClient = require('@sendgrid/client')
+const expressFileUpload = require('express-fileupload')
+
+sgMail.setApiKey(process.env.API_KEY)
+sgClient.setApiKey(process.env.API_KEY)
+
+// app.use(expressFileUpload())
+
+
+
+// functions:
+          
+          // add contact function
+          async function addContact(email, confNum) {
+            const customFieldID = await getCustomFieldID('conf_num')
+            console.log('CustomFieldID for Conf_num='+customFieldID);
+            const data = {
+              "contacts": [{
+                "email": email,
+                "custom_fields": {}
+              }
+            ]
+            }
+            data.contacts[0].custom_fields[customFieldID] = confNum
+            const request = {
+              url: `/v3/marketing/contacts`,
+              method: 'PUT',
+              body: data
+            }
+            return sgClient.request(request)
+          }
+
+          // get customFieldID function
+          async function getCustomFieldID(customFieldName) {
+            const request = {
+              url: `/v3/marketing/field_definitions`,
+              method: 'GET'
+            }
+            const response = await sgClient.request(request)
+            const allCustomFields = response[1].custom_fields
+            return allCustomFields.find(x => x.name === customFieldName).id
+          }
+
+
+          //upload page
+          const uploadPage = {
+            title: 'Upload Newsletter',
+            subtitle: 'Upload a newsletter to send to your contacts',
+            form: `<form action="/upload" id="contact-form" enctype="multipart/form-data" method="post" style="margin: 10%; margin-left:5%; width: 350px;">
+            <div class="form-group">
+                <label for="subject">Email Subject:</label>
+                <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+            </div>
+            <div class="form-group">
+                <label for="newsletter">Newsletter: </label>
+                <input type="file" id="newsletter" name="newsletter" accept=".html" required>
+            </div>
+            <button type="submit" style="background:#0263e0 !important;" class="btn btn-primary">Send</button>
+           </form>`
+          }
+
+          //send newsletter to list function
+          async function sendNewsletterToList(req, htmlNewsletter, listID) {
+            const data = {
+              "query": `CONTAINS(list_ids, '${listID}')`
+            }
+            const request = {
+              url: `/v3/marketing/contacts/search`,
+              method: 'POST',
+              body: data
+          }
+          const response = await sgClient.request(request)
+          for (const subscriber of response[1].result) {
+            const params = new URLSearchParams({
+              conf_num: subscriber.custom_fields.conf_num,
+              email: subscriber.email
+            })
+            const unsubscribeURL = req.protocol + '://' + req.get('host') + '/delete/?' + params
+            const msg = {
+              to: subscriber.email, // Change to your recipient
+              from: "SENDER_EMAIL", // Change to your verified sender
+              subject: req.body.subject,
+              html: htmlNewsletter + `<a href="${unsubscribeURL}">Unsubscribe</a>`
+            }
+            sgMail.send(msg)
+          }
+        }
+
+        //get List ID function
+      async function getListID(listName) {
+        const request = {
+          url: `/v3/marketing/lists`,
+          method: 'GET'
+        }
+        const response = await sgClient.request(request)
+        const allLists = response[1].result
+        return allLists.find(x => x.name === listName).id
+      }
+
+      //add contact to newsletter function
+      async function addContactToList(email, listID) {
+        const data = {
+          "list_ids": [listID],
+          "contacts": [{
+            "email": email
+          }]
+        }
+        const request = {
+          url: `/v3/marketing/contacts`,
+          method: 'PUT',
+          body: data
+        }
+        return sgClient.request(request)
+      }
+
+      //get contact by email function
+      async function getContactByEmail(email) {
+        const data = {
+          "emails": [email]
+        };
+        const request = {
+          url: `/v3/marketing/contacts/search/emails`,
+          method: 'POST',
+          body: data
+        }
+        const response = await sgClient.request(request);
+        if(response[1].result[email]) return response[1].result[email].contact;
+        else return null;
+       }
+
 
 
 module.exports = {
@@ -17,58 +148,1117 @@ module.exports = {
         }
     },
     addEmail : async (req, res) => {
-        const newEmail = new Email(
-            {
-                email: req.body.email
-            }
-        )
+
+      //email validation  
+      if(req.body.email === "") {
+        return res.status(400).json({
+          status : false,
+          title : 'Oops!',
+          message : 'Please enter a valid email.'
+        })
+      }
+      const emailRegex = /\S+@\S+\.\S+/;
+      if(!emailRegex.test(req.body.email.trim())) {
+        return res.status(400).json({
+          status : false,
+          title : 'Oops!',
+          message : 'Please enter a valid email.'
+        })
+      }
+      //////////////////////////////////////
+
         try {
-            await newEmail.save()
-            console.log(newEmail)
-            // res.redirect("/")
-            // res.status(200).send('Form data saved successfully!');
-            // res.json({ message: 'Successfully Submitted!'})
+
+          // send confirmation email with sendgrid
+          const confNum = Math.floor(Math.random() * 90000) + 10000
+          const params = new URLSearchParams({
+            conf_num: confNum,
+            email: req.body.email
+          })
+          const confirmationURL = req.protocol + '://' + req.get('host') + '/confirm?' + params
+          const unsubscribeURL = req.protocol + '://' + req.get('host') + '/unsubscribe?' + params
+          console.log('Confirmation URL = '+confirmationURL);
+          const msg = {
+            to: req.body.email,
+            from: 'aronfriedman98@gmail.com',
+            subject: 'Confirm your subscription to Detroit Bridal Shower',
+            html: ` <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+                    <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+                        <head>
+                          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                          <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+                          <!--[if !mso]><!-->
+                          <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+                          <!--<![endif]-->
+                          <!--[if (gte mso 9)|(IE)]>
+                          <xml>
+                            <o:OfficeDocumentSettings>
+                              <o:AllowPNG/>
+                              <o:PixelsPerInch>96</o:PixelsPerInch>
+                            </o:OfficeDocumentSettings>
+                          </xml>
+                          <![endif]-->
+                          <!--[if (gte mso 9)|(IE)]>
+                      <style type="text/css">
+                        body {width: 600px;margin: 0 auto;}
+                        table {border-collapse: collapse;}
+                        table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}
+                        img {-ms-interpolation-mode: bicubic;}
+                      </style>
+                    <![endif]-->
+                          <style type="text/css">
+                        body, p, div {
+                          font-family: inherit;
+                          font-size: 14px;
+                        }
+                        body {
+                          color: #000000;
+                        }
+                        body a {
+                          color: #1188E6;
+                          text-decoration: none;
+                        }
+                        p { margin: 0; padding: 0; }
+                        table.wrapper {
+                          width:100% !important;
+                          table-layout: fixed;
+                          -webkit-font-smoothing: antialiased;
+                          -webkit-text-size-adjust: 100%;
+                          -moz-text-size-adjust: 100%;
+                          -ms-text-size-adjust: 100%;
+                        }
+                        img.max-width {
+                          max-width: 100% !important;
+                        }
+                        .column.of-2 {
+                          width: 50%;
+                        }
+                        .column.of-3 {
+                          width: 33.333%;
+                        }
+                        .column.of-4 {
+                          width: 25%;
+                        }
+                        ul ul ul ul  {
+                          list-style-type: disc !important;
+                        }
+                        ol ol {
+                          list-style-type: lower-roman !important;
+                        }
+                        ol ol ol {
+                          list-style-type: lower-latin !important;
+                        }
+                        ol ol ol ol {
+                          list-style-type: decimal !important;
+                        }
+                        @media screen and (max-width:480px) {
+                          .preheader .rightColumnContent,
+                          .footer .rightColumnContent {
+                            text-align: left !important;
+                          }
+                          .preheader .rightColumnContent div,
+                          .preheader .rightColumnContent span,
+                          .footer .rightColumnContent div,
+                          .footer .rightColumnContent span {
+                            text-align: left !important;
+                          }
+                          .preheader .rightColumnContent,
+                          .preheader .leftColumnContent {
+                            font-size: 80% !important;
+                            padding: 5px 0;
+                          }
+                          table.wrapper-mobile {
+                            width: 100% !important;
+                            table-layout: fixed;
+                          }
+                          img.max-width {
+                            height: auto !important;
+                            max-width: 100% !important;
+                          }
+                          a.bulletproof-button {
+                            display: block !important;
+                            width: auto !important;
+                            font-size: 80%;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                          }
+                          .columns {
+                            width: 100% !important;
+                          }
+                          .column {
+                            display: block !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                          }
+                          .social-icon-column {
+                            display: inline-block !important;
+                          }
+                          .heading {
+                              font-size: 30px !important;
+                        }
+                      </style>
+                          <!--user entered Head Start--><link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"><style>
+                    body {font-family: 'Muli', sans-serif;}
+                    </style><!--End Head user entered-->
+                        </head>
+                        <body>
+                          <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
+                            <div class="webkit">
+                              <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
+                                <tr>
+                                  <td valign="top" bgcolor="#FFFFFF" width="100%">
+                                    <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0">
+                                      <tr>
+                                        <td width="100%">
+                                          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td>
+                                                <!--[if mso]>
+                        <center>
+                        <table><tr><td width="600">
+                      <![endif]-->
+                                                        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px;" align="center">
+                                                          <tr>
+                                                            <td role="modules-container" style="padding:0px 0px 0px 0px; color:#000000; text-align:left;" bgcolor="#FFFFFF" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
+                        <tr>
+                          <td role="module-content">
+                            <p></p>
+                          </td>
+                        </tr>
+                      </table><table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" role="module" data-type="columns" style="padding:30px 20px 30px 20px;" bgcolor="#f6f6f6" data-distribution="1">
+                        <tbody>
+                          <tr role="module-content">
+                            <td height="100%" valign="top"><table width="540" style="width:540px; border-spacing:0; border-collapse:collapse; margin:0px 10px 0px 10px;" cellpadding="0" cellspacing="0" align="left" border="0" bgcolor="" class="column column-0">
+                          <tbody>
+                            <tr>
+                              <td style="padding:0px;margin:0px;border-spacing:0;"><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="72aac1ba-9036-4a77-b9d5-9a60d9b05cba">
+                        <tbody>
+                          <tr>
+                            <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+                              <!--<img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="29" alt="" data-proportionally-constrained="true" data-responsive="false" src="http://cdn.mcauto-images-production.sendgrid.net/954c252fedab403f/9200c1c9-b1bd-47ed-993c-ee2950a0f239/29x27.png" height="27">-->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="331cde94-eb45-45dc-8852-b7dbeb9101d7">
+                        <tbody>
+                          <tr>
+                            <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="d8508015-a2cb-488c-9877-d46adf313282">
+                        <tbody>
+                          <tr>
+                            <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+                              <!--<img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="95" alt="" data-proportionally-constrained="true" data-responsive="false" src="http://cdn.mcauto-images-production.sendgrid.net/954c252fedab403f/61156dfa-7b7f-4020-85f8-a586addf4288/95x33.png" height="33">-->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="27716fe9-ee64-4a64-94f9-a4f28bc172a0">
+                        <tbody>
+                          <tr>
+                            <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
+                        <tbody>
+                          <tr>
+                            <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 43px;" class="heading">Thank you for subscribing!</span></div><div></div></div></td>
+                          </tr>
+                        </tbody>
+                      </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
+                        <tbody>
+                          <tr>
+                            <td style="padding:18px 30px 18px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 18px">Please verify your email address to</span><span style="color: #000000; font-size: 18px; font-family: arial, helvetica, sans-serif"> get added to the mailing list</span><span style="font-size: 18px">.</span></div><br>
+                    <div style="font-family: inherit; text-align: center"><span style="color: darkblue; font-size: 18px"><strong>Thank you!</strong></span></div><div></div></div></td>
+                          </tr>
+                        </tbody>
+                      </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d">
+                        <tbody>
+                          <tr>
+                            <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="#ffffff">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1">
+                          <tbody>
+                            <tr>
+                              <td align="center" bgcolor="#ffffff" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#ffffff;">
+                                <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+                                  <tbody>
+                                    <tr>
+                                    <td align="center" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color;">
+                                      <a href="${confirmationURL}" style="background-color:lightblue !important; border: transparent !important; border-radius:5px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a><br><br><br>
+                                    </td>
+                                    </tr>
+                                  </tbody>
+                                </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1">
+                                <tbody>
+                                  <tr>
+                                    <td style="padding:0px 0px 50px 0px;" role="module-content" bgcolor="#ffffff">
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a265ebb9-ab9c-43e8-9009-54d6151b1600" data-mc-module-version="2019-10-22">
+                              </table></table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c37cc5b7-79f4-4ac8-b825-9645974c984e">
+                                <tbody>
+                                  <tr>
+                                    
+                                    
+                                  </tr>
+                                </tbody>
+                              </table></td>
+                                    </tr>
+                                  </tbody>
+                                </table></td>
+                                  </tr>
+                                </tbody>
+                              </table> 
+                                  <tbody>
+                                    <tr>
+                                      <td align="center" bgcolor="" class="outer-td" style="padding:0px 0px 20px 0px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+                                          <tbody>
+                                            <tr>
+                                            
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table></td>
+                                                                  </tr>
+                                                                </table>
+                                                                <!--[if mso]>
+                                                              </td>
+                                                            </tr>
+                                                          </table>
+                                                        </center>
+                                                        <![endif]-->
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                </td>
+                                              </tr>
+                                            </table>
+                                          
+                                    
+                                    </div>
+                                  </center>
+                                </body>
+                              </html>
+                    `
+          }
+          await addContact(req.body.email, confNum)
+          await sgMail.send(msg)
+          // res.render('message', {message: 'Thank you for signing up for our newsletter! Please complete the process by confirming the subscription in your email inbox.'})
+        
+          
+
+
+
+
+
+          // send confirmation email with nodemailer
+        //   async function sendNodemailer() {
+
+        //     const transporter = nodemailer.createTransport({
+        //         service: "hotmail",
+        //         auth: {
+        //             user: "lyftscooter@outlook.com",
+        //             pass: "scooterLyft98"
+        //         }
+        //     })
             
-            // const response = { message: 'Email added successfully' };
-            // res.setHeader('Content-Type', 'application/json');
-            // res.json(response)
-            res.send("Successfully submitted!"
-    //           `
-    //   <div class="modal">
-    //     <div class="modal-content">
-    //       <p>Email added successfully</p>
-    //     </div>
-    //   </div>
-    //   <div class="overlayy"></div>
-    // `
-    );
+        //     let recipient = req.body.email            
+        
+        //     const info = await transporter.sendMail({
+        //         from: 'Detroit Bridal Shower <lyftscooter@outlook.com>',
+        //         to: recipient,
+        //         subject: 'Email Confirmation',
+        //         html: ` <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        //         <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+        //             <head>
+        //               <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        //               <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+        //               <!--[if !mso]><!-->
+        //               <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        //               <!--<![endif]-->
+        //               <!--[if (gte mso 9)|(IE)]>
+        //               <xml>
+        //                 <o:OfficeDocumentSettings>
+        //                   <o:AllowPNG/>
+        //                   <o:PixelsPerInch>96</o:PixelsPerInch>
+        //                 </o:OfficeDocumentSettings>
+        //               </xml>
+        //               <![endif]-->
+        //               <!--[if (gte mso 9)|(IE)]>
+        //           <style type="text/css">
+        //             body {width: 600px;margin: 0 auto;}
+        //             table {border-collapse: collapse;}
+        //             table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}
+        //             img {-ms-interpolation-mode: bicubic;}
+        //           </style>
+        //         <![endif]-->
+        //               <style type="text/css">
+        //             body, p, div {
+        //               font-family: inherit;
+        //               font-size: 14px;
+        //             }
+        //             body {
+        //               color: #000000;
+        //             }
+        //             body a {
+        //               color: #1188E6;
+        //               text-decoration: none;
+        //             }
+        //             p { margin: 0; padding: 0; }
+        //             table.wrapper {
+        //               width:100% !important;
+        //               table-layout: fixed;
+        //               -webkit-font-smoothing: antialiased;
+        //               -webkit-text-size-adjust: 100%;
+        //               -moz-text-size-adjust: 100%;
+        //               -ms-text-size-adjust: 100%;
+        //             }
+        //             img.max-width {
+        //               max-width: 100% !important;
+        //             }
+        //             .column.of-2 {
+        //               width: 50%;
+        //             }
+        //             .column.of-3 {
+        //               width: 33.333%;
+        //             }
+        //             .column.of-4 {
+        //               width: 25%;
+        //             }
+        //             ul ul ul ul  {
+        //               list-style-type: disc !important;
+        //             }
+        //             ol ol {
+        //               list-style-type: lower-roman !important;
+        //             }
+        //             ol ol ol {
+        //               list-style-type: lower-latin !important;
+        //             }
+        //             ol ol ol ol {
+        //               list-style-type: decimal !important;
+        //             }
+        //             @media screen and (max-width:480px) {
+        //               .preheader .rightColumnContent,
+        //               .footer .rightColumnContent {
+        //                 text-align: left !important;
+        //               }
+        //               .preheader .rightColumnContent div,
+        //               .preheader .rightColumnContent span,
+        //               .footer .rightColumnContent div,
+        //               .footer .rightColumnContent span {
+        //                 text-align: left !important;
+        //               }
+        //               .preheader .rightColumnContent,
+        //               .preheader .leftColumnContent {
+        //                 font-size: 80% !important;
+        //                 padding: 5px 0;
+        //               }
+        //               table.wrapper-mobile {
+        //                 width: 100% !important;
+        //                 table-layout: fixed;
+        //               }
+        //               img.max-width {
+        //                 height: auto !important;
+        //                 max-width: 100% !important;
+        //               }
+        //               a.bulletproof-button {
+        //                 display: block !important;
+        //                 width: auto !important;
+        //                 font-size: 80%;
+        //                 padding-left: 0 !important;
+        //                 padding-right: 0 !important;
+        //               }
+        //               .columns {
+        //                 width: 100% !important;
+        //               }
+        //               .column {
+        //                 display: block !important;
+        //                 width: 100% !important;
+        //                 padding-left: 0 !important;
+        //                 padding-right: 0 !important;
+        //                 margin-left: 0 !important;
+        //                 margin-right: 0 !important;
+        //               }
+        //               .social-icon-column {
+        //                 display: inline-block !important;
+        //               }
+        //               .heading {
+        //                   font-size: 30px !important;
+        //             }
+        //           </style>
+        //               <!--user entered Head Start--><link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"><style>
+        //         body {font-family: 'Muli', sans-serif;}
+        //         </style><!--End Head user entered-->
+        //             </head>
+        //             <body>
+        //               <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
+        //                 <div class="webkit">
+        //                   <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
+        //                     <tr>
+        //                       <td valign="top" bgcolor="#FFFFFF" width="100%">
+        //                         <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0">
+        //                           <tr>
+        //                             <td width="100%">
+        //                               <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        //                                 <tr>
+        //                                   <td>
+        //                                     <!--[if mso]>
+        //             <center>
+        //             <table><tr><td width="600">
+        //           <![endif]-->
+        //                                             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px;" align="center">
+        //                                               <tr>
+        //                                                 <td role="modules-container" style="padding:0px 0px 0px 0px; color:#000000; text-align:left;" bgcolor="#FFFFFF" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
+        //             <tr>
+        //               <td role="module-content">
+        //                 <p></p>
+        //               </td>
+        //             </tr>
+        //           </table><table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" role="module" data-type="columns" style="padding:30px 20px 30px 20px;" bgcolor="#f6f6f6" data-distribution="1">
+        //             <tbody>
+        //               <tr role="module-content">
+        //                 <td height="100%" valign="top"><table width="540" style="width:540px; border-spacing:0; border-collapse:collapse; margin:0px 10px 0px 10px;" cellpadding="0" cellspacing="0" align="left" border="0" bgcolor="" class="column column-0">
+        //               <tbody>
+        //                 <tr>
+        //                   <td style="padding:0px;margin:0px;border-spacing:0;"><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="72aac1ba-9036-4a77-b9d5-9a60d9b05cba">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+        //                   <!--<img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="29" alt="" data-proportionally-constrained="true" data-responsive="false" src="http://cdn.mcauto-images-production.sendgrid.net/954c252fedab403f/9200c1c9-b1bd-47ed-993c-ee2950a0f239/29x27.png" height="27">-->
+        //                 </td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="331cde94-eb45-45dc-8852-b7dbeb9101d7">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="">
+        //                 </td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="d8508015-a2cb-488c-9877-d46adf313282">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+        //                   <!--<img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="95" alt="" data-proportionally-constrained="true" data-responsive="false" src="http://cdn.mcauto-images-production.sendgrid.net/954c252fedab403f/61156dfa-7b7f-4020-85f8-a586addf4288/95x33.png" height="33">-->
+        //                 </td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="27716fe9-ee64-4a64-94f9-a4f28bc172a0">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
+        //                 </td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 43px;" class="heading">Thank you for subscribing!</span></div><div></div></div></td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="padding:18px 30px 18px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 18px">Please verify your email address to</span><span style="color: #000000; font-size: 18px; font-family: arial, helvetica, sans-serif"> get added to the mailing list</span><span style="font-size: 18px">.</span></div><br>
+        //         <div style="font-family: inherit; text-align: center"><span style="color: darkblue; font-size: 18px"><strong>Thank you!</strong></span></div><div></div></div></td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d">
+        //             <tbody>
+        //               <tr>
+        //                 <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="#ffffff">
+        //                 </td>
+        //               </tr>
+        //             </tbody>
+        //           </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1">
+        //               <tbody>
+        //                 <tr>
+        //                   <td align="center" bgcolor="#ffffff" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#ffffff;">
+        //                     <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+        //                       <tbody>
+        //                         <tr>
+        //                         <td align="center" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color;">
+        //                           <a href="" style="background-color:lightblue !important; border: transparent !important; border-radius:5px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Email Now</a><br><br><br>
+        //                         </td>
+        //                         </tr>
+        //                       </tbody>
+        //                     </table>
+        //                   </td>
+        //                 </tr>
+        //               </tbody>
+        //             </table>
+        //               <tbody>
+        //                 <tr>
+        //                   <td align="center" bgcolor="" class="outer-td" style="padding:0px 0px 20px 0px;">
+        //                     <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+        //                       <tbody>
+        //                         <tr>
+        //                         <!--</tr>-->
+        //                       </tbody>
+        //                     </table>
+        //                   </td>
+        //                 </tr>
+        //               </tbody>
+        //             </table></td>
+        //                                               </tr>
+        //                                             </table>
+        //                                             <!--[if mso]>
+        //                                           </td>
+        //                                         </tr>
+        //                                       </table>
+        //                                     </center>
+        //                                     <![endif]-->
+        //                                   </td>
+        //                                 </tr>
+        //                               </table>
+        //                             </td>
+        //                           </tr>
+        //                         </table>
+        //                       </td>
+        //                     </tr>
+        //                   </table>
+        //                 </div>
+        //               </center>
+        //             </body>
+        //           </html>
+        //         `
+        //     })
+        // }
+        // sendNodemailer()
+
+
+
+        //   const newEmail = new Email(
+        //     {
+        //         email: req.body.email
+        //     }
+        // )
+        //     await newEmail.save()
+
+            return res.json({
+              status : true,
+              title : 'Thank You!',
+              message : 'You have been sent a confirmation email. Verify your email to be added to our mailing list.'
+            })
         } catch (err) {
             if (err) return res.status(500).send(err)
             res.redirect("/")
         }
     },
+    confirmEmail : async (req, res) => {
+
+      try {
+        const contact = await getContactByEmail(req.query.email);
+        if(contact == null) throw `Contact not found.`;
+        if (contact.custom_fields.conf_num ==  req.query.conf_num) {
+          const listID = await getListID('Newsletter Subscribers');
+          await addContactToList(req.query.email, listID);
+        } else {
+          throw 'Confirmation number does not match';
+        }
+        res.render(__dirname + '/views/message', { message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
+      } catch (error) {
+        console.error(error);
+        res.render(__dirname + '/views/message', { message: 'Subscription was unsuccessful. Please <a href="/signup">try again.</a>' });
+      }
+    },
+    // unsubscribeEmail : async (req, res) => {
+    //   //functions:
+    //   //get contact by email function
+    //   async function getContactByEmail(email) {
+    //     const data = {
+    //       "emails": [email]
+    //     };
+    //     const request = {
+    //       url: `/v3/marketing/contacts/search/emails`,
+    //       method: 'POST',
+    //       body: data
+    //     }
+    //     const response = await sgClient.request(request);
+    //     if(response[1].result[email]) return response[1].result[email].contact;
+    //     else return null;
+    //    }
+    //    //get List ID function
+    //   async function getListID(listName) {
+    //     const request = {
+    //       url: `/v3/marketing/lists`,
+    //       method: 'GET'
+    //     }
+    //     const response = await sgClient.request(request)
+    //     const allLists = response[1].result
+    //     return allLists.find(x => x.name === listName).id
+    //   }
+    //   //delete contact from list function
+    //   async function deleteContactFromList(listID, contact) {
+    //     const request = {
+    //       url: `/v3/marketing/lists/${listID}/contacts`,
+    //       method: 'DELETE',
+    //       qs: {
+    //         "contact_ids": contact.id
+    //       }
+    //     }
+    //     await sgClient.request(request);
+    //    }
+
+    //   try {
+    //     const contact = await getContactByEmail(req.query.email);
+    //     if(contact == null) throw `Contact not found.`;
+    //     if (contact.custom_fields.conf_num ==  req.query.conf_num) {
+    //       const listID = await getListID('Newsletter Subscribers');
+    //       await deleteContactFromList(listID, contact);
+    //       res.render('message', { message: 'You have been successfully unsubscribed. If this was a mistake re-subscribe <a href="/signup">here</a>.' });
+    //     }
+    //   else throw 'Confirmation number does not match or contact is not subscribed'
+    //   }
+    //   catch(error) {
+    //     console.error(error)
+    //     res.render('message', { message: 'Email could not be unsubscribed. please try again.' })
+    //   }
+    // },
     addEntry : async (req, res) => {
-        const newCouple = new Couples(
-            {
-                chossonName: req.body.chossonName,
-                chossonFatherTitle: req.body.chossonFatherTitle,
-                chossonFather: req.body.chossonFatherName,
-                chossonMotherTitle: req.body.chossonMotherTitle,
-                chossonMother: req.body.chossonMotherName,
-                chossonOrigin: req.body.chossonOrigin,
-                kallahName: req.body.kallahName,
-                kallahFatherTitle: req.body.kallahFatherTitle,
-                kallahFather: req.body.kallahFatherName,
-                kallahMotherTitle: req.body.kallahMotherTitle,
-                kallahMother: req.body.kallahMotherName,
-                kallahOrigin: req.body.kallahOrigin
-            }
-        )
+
+
+        if(req.body.name === "" || req.body.phoneNumber === "" || req.body.email === "" || req.body.address === "" || req.body.chossonName === "" || req.body.chossonOrigin === "" || req.body.kallahName === "" || req.body.kallahOrigin === "") {
+          return res.json({
+            status : false,
+            title : 'Oops!',
+            message: 'You have missing fields. Please fill out the required fields.'
+          })
+        }
+
+      
     try {
+      const newCouple = new Couples(
+        {
+            chossonName: req.body.chossonName,
+            chossonFatherTitle: req.body.chossonFatherTitle,
+            chossonFather: req.body.chossonFatherName,
+            chossonMotherTitle: req.body.chossonMotherTitle,
+            chossonMother: req.body.chossonMotherName,
+            chossonOrigin: req.body.chossonOrigin,
+            kallahName: req.body.kallahName,
+            kallahFatherTitle: req.body.kallahFatherTitle,
+            kallahFather: req.body.kallahFatherName,
+            kallahMotherTitle: req.body.kallahMotherTitle,
+            kallahMother: req.body.kallahMotherName,
+            kallahOrigin: req.body.kallahOrigin
+        }
+    )
         await newCouple.save()
         console.log(newCouple)
         // res.redirect("/")
+        
+        // send confirmation email with sendgrid
+        const confNum = Math.floor(Math.random() * 90000) + 10000
+        const params = new URLSearchParams({
+          conf_num: confNum,
+          email: req.body.email
+        })
+        const confirmationURL = req.protocol + '://' + req.get('host') + '/confirm?' + params
+
+        let chesedPackage = " "
+                        if(req.body.toaster === 'Toaster') {
+                          chesedPackage += `${req.body.toaster}, `
+                        }
+                        if(req.body.urn === 'Urn') {
+                          chesedPackage += `${req.body.urn}, `
+                        }
+                        if(req.body.kitchenTowels === 'Kitchen towels') {
+                          chesedPackage += `${req.body.kitchenTowels}, `
+                        }
+                        if(req.body.vacuum === 'Vacuum') {
+                          chesedPackage += `${req.body.vacuum}, `
+                        }
+                        if(req.body.cholentPot === 'Cholent pot') {
+                          chesedPackage += `${req.body.cholentPot}`
+                        }
+
+        const msg = {
+          to: req.body.email,
+          from: 'aronfriedman98@gmail.com',
+          subject: 'Confirm your subscription to Detroit Bridal Shower',
+          html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+      <!--[if !mso]><!-->
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+      <!--<![endif]-->
+      <!--[if (gte mso 9)|(IE)]>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:AllowPNG/>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+      <![endif]-->
+      <!--[if (gte mso 9)|(IE)]>
+  <style type="text/css">
+    body {width: 600px;margin: 0 auto;}
+    table {border-collapse: collapse;}
+    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}
+    img {-ms-interpolation-mode: bicubic;}
+  </style>
+<![endif]-->
+      <style type="text/css">
+    body, p, div {
+      font-family: inherit;
+      font-size: 14px;
+    }
+    body {
+      color: #000000;
+    }
+    body a {
+      color: #1188E6;
+      text-decoration: none;
+    }
+    p { margin: 0; padding: 0; }
+    table.wrapper {
+      width:100% !important;
+      table-layout: fixed;
+      -webkit-font-smoothing: antialiased;
+      -webkit-text-size-adjust: 100%;
+      -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    img.max-width {
+      max-width: 100% !important;
+    }
+    .column.of-2 {
+      width: 50%;
+    }
+    .column.of-3 {
+      width: 33.333%;
+    }
+    .column.of-4 {
+      width: 25%;
+    }
+    ul ul ul ul  {
+      list-style-type: disc !important;
+    }
+    ol ol {
+      list-style-type: lower-roman !important;
+    }
+    ol ol ol {
+      list-style-type: lower-latin !important;
+    }
+    ol ol ol ol {
+      list-style-type: decimal !important;
+    }
+    @media screen and (max-width:480px) {
+      .preheader .rightColumnContent,
+      .footer .rightColumnContent {
+        text-align: left !important;
+      }
+      .preheader .rightColumnContent div,
+      .preheader .rightColumnContent span,
+      .footer .rightColumnContent div,
+      .footer .rightColumnContent span {
+        text-align: left !important;
+      }
+      .preheader .rightColumnContent,
+      .preheader .leftColumnContent {
+        font-size: 80% !important;
+        padding: 5px 0;
+      }
+      table.wrapper-mobile {
+        width: 100% !important;
+        table-layout: fixed;
+      }
+      img.max-width {
+        height: auto !important;
+        max-width: 100% !important;
+      }
+      a.bulletproof-button {
+        display: block !important;
+        width: auto !important;
+        font-size: 80%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      .columns {
+        width: 100% !important;
+      }
+      .column {
+        display: block !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      .social-icon-column {
+        display: inline-block !important;
+      }
+    }
+  </style>
+      <!--user entered Head Start--><link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"><style>
+body {font-family: 'Muli', sans-serif;}
+</style><!--End Head user entered-->
+    </head>
+    <body>
+      <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
+        <div class="webkit">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
+            <tr>
+              <td valign="top" bgcolor="#FFFFFF" width="100%">
+                <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="100%">
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td>
+                            <!--[if mso]>
+    <center>
+    <table><tr><td width="600">
+  <![endif]-->
+                                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px;" align="center">
+                                      <tr>
+                                        <td role="modules-container" style="padding:0px 0px 0px 0px; color:#000000; text-align:left;" bgcolor="#FFFFFF" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
+    <tr>
+      <td role="module-content">
+        <p></p>
+      </td>
+    </tr>
+  </table><table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" role="module" data-type="columns" style="padding:30px 20px 30px 20px;" bgcolor="#f6f6f6" data-distribution="1">
+    <tbody>
+      <tr role="module-content">
+        <td height="100%" valign="top"><table width="540" style="width:540px; border-spacing:0; border-collapse:collapse; margin:0px 10px 0px 10px;" cellpadding="0" cellspacing="0" align="left" border="0" bgcolor="" class="column column-0">
+      <tbody>
+        <tr>
+          <table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="72aac1ba-9036-4a77-b9d5-9a60d9b05cba">
+    <tbody>
+      <tr>
+        <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="331cde94-eb45-45dc-8852-b7dbeb9101d7">
+    <tbody>
+      <tr>
+        <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="">
+        </td>
+      </tr>
+    </tbody>
+  </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="d8508015-a2cb-488c-9877-d46adf313282">
+    <tbody>
+      <tr>
+        <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+          
+        </td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="27716fe9-ee64-4a64-94f9-a4f28bc172a0">
+    <tbody>
+      <tr>
+        <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
+        </td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
+    <tbody>
+      <tr>
+        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 33px; line-height: 50px; margin-bottom:50px; display:inline-block;">${req.body.name}, thank you for your submission.</span></div><div></div></div></td>
+      </tr>
+    </tbody>
+  </table><p style="margin: 20px auto; text-align: center">Please confirm that all the information is correct.</p><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
+    <tbody style="display: flex; flex-direction: column;">
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:10px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff; width: 100%;" >${req.body.chossonName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Father:</b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonFatherTitle} ${req.body.chossonFatherName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Mother: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonMotherTitle} ${req.body.chossonMotherName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Hometown:</b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonOrigin}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:in
+        herit; background-color:#ffffff;width: 100%;" >${req.body.kallahName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Father:</b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahFatherTitle} ${req.body.kallahFatherName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah's Mother: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahMotherTitle} ${req.body.kallahMotherName}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Hometown:</b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahOrigin}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Phone Number: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.phoneNumber}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Email: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.email}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Address: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.address}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Wedding Date: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.weddingDate}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Personal Shopper: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.personalShopper}</td>
+      </tr>
+      <tr style="border-bottom: solid 1px grey;">
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Detroit Chesed Package: </b></td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chesedPackage}</td>
+      </tr>
+      
+      
+    </tbody>
+  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d">
+    <tbody>
+      <tr>
+        <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="#ffffff">
+        </td>
+      </tr>
+    </tbody>
+  </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1">
+      <tbody>
+        <tr>
+          <td align="center" bgcolor="#ffffff" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#ffffff;">
+            <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+              <tbody>
+                <tr>
+                <td align="center" bgcolor="#ffbe00" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
+                  <a href="" style="background-color:#ffbe00; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:0px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Confirm</a>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1">
+    <tbody>
+      <tr>
+        <td style="padding:0px 0px 50px 0px;" role="module-content" bgcolor="#ffffff">
+        </td>
+      </tr>
+    </tbody>
+  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a265ebb9-ab9c-43e8-9009-54d6151b1600" data-mc-module-version="2019-10-22">
+    <tbody>
+      <tr>
+      </tr>
+    </tbody>
+  </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1.1">
+      <tbody>
+        <tr>
+          <td align="center" bgcolor="#6e6e6e" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#6e6e6e;">
+            <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+              <tbody>
+                <tr>
+                </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c37cc5b7-79f4-4ac8-b825-9645974c984e">
+    <tbody>
+      <tr>
+        
+        
+      </tr>
+    </tbody>
+  </table></td>
+        </tr>
+      </tbody>
+    </table></td>
+      </tr>
+    </tbody>
+      <tbody>
+        <tr>
+          <td align="center" bgcolor="" class="outer-td" style="padding:0px 0px 20px 0px;">
+            <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
+              <tbody>
+                <tr>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table></td>
+                                      </tr>
+                                    </table>
+                                    <!--[if mso]>
+                                  </td>
+                                </tr>
+                              </table>
+                            </center>
+                            <![endif]-->
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </center>
+    </body>
+  </html>`
+        }
+        await sgMail.send(msg)
+
+
+
+        return res.json({
+          status : true,
+          title : 'Thank You!',
+          message: 'You have been sent an email for verification. Please open your email and confirm the submission.'
+        })
+
         const databaseCouples = await Couples.find().sort({_id: -1})
+
 
         //new couple 
         let newCoupleString = ""
@@ -137,18 +1327,18 @@ module.exports = {
                             }
                         })
 
-                        let chesedPackage = "<br>"
+                        let chesedPackage = " "
                         if(req.body.toaster === 'Toaster') {
-                          chesedPackage += `${req.body.toaster} <br>`
+                          chesedPackage += `${req.body.toaster}, `
                         }
                         if(req.body.urn === 'Urn') {
-                          chesedPackage += `${req.body.urn} <br>`
+                          chesedPackage += `${req.body.urn}, `
                         }
                         if(req.body.kitchenTowels === 'Kitchen towels') {
-                          chesedPackage += `${req.body.kitchenTowels} <br>`
+                          chesedPackage += `${req.body.kitchenTowels}, `
                         }
                         if(req.body.vacuum === 'Vacuum') {
-                          chesedPackage += `${req.body.vacuum} <br>`
+                          chesedPackage += `${req.body.vacuum}, `
                         }
                         if(req.body.cholentPot === 'Cholent pot') {
                           chesedPackage += `${req.body.cholentPot}`
@@ -245,6 +1435,7 @@ module.exports = {
                 },
                 subject: 'Testing sendgrid',
                 text: 'testing sendgrid',
+                
                 html: `<style type="text/css">
                 body, p, div {
                   font-family: inherit;
@@ -564,12 +1755,16 @@ ${newCoupleString} <br> <br>
             }
             mailMod.sendMail(message)
         
-
+            // res.json({
+            //   status : false,
+            //   title : 'Oops!',
+            //   message: 'You have missing fields. Please fill out the required fields.'
+            // })
 
             // mailMod.sendMail(message2)
             
             // res.redirect("/")
-            res.status(200).send('Form data saved successfully!');
+            // res.status(200).send('Form data saved successfully!');
         } catch (err) {
             if (err) return res.status(500).send(err)
             res.redirect("/")

@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const couplesListSchema = new mongoose.Schema({
     chossonName: {
         type: String,
-        // required: true
+        required: true
     },
     chossonFatherTitle: {
         type: String,
@@ -20,11 +20,11 @@ const couplesListSchema = new mongoose.Schema({
     },
     chossonOrigin: {
         type: String,
-        // required: true
+        required: true
     },
     kallahName: {
         type: String,
-        // required: true
+        required: true
     },
     kallahFatherTitle: {
         type: String,
@@ -42,7 +42,7 @@ const couplesListSchema = new mongoose.Schema({
     },
     kallahOrigin: {
         type: String,
-        // required: true
+        required: true
     },
     announcement: {
         type: Boolean,
@@ -50,7 +50,10 @@ const couplesListSchema = new mongoose.Schema({
     },
     collecting: {
         type: Boolean,
-        default: true
+        default: false
+    },
+    confNumber: {
+        type: Number,
     }
     // address: {
     //     type: String,

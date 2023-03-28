@@ -489,14 +489,14 @@ a {
     left: 40px;
     transition: 0.5s;
 } */
-#Form1, #Form2, #Form3 {
+#Form1, #Form2, #Form3, #Form {
     width: 370px;
     position: absolute;
     top: 100px;
     left: 40px;
     transition: 0.5s;
 }
-.formPopup #Form1 input, .formPopup #Form2 input, .formPopup #Form3 input, .select{
+.formPopup #Form1 input, .formPopup #Form2 input, .formPopup #Form3 input, .select, .formPopup #Form input{
     width: 100%;
     padding: 10px 5px;
     margin: 5px 0;
@@ -505,7 +505,7 @@ a {
     outline: none;
     background: transparent;
 }
-.formPopup #Form1 .smallInput, .formPopup #Form2 .smallInput, .formPopup #Form3 .smallInput, .select, .selectTitle {
+.formPopup #Form1 .smallInput, .formPopup #Form2 .smallInput, .formPopup #Form3 .smallInput, .select, .selectTitle, .formPopup #Form .smallInput {
     width: 77%;
     padding: 10px 5px;
     margin: 5px 0;
@@ -514,13 +514,13 @@ a {
     outline: none;
     background: transparent;
 }
-.formPopup #Form1 .smallInput:first-child, .formPopup #Form2 .smallInput:first-child, .formPopup #Form3 .smallInput:first-child, .selectTitle {
+.formPopup #Form1 .smallInput:first-child, .formPopup #Form2 .smallInput:first-child, .formPopup #Form3 .smallInput:first-child, .selectTitle, .formPopup #Form .smallInput:first-child {
     width: 20%;
 } 
-.formPopup #Form1::placeholder,.formPopup #Form2::placeholder,.formPopup #Form3::placeholder {
+.formPopup #Form1::placeholder,.formPopup #Form2::placeholder,.formPopup #Form3::placeholder, .formPopup #Form::placeholder {
     color: #777;
 }
-.formPopup #Form1 .combine,.formPopup #Form2 .combine,.formPopup #Form3 .combine {
+.formPopup #Form1 .combine,.formPopup #Form2 .combine,.formPopup #Form3 .combine , .formPopup #Form .combine{
     display: flex;
     justify-content: space-between;
 }
@@ -550,6 +550,9 @@ a {
     color: #fff;
     cursor: pointer;
 }
+#Form1 {
+    left: 450px;
+}
 #Form2 {
     left: 450px;
 }
@@ -564,7 +567,6 @@ a {
     align-items: center;
     box-shadow: 0 -1px 5px -1px #000;
     position: relative;
-    /* border-bottom: gray 1px solid; */
     z-index: 22222222222222222222222222222222222222222222222222222222222222222222222 !important;
 }
 .step-col {
@@ -577,7 +579,7 @@ a {
 #progress {
     position: absolute;
     height: 100%;
-    width: 120px;
+    width: 100px;
     background: linear-gradient(to right, #ff105f, #ffad06);
     transition: .7s;
 }
@@ -610,25 +612,59 @@ a {
     transform: scale(.8);
 } */
 
-.placeholder1 {
+.placeholder001 {
+    top: 80px;
+    left: 3px;
+}
+/* input:focus + .placeholder001 {
+    top: 60px;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+    
+} */
+
+.placeholder1, .placeholder01 {
     top: 80px !important;
     left: 3px;
 }
-input:focus + .placeholder1, input:not(:placeholder-shown) + .placeholder1 {
+input:focus + .placeholder1, input:not(:placeholder-shown) + .placeholder1, input:focus + .placeholder01, input:not(:placeholder-shown) + .placeholder01 {
     top: 60px !important;
     left: -10px;
     color: #84aa6d !important;
     transform: scale(.8);
     
 }
+.placeholder02 {
+    top: 125px;
+    left: 3px;
+}
 
 .placeholder2 {
     top: 128px !important;
     left: 88px;
 }
+input:focus + .placeholder02, input:not(:placeholder-shown) + .placeholder02 {
+    top: 105px !important;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
 input:focus + .placeholder2, input:not(:placeholder-shown) + .placeholder2 {
     top: 108px !important;
     left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder03 {
+    top: 175px;
+    left: 3px;
+}
+input:focus + .placeholder03, input:not(:placeholder-shown) + .placeholder03 {
+    top: 155px !important;
+    left: -7px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
@@ -640,6 +676,17 @@ input:focus + .placeholder2, input:not(:placeholder-shown) + .placeholder2 {
 input:focus + .placeholder3, input:not(:placeholder-shown) + .placeholder3 {
     top: 154px !important;
     left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder04 {
+    top: 220px;
+    left: 3px;
+}
+input:focus + .placeholder04, input:not(:placeholder-shown) + .placeholder04 {
+    top: 202px !important;
+    left: -5px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
@@ -670,6 +717,13 @@ input::placeholder {
     color: transparent;
 }
 
+input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-month-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-day-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-text {
+    color: transparent;
+  }
+
 
 
 .close-btn {
@@ -690,10 +744,11 @@ input::placeholder {
 
 .select-field,.task,.list{
     /* width: 100%; */
-    background-color: white;
+    background-color: rgba(238, 237, 237, 0.799);
     padding: 0.3rem;
     padding-bottom: 10px;
     text-align: center;
+    border-radius: 10px;
 }
 .list{
     box-shadow: 0 30px 60px rgb(0,0,0,0.2);
