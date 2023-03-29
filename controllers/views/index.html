@@ -988,6 +988,12 @@
             kallahMotherName : document.querySelector("#kallahMotherName").value,
             kallahOrigin : document.querySelector("#kallahOrigin").value,
             weddingDate : document.querySelector("#weddingDate").value,
+            personalShopper : document.querySelector("#personalShopper").value,
+            toaster : document.querySelector("#task1").checked,
+            urn : document.querySelector("#task2").checked,
+            kitchenTowels : document.querySelector("#task3").checked,
+            vacuum : document.querySelector("#task4").checked,
+            cholentPot : document.querySelector("#task5").checked,
             
         }
             const request = new Request('/addEntry', {
@@ -1003,6 +1009,8 @@
 
                 if(data.status === true) {
                     fillInModal(data.title, data.message, true)
+                    document.querySelector(".formPopup").classList.remove("active")
+                    document.querySelector(".overlay").classList.remove("overlayActive")
                     openModal()
                 }
                 else {
