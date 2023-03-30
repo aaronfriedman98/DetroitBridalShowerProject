@@ -7,6 +7,7 @@ router.post('/addEntry', homeController.addEntry)
 router.get('/confirmEntry', homeController.confirmEntry)
 router.post('/addEmail', homeController.addEmail)
 router.get('/confirm', homeController.confirmEmail)
+router.get('/verifyCouple', homeController.verifyCouple)
 // router.get('/unsubscribe', homeController.unsubscribeEmail)
 
 module.exports = router
