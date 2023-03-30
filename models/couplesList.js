@@ -44,6 +44,22 @@ const couplesListSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name : {
+        type: String,
+        required: true
+    },
+    email : {
+        type: String,
+        required: true
+    },
+    phoneNumber : {
+        type: String,
+        required: true
+    },
+    address : {
+        type: String,
+        required: true
+    },
     announcement: {
         type: Boolean,
         default: false

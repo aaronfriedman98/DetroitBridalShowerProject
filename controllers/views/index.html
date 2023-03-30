@@ -314,8 +314,8 @@
                     </div>
                     <select class="select" name="chossonOrigin" id="chossonOrigin">
                         <option>Where is the chosson from?</option>
-                        <option value="1">Detroit</option>
-                        <option value="2">Other</option>
+                        <option value="detroit">Detroit</option>
+                        <option value="other">Other</option>
                     </select>
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
 
@@ -354,8 +354,8 @@
                     </div>
                     <select class="select" name="kallahOrigin" id="kallahOrigin">
                         <option>Where is the kallah from?</option>
-                        <option value="1">Detroit</option>
-                        <option value="2">Other</option>
+                        <option value="detroit">Detroit</option>
+                        <option value="other">Other</option>
                     </select>
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
 
@@ -702,7 +702,7 @@
             opacity: 1;
             top: 50%;
             transform: translate(-50%, -50%) scale(1);
-            transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19)
+            transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
         }
         .popupModalFalse .iconCheckFalse {
             margin: 5px 0px;
@@ -747,6 +747,93 @@
             color: red;
             background:rgba(255, 255, 255, 0.804);
         }
+
+
+
+        /* form validation client side*/
+  
+        .error-modal {
+  font-family: "source sans pro";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  width: 350px;
+  height: 230px;
+  padding: 30px 20px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  box-sizing: border-box;
+  z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+  text-align: center;
+  transition: opacity 300ms ease-in-out,
+              top 1000ms ease-in-out,
+              transform 1000ms ease-in-out;
+    border: solid red 1px;
+}
+
+.error-modal.active {
+  opacity: 1;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
+}
+
+.error-icon {
+  margin: 5px 0px;
+  width: 50px;
+  height: 50px;
+  /* border: 2px solid #34f234; */
+  text-align: center;
+  display: inline-block;
+  border-radius: 50%;
+  line-height: 60px;
+}
+
+.error-icon i {
+  font-size: 30px;
+}
+
+.error-icon .fa-circle-xmark
+ {
+  color: red;
+}
+
+.error-message {
+  margin: 5px 0px;
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.error-description {
+  color: #222;
+  font-size: 15px;
+  padding: 5px;
+}
+
+.dismiss-button {
+  margin-top: 15px;
+}
+
+.dismiss-button {
+  padding: 8px 16px;
+  background: red;
+  color: #f5f5f5;
+  border: 2px solid red;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 300ms ease-in-out;
+}
+
+.dismiss-button:hover {
+  color: red;
+  background: #f5f5f5;
+}
+
 
      </style>
 
@@ -837,6 +924,27 @@
             document.querySelector("#subscribeEmail").value = ""
         }
 
+        function clearModal() {
+            document.querySelector("#name").value = ""
+            document.querySelector("#email").value = ""
+            document.querySelector("#phoneNumber").value = ""
+            document.querySelector("#address").value = ""
+            document.querySelector("#chossonName").value = ""
+            document.querySelector("#chossonFatherTitle").value = ""
+            document.querySelector("#chossonFatherName").value = ""
+            document.querySelector("#chossonMotherTitle").value = ""
+            document.querySelector("#chossonMotherName").value = ""
+            document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
+            document.querySelector("#kallahName").value = ""
+            document.querySelector("#kallahFatherTitle").value = ""
+            document.querySelector("#kallahFatherName").value = ""
+            document.querySelector("#kallahMotherTitle").value = ""
+            document.querySelector("#kallahMotherName").value = ""
+            document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
+            document.querySelector("#weddingDate").value = ""
+            document.querySelector("#personalShopper").value = "Personal Shopper?"
+            document.querySelector("#DCPG").value = ""
+        }
 
 
 
@@ -1012,10 +1120,12 @@
                     document.querySelector(".formPopup").classList.remove("active")
                     document.querySelector(".overlay").classList.remove("overlayActive")
                     openModal()
+                    clearModal()
                 }
                 else {
                     fillInModal(data.title, data.message, false)
                     openModal()
+
                 }
             })
         }
@@ -1121,6 +1231,8 @@
 
      </script>
      <script>
+
+        //display chesed package choices in input field
         const toaster = document.querySelector("#task1")
         const urn = document.querySelector("#task2")
         const kitchenTowel = document.querySelector("#task3")
@@ -1184,6 +1296,9 @@
                 cholentPotChoice = false
             }
         })
+
+        
+        
         
      </script>
 

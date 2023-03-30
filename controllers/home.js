@@ -769,10 +769,10 @@ module.exports = {
         } else {
           throw 'Confirmation number does not match';
         }
-        res.render(__dirname + '/views/message', { message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
+        res.render(__dirname + '/views/message', { title: 'Thank you!', message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
       } catch (error) {
         console.error(error);
-        res.render(__dirname + '/views/message', { message: 'Subscription was unsuccessful. Please <a href="/signup">try again.</a>' });
+        res.render(__dirname + '/views/message', { title: 'Thank you!', message: 'Subscription was unsuccessful. Please <a href="/">try again.</a>' });
       }
     },
     // unsubscribeEmail : async (req, res) => {
@@ -842,41 +842,36 @@ module.exports = {
       
     try {
       const confNum = Math.floor(Math.random() * 90000) + 10000
-      const newCouple = new Couples(
-        {
-            chossonName: req.body.chossonName,
-            chossonFatherTitle: req.body.chossonFatherTitle,
-            chossonFather: req.body.chossonFatherName,
-            chossonMotherTitle: req.body.chossonMotherTitle,
-            chossonMother: req.body.chossonMotherName,
-            chossonOrigin: req.body.chossonOrigin,
-            kallahName: req.body.kallahName,
-            kallahFatherTitle: req.body.kallahFatherTitle,
-            kallahFather: req.body.kallahFatherName,
-            kallahMotherTitle: req.body.kallahMotherTitle,
-            kallahMother: req.body.kallahMotherName,
-            kallahOrigin: req.body.kallahOrigin,
-            confNumber : confNum
-        }
-    )
-        await newCouple.save()
-        console.log(req.body)
+      
         // res.redirect("/")
         
         // send confirmation email with sendgrid
         
         const params = new URLSearchParams({
-          conf_num: confNum,
-          email: req.body.email
+          name: req.body.name,
+          email: req.body.email,
+          phoneNumber: req.body.phoneNumber,
+          address: req.body.address,
+          chossonName: req.body.chossonName,
+          chossonFatherTitle: req.body.chossonFatherTitle,
+          chossonFatherName: req.body.chossonFatherName,
+          chossonMotherTitle: req.body.chossonMotherTitle,
+          chossonMotherName: req.body.chossonMotherName,
+          chossonOrigin: req.body.chossonOrigin,
+          kallahName: req.body.kallahName,
+          kallahFatherTitle: req.body.kallahFatherTitle,
+          kallahFatherName: req.body.kallahFatherName,
+          kallahMotherTitle: req.body.kallahMotherTitle,
+          kallahMotherName: req.body.kallahMotherName,
+          kallahOrigin: req.body.kallahOrigin,
+          weddingDate: req.body.weddingDate,
+          personalShopper: req.body.personalShopper,
+          chesedPackage: req.body.chesedPackage,
+          confNum: confNum
         })
-        const confirmationURL = req.protocol + '://' + req.get('host') + '/confirm?' + params
+        const confirmationURL = req.protocol + '://' + req.get('host') + '/confirmEntry?' + params
 
-        let chossonOrigin = ""
-        if(req.body.chossonOrigin === '1') chossonOrigin = 'Detroit'
-        else chossonOrigin = "Other"
-        let kallahOrigin = ""
-        if(req.body.kallahOrigin === '1') kallahOrigin = 'Detroit'
-        else kallahOrigin = "Other"
+        
         let chesedPackage = " "
                         if(req.body.toaster === true) {
                           chesedPackage += "Toaster, "
@@ -1106,7 +1101,7 @@ body {font-family: 'Muli', sans-serif;}
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Hometown:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonOrigin}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonOrigin}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
@@ -1127,7 +1122,7 @@ body {font-family: 'Muli', sans-serif;}
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Hometown:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahOrigin}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahOrigin}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
@@ -1265,6 +1260,31 @@ body {font-family: 'Muli', sans-serif;}
         
         await sgMail.send(msg)
         console.log('email sent')
+
+        //save to database
+        const newCouple = new Couples(
+          {
+              chossonName: req.body.chossonName,
+              chossonFatherTitle: req.body.chossonFatherTitle,
+              chossonFather: req.body.chossonFatherName,
+              chossonMotherTitle: req.body.chossonMotherTitle,
+              chossonMother: req.body.chossonMotherName,
+              chossonOrigin: req.body.chossonOrigin,
+              kallahName: req.body.kallahName,
+              kallahFatherTitle: req.body.kallahFatherTitle,
+              kallahFather: req.body.kallahFatherName,
+              kallahMotherTitle: req.body.kallahMotherTitle,
+              kallahMother: req.body.kallahMotherName,
+              kallahOrigin: req.body.kallahOrigin,
+              name: req.body.name,
+              email: req.body.email,
+              phoneNumber: req.body.phoneNumber,
+              address: req.body.address,
+              confNumber : confNum
+          }
+      )
+          await newCouple.save()
+          console.log(req.body)
 
 
         return res.json({
@@ -1782,8 +1802,12 @@ ${newCoupleString} <br> <br>
             // res.redirect("/")
             // res.status(200).send('Form data saved successfully!');
         } catch (err) {
-            if (err) return res.status(500).send(err)
-            res.redirect("/")
+            if (err) return res.json({
+              status : false,
+              title : 'Oops!',
+              message: 'There was an error with your submission. Double check your email address and try again.'
+            })
+            // res.redirect("/")
         }
     },
     confirmEntry : async (req, res) => {
@@ -1797,39 +1821,96 @@ ${newCoupleString} <br> <br>
         //     if (err) return res.status(500).send(err)
         // }
         try {
-          const queryCouple = {
-            name: req.query.name,
-            email: req.query.email,
-            phoneNumber: req.query.phoneNumber,
-            address: req.query.address,
-            chossonName: req.query.chossonName,
-            chossonFatherTitle: req.query.chossonFatherTitle,
-            chossonFatherName: req.query.chossonFatherName,
-            chossonOrigin: req.query.chossonOrigin,
-            kallah: req.query.kallah,
-            kallahFatherTitle: req.query.kallahFatherTitle,
-            kallahFatherName: req.query.kallahFatherName,
-            kallahOrigin: req.query.kallahOrigin,
-            weddingDate: req.query.weddingDate,
-            personalShopper: req.query.personalShopper,
-            chesedPackage: req.query.chesedPackage,
-            confNum: req.query.confNum
-          }
-          const dbCouple = await Couples.find(queryCouple)
+          // const queryCouple = {
+          //   name: req.query.name,
+          //   email: req.query.email,
+          //   phoneNumber: req.query.phoneNumber,
+          //   address: req.query.address,
+          //   chossonName: req.query.chossonName,
+          //   chossonFatherTitle: req.query.chossonFatherTitle,
+          //   chossonFatherName: req.query.chossonFatherName,
+          //   chossonOrigin: req.query.chossonOrigin,
+          //   kallah: req.query.kallah,
+          //   kallahFatherTitle: req.query.kallahFatherTitle,
+          //   kallahFatherName: req.query.kallahFatherName,
+          //   kallahOrigin: req.query.kallahOrigin,
+          //   weddingDate: req.query.weddingDate,
+          //   personalShopper: req.query.personalShopper,
+          //   chesedPackage: req.query.chesedPackage,
+          //   confNum: req.query.confNum
+          // }
+          const dbCouple = await Couples.find({ confNumber: req.query.confNum })
+          if (dbCouple == null) throw `Contact not found.`
+          console.log(req.query)
+          // console.log(dbCouple)
+
+
+          // console.log(dbCouple[0].name === req.query.name)
+          // console.log(dbCouple[0].name + " " + req.query.name)
+
+          // console.log(dbCouple[0].email === req.query.email)
+          // console.log(dbCouple[0].email + " " + req.query.email)
+
+          // console.log(dbCouple[0].phoneNumber === req.query.phoneNumber)
+          // console.log(dbCouple[0].phoneNumber + " " + req.query.phoneNumber)
+
+          // console.log(dbCouple[0].address === req.query.address)
+          // console.log(dbCouple[0].address + " " + req.query.address)
+
+          // console.log(dbCouple[0].chossonName === req.query.chossonName)
+          // console.log(dbCouple[0].chossonName + " " + req.query.chossonName)
+
+          // console.log(dbCouple[0].chossonFatherTitle === req.query.chossonFatherTitle)
+          // console.log(dbCouple[0].chossonFatherTitle + " " + req.query.chossonFatherTitle)
+
+          // console.log(dbCouple[0].chossonFather === req.query.chossonFatherName)
+          // console.log(dbCouple[0].chossonFather + " " + req.query.chossonFatherName)
 
           
-            if (dbCouple == null) throw `Contact not found.`
-            // else {
+          // console.log(dbCouple[0].kallahName === req.query.kallahName)
+          // console.log(dbCouple[0].kallahName + " " + req.query.kallahName)
 
-            // }
+          // console.log(dbCouple[0].kallahFatherTitle === req.query.kallahFatherTitle)
+          // console.log(dbCouple[0].kallahFatherTitle + " " + req.query.kallahFatherTitle)
+
+          // console.log(dbCouple[0].kallahFather === req.query.kallahFatherName)
+          // console.log(dbCouple[0].kallahFather + " " + req.query.kallahFatherName)
+          
+        
+          console.log(dbCouple[0].confNumber === req.query.confNum)
+          console.log(dbCouple[0].confNumber + " " + req.query.confNum)
+
+          
+          if (dbCouple[0].name === req.query.name &&
+              dbCouple[0].email === req.query.email && 
+              dbCouple[0].phoneNumber === req.query.phoneNumber && 
+              dbCouple[0].address === req.query.address && 
+              dbCouple[0].chossonName === req.query.chossonName && 
+              dbCouple[0].chossonFatherTitle === req.query.chossonFatherTitle && 
+              dbCouple[0].chossonFather === req.query.chossonFatherName &&
+              dbCouple[0].chossonMotherTitle === req.query.chossonMotherTitle &&
+              dbCouple[0].chossonMother === req.query.chossonMotherName &&
+              // dbCouple[0].chossonOrigin === req.query.chossonOrigin && 
+              dbCouple[0].kallahName === req.query.kallahName && 
+              dbCouple[0].kallahFatherTitle === req.query.kallahFatherTitle && 
+              dbCouple[0].kallahFather === req.query.kallahFatherName &&
+              dbCouple[0].kallahMotherTitle === req.query.kallahMotherTitle &&
+              dbCouple[0].kallahMother === req.query.kallahMotherName &&
+              // dbCouple[0].kallahOrigin === req.query.kallahOrigin 
+              dbCouple[0].confNumber == req.query.confNum
+              ) {
+
+          let chesedPackage = "" //add chesed package to email
+          let verificationURL = "" //add verification url to email
+          let adminURL = "" //add admin url to email
           // if (queryCouple.confNum ==  req.query.confNum) {
             // await queryCouple.updateOne({ confirmed: true })
             // await queryCouple.updateOne({ collecting: true })
             //send email to mommy
             const msg = {
-              to: req.body.email,
-              from: 'aronfriedman98@gmail.com',
-              subject: 'Confirm your subscription to Detroit Bridal Shower',
+              to: 'aronfriedman98@gmail.com', // bridal shower email
+              from: `${req.query.email}`,
+              subject: 'New Couple Submission',
               html:`<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
               <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
                   <head>
@@ -2032,7 +2113,7 @@ ${newCoupleString} <br> <br>
                     </tr>
                     <tr style="border-bottom: solid 1px grey;">
                       <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Hometown:</b></td>
-                      <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonOrigin}</td>
+                      <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.query.chossonOrigin}</td>
                     </tr>
                     <tr style="border-bottom: solid 1px grey;">
                       <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
@@ -2053,7 +2134,7 @@ ${newCoupleString} <br> <br>
                     </tr>
                     <tr style="border-bottom: solid 1px grey;">
                       <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Hometown:</b></td>
-                      <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahOrigin}</td>
+                      <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.query.kallahOrigin}</td>
                     </tr>
                     <tr style="border-bottom: solid 1px grey;">
                       <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
@@ -2189,6 +2270,7 @@ ${newCoupleString} <br> <br>
                 </html>`
             }
             await sgMail.send(msg)
+            console.log('Verification email sent')
           // res.render('message', {message: 'Thank you for signing up for our newsletter! Please complete the process by confirming the subscription in your email inbox.'})
         
         
@@ -2197,10 +2279,14 @@ ${newCoupleString} <br> <br>
           // else {
           //   throw 'Confirmation number does not match';
           // }
-          res.render(__dirname + '/views/message', { message: 'New couple has been confirmed! Once the couple has been verified the collection will begin.' });
+          res.render(__dirname + '/views/message', { message: 'New couple has been confirmed! Once the couple has been verified the collection will begin.', title: 'Thank you!' });
+        }
+        else {
+          res.render(__dirname + '/views/message', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!' })
+        }
         } catch (error) {
           console.error(error);
-          res.render(__dirname + '/views/message', { message: 'Couple submission was unsuccessful. Please <a href="/#services">try again.</a>' });
+          res.render(__dirname + '/views/message', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!'});
         }
     }
 }
