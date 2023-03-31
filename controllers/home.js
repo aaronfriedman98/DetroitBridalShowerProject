@@ -890,7 +890,7 @@ module.exports = {
                         }
 
                         //remove last comma
-                        chesedPackage.match(/(.*).$/)[2]
+                        chesedPackage = chesedPackage.slice(0, -2)
                         console.log(chesedPackage)
 
                         // console.log('chesedPackage: ', chesedPackage)
@@ -1877,7 +1877,7 @@ ${newCoupleString} <br> <br>
           // console.log(dbCouple[0].kallahFather + " " + req.query.kallahFatherName)
           
         
-          console.log(dbCouple[0].confNumber === req.query.confNum)
+          console.log(dbCouple[0].confNumber == req.query.confNum)
           console.log(dbCouple[0].confNumber + " " + req.query.confNum)
 
           
@@ -1901,24 +1901,24 @@ ${newCoupleString} <br> <br>
               ) {
 
           let chesedPackage = " " 
-          if(req.query.toaster === true) {
+          if(req.query.toaster === 'true') {
             chesedPackage += "Toaster, "
           }
-          if(req.query.urn === true) {
+          if(req.query.urn === 'true') {
             chesedPackage += "Urn, "
           }
-          if(req.query.kitchenTowels === true) {
+          if(req.query.kitchenTowels === 'true') {
             chesedPackage += "Kitchen towels, "
           }
-          if(req.query.vacuum === true) {
+          if(req.query.vacuum === 'true') {
             chesedPackage += "Vacuum, "
           }
-          if(req.query.cholentPot === true) {
+          if(req.query.cholentPot === 'true') {
             chesedPackage += "Cholent pot, "
           }
 
           //remove last 2 chars of string (comma and space)
-          chesedPackage.match(/(.*).$/)[2]
+          chesedPackage = chesedPackage.slice(0, -2)
 
           const params = new URLSearchParams({
             name: req.query.name,
@@ -1940,7 +1940,7 @@ ${newCoupleString} <br> <br>
             weddingDate: req.query.weddingDate,
             personalShopper: req.query.personalShopper,
             // chesedPackage: req.query.chesedPackage,
-            confNum: confNum
+            confNum: req.query.confNum
           })
 
           let verificationURL = req.protocol + '://' + req.get('host') + '/verifyCouple?' + params
@@ -2229,7 +2229,6 @@ ${newCoupleString} <br> <br>
                               <tr>
                               <td align="center" bgcolor="#ffbe00" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
                                 <a href="${verificationURL}" style="background-color:#ffbe00; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:0px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Verify Couple</a>
-                                <p>Or visit this link to manually verify couples: ${adminURL}</p>
                               </td>
                               </tr>
                             </tbody>
@@ -2237,7 +2236,7 @@ ${newCoupleString} <br> <br>
                         </td>
                       </tr>
                     </tbody>
-                  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1">
+                  </table><p>Or visit this link to manually verify couples: <a href="${adminURL}">${adminURL}</a></p><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1">
                   <tbody>
                     <tr>
                       <td style="padding:0px 0px 50px 0px;" role="module-content" bgcolor="#ffffff">
@@ -2315,7 +2314,7 @@ ${newCoupleString} <br> <br>
             console.log('Verification email sent')
           // res.render('message', {message: 'Thank you for signing up for our newsletter! Please complete the process by confirming the subscription in your email inbox.'})
         
-        
+        // fix chesed package
 
           // } 
           // else {
@@ -2334,9 +2333,12 @@ ${newCoupleString} <br> <br>
     async verifyCouple(req, res) {
       try{
 
+        console.log("attempting to verify couple")
+
       
-      const dbCouple = await Couples.find({ confNumber: req.query.confNum })
+      const dbCouple = await Couples.find({ confNumber: Number(req.query.confNum) })
       dbCouple.updateOne({ collecting: true })
+      console.log("couple verified")
 
       //send collection email to all sendgrid contacts
       const listID = await getListID('Newsletter Subscribers')
@@ -2347,17 +2349,17 @@ ${newCoupleString} <br> <br>
         //new couple 
         let newCoupleString = ""
 
-        let chossonFatherFNameNew = req.body.chossonFatherName.split(" ").slice(0, -1).join(" ")
-        let kallahFatherFNameNew = req.body.kallahFatherName.split(" ").slice(0, -1).join(" ")
+        let chossonFatherFNameNew = req.query.chossonFatherName.split(" ").slice(0, -1).join(" ")
+        let kallahFatherFNameNew = req.query.kallahFatherName.split(" ").slice(0, -1).join(" ")
 
-        if(req.body.chossonOrigin === '1' && req.body.kallahOrigin === '1') {
-            newCoupleString += `<strong>${req.body.chossonName}</strong> is engaged to <strong>${req.body.kallahName}</strong> <br> son of ${req.body.chossonFatherTitle} & ${req.body.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.body.chossonMotherName} <br> and daughter of ${req.body.kallahFatherTitle} & ${req.body.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.body.kallahMotherName} <br> <br>`
+        if(req.query.chossonOrigin === 'detroit' && req.query.kallahOrigin === 'detroit') {
+            newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.query.chossonMotherName} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.query.kallahMotherName} <br> <br>`
         }
-        else if(req.body.chossonOrigin === '1') {
-            newCoupleString += `<strong>${req.body.chossonName}</strong> is engaged to ${req.body.kallahName} <br> son of ${req.body.chossonFatherTitle} & ${req.body.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.body.chossonMotherName} <br> <br>`
+        else if(req.query.chossonOrigin === '1') {
+            newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to ${req.query.kallahName} <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.query.chossonMotherName} <br> <br>`
         }
         else {
-            newCoupleString += `<strong>${req.body.kallahName}</strong> is engaged to ${req.body.chossonName} <br> daughter of ${req.body.kallahFatherTitle} & ${req.body.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.body.kallahMotherName} <br> <br>`
+            newCoupleString += `<strong>${req.query.kallahName}</strong> is engaged to ${req.query.chossonName} <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.query.kallahMotherName} <br> <br>`
         }
 
         //couples still collecting for
