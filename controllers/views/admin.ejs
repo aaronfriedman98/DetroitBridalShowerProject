@@ -683,9 +683,8 @@
 </style>
 <script>
             //couple info modal
-const coupleInfo = document.querySelectorAll(".coupleInfo")
+            const coupleInfo = document.querySelectorAll(".coupleInfo")
 const infoModal = document.querySelector(".infoModal")
-
 
 let infoId = null;
 let isHovering = false;
@@ -706,6 +705,7 @@ Array.from(coupleInfo).forEach((el) => {
     const data = await response.json()
     console.log(data);
 
+    infoModal.classList.add("activeInfoModal");
     isHovering = true;
 
     // add a mousemove event listener to the parent element
@@ -726,6 +726,7 @@ Array.from(coupleInfo).forEach((el) => {
     infoId = null;
   })
 })
+
 
 
 Array.from(coupleInfo).forEach((el) => {
