@@ -683,8 +683,8 @@
 </style>
 <script>
             //couple info modal
-            const coupleInfo = document.querySelectorAll(".coupleInfo")
-const infoModal = document.querySelector(".infoModal")
+            const coupleInfo = document.querySelectorAll(".coupleInfo");
+const infoModal = document.querySelector(".infoModal");
 
 let infoId = null;
 let isHovering = false;
@@ -700,12 +700,11 @@ Array.from(coupleInfo).forEach((el) => {
       body: JSON.stringify({
         id: infoId
       })
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
     console.log(data);
 
-    infoModal.classList.add("activeInfoModal");
     isHovering = true;
 
     // add a mousemove event listener to the parent element
@@ -714,19 +713,22 @@ Array.from(coupleInfo).forEach((el) => {
     el.parentNode.addEventListener("mousemove", function(event) {
       if (isHovering) {
         const rect = el.getBoundingClientRect();
-        infoModal.style.top = `${event.clientY - infoModal.offsetHeight - 10}px`;
+        infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 10}px`;
         infoModal.style.left = `${event.clientX - infoModal.offsetWidth/2}px`;
+
+        if (!infoModal.classList.contains("activeInfoModal")) {
+          infoModal.classList.add("activeInfoModal");
+        }
       }
     });
-  })
+  });
 
   el.addEventListener("mouseleave", function() {
     isHovering = false;
-    infoModal.classList.remove("activeInfoModal")
+    infoModal.classList.remove("activeInfoModal");
     infoId = null;
-  })
-})
-
+  });
+});
 
 
 Array.from(coupleInfo).forEach((el) => {
