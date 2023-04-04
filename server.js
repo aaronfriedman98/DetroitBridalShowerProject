@@ -20,6 +20,7 @@ const shoppingGuideRoutes = require('./routes/shoppingGuide')
 const thankYouRoutes = require('./routes/thankYou')
 const announcementSubmissionRoutes = require("./routes/announcementSubmission")
 const financialAssistanceRoutes = require("./routes/financialAssistance")
+const adminRoutes = require("./routes/admin")
 
 // Import functions/routes
 const connectDB = require("./config/database")
@@ -47,6 +48,7 @@ app.use('/shoppingGuide', shoppingGuideRoutes)
 app.use('/thankYou', thankYouRoutes)
 app.use('/announcementSubmission', announcementSubmissionRoutes)
 app.use('/financialAssistance', financialAssistanceRoutes)
+app.use('/admin', adminRoutes)
 
 
 // Start server

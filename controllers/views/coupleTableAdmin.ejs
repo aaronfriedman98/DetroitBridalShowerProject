@@ -1,0 +1,110 @@
+<div class="table_body verifyCouples">
+    <table>
+        <thead>
+            <tr>
+                <th>Chosson</th>
+                <th>Kallah</th>
+                <!-- <th><i class="fa-solid fa-info"></i></th> -->
+                <th>Info</th>
+                <th>Status</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% coupleInfo.forEach(couple => { %> 
+            <tr>
+                <td><%= couple.chossonName %></td>
+                <td><%= couple.kallahName %></td>
+                <td>
+                    <p><i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;" data-id="<%= couple._id %>" class="coupleInfo fa-solid fa-circle-info"></i></p>
+                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                </td>
+                <td>
+                    <p class="green">unverified</p>
+                </td>
+                <td><button type="button" class="button">
+                    <span class="button__text">unverify</span>
+                    <span class="button__icon"><i class="fa-solid  fa-xmark"></i>
+                    </span>
+                </button></td>
+
+
+                
+                <!-- <div class="img-container"  id="announcements"></div> -->
+            </tr>
+            <% }) %>
+            
+        </tbody>
+    </table>
+</div>
+
+<div class="table_body uploadAnnouncements">
+    <table>
+        <thead>
+            <tr>
+                <th>Chosson</th>
+                <th>Kallah</th>
+                <!-- <th><i class="fa-solid fa-info"></i></th> -->
+                <th>Info</th>
+                <th>Status</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% coupleInfo.forEach(couple => { %> 
+            <tr>
+                <td><%= couple.chossonName %></td>
+                <td><%= couple.kallahName %></td>
+                <td>
+                    <i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;"class="fa-solid fa-circle-info"></i>
+                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                </td>
+                <td>
+                    <p class="green">uploaded</p>
+                </td>
+                <td><button type="button" class="button">
+                    <span class="button__text">upload</span>
+                    <span class="button__icon"><i class="fa-solid  fa-plus"></i>
+                    </span>
+                </button></td>
+                <!-- <div class="img-container"  id="announcements"></div> -->
+            </tr>
+            <% }) %>
+            
+        </tbody>
+    </table>
+</div>
+
+<div class="table_body database">
+    <table>
+        <thead>
+            <tr>
+                <th>Chosson</th>
+                <th>Kallah</th>
+                <!-- <th><i class="fa-solid fa-info"></i></th> -->
+                <th>Info</th>
+                <th>Delete Couple</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% coupleInfo.forEach(couple => { %> 
+            <tr>
+                <td><%= couple.chossonName %></td>
+                <td><%= couple.kallahName %></td>
+                <td>
+                    <i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;"class="fa-solid fa-circle-info"></i>
+                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                </td>
+                <td><button type="button" class="button buttonRed">
+                    <span class="button__text deleteCouple" data-id="<%= couple._id %>">Delete</span>
+                    <span class="button__icon"><i class="fa-solid  fa-xmark"></i>
+                    </span>
+                </button></td>
+                <!-- <div class="img-container"  id="announcements"></div> -->
+            </tr>
+            <% }) %>
+            
+        </tbody>
+    </table>
+</div>
+

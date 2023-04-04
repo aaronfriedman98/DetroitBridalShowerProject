@@ -2336,12 +2336,16 @@ ${newCoupleString} <br> <br>
         console.log("attempting to verify couple")
 
       
-      const dbCouple = await Couples.find({ confNumber: Number(req.query.confNum) })
-      dbCouple.updateOne({ collecting: true })
+      // const dbCouple = await Couples.find({ confNumber: req.query.confNum })
+      // console.log(dbCouple)
+      await Couples.update({ confNumber: req.query.confNum }, { $set: { collecting: true } })
+      console.log(req.query.confNum)
       console.log("couple verified")
 
       //send collection email to all sendgrid contacts
       const listID = await getListID('Newsletter Subscribers')
+
+      console.log("listID: " + listID)
 
       const databaseCouples = await Couples.find().sort({_id: -1})
 
@@ -2361,6 +2365,8 @@ ${newCoupleString} <br> <br>
         else {
             newCoupleString += `<strong>${req.query.kallahName}</strong> is engaged to ${req.query.chossonName} <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.query.kallahMotherName} <br> <br>`
         }
+
+        console.log("new couple string: " + newCoupleString)
 
         //couples still collecting for
         let couplesString = ""
@@ -2385,6 +2391,7 @@ ${newCoupleString} <br> <br>
               }
           }
         }
+        console.log("couplesString: " + couplesString)
 
       const collectionEmail = `<style type="text/css">
       body, p, div {
@@ -2702,12 +2709,14 @@ ${newCoupleString} <br> <br>
 </div>
 </center>`
 
+console.log("email created")
+
 await sendNewsletterToList(req, collectionEmail, listID)
-res.render('message', {title: 'Success!'}, {message: 'Collection email has been mailed out!'})
+res.render(__dirname + '/views/message', {title: 'Success!', message: 'Collection email has been mailed out!'})
 
     }
     catch(err){
-      res.render('message', {title: 'Oops!'}, {message: 'Something went wrong!'})
+      res.render(__dirname + '/views/message', {title: 'Oops!', message: 'Something went wrong!'})
       
     }
 

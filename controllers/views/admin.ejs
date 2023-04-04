@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&family=Source+Sans+Pro:wght@200;300;400&display=swap" rel="stylesheet">
+
+    <!-- icons for mobile menu -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- icon for popups -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
+    <!-- <link rel="stylesheet" href="href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- font awesome animations -->
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+
+    <!-- Scroll bar -->
+    <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js" defer></script>
+
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/headerFooter.css">
+    <!-- <link rel="stylesheet" href="contact.css"> -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+    
+    
+    <title>Announcements</title>
+</head>
+<body>
+
+    <div class="modal">
+        <img src="" class="full-img"/>
+    </div>
+
+
+    
+
+    <div class="body">
+        
+
+
+        <section class="header">
+            <section class="logo test">
+                    <img src="assets/images/bridalshowerpic.jpg">
+                    <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
+            </section>
+            <nav class="headerNav" id="navLinks">
+                <i class="fa fa-times" onclick="hideMenu()"></i>
+                <ul>
+                    <li style="cursor: pointer;" class="verifyLink">Verify Couple</li>
+                    <span style="color: #648880">|</span>
+                    <li style="cursor: pointer;" class="uploadLink">Upload Announcements</li>
+                    <span style="color: #648880">|</span>
+                    <li style="cursor: pointer;" class="databaseLink">Database</li>
+
+                    <!-- <li><a href="/">HOME</a></li>
+                    <li><a href="about">ABOUT</a></li>
+                    <li><a href="contact">CONTACT</a></li> -->
+                    <!-- For Mobile -->
+                    <!-- <div class="mobileNav">
+                        <li><a href="addCouple">ADD A COUPLE</a></li>
+                        <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                        <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                    </div> -->
+                    <!--  -->
+                    <!-- <li class="drop">MORE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
+                        <ul class="dropDown"> -->
+                            <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
+                            <!-- <li><a href="/#services">ADD A COUPLE</a></li>
+                            <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                            <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                            <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
+                        </ul> -->
+                </ul>
+                
+            </nav>
+            <!-- <i class="fa fa-bars" onclick="showMenu()"></i> -->
+        </section>
+
+
+        <div class="contain">
+
+
+
+            <h1 style="width: 100%; text-align: center; padding: 0 !important;">Admin Page</h1>
+
+            <style>
+
+/* 
+                .headerNav ul li:nth-child(1)::after{
+                    width: 100%;
+                } */
+/* 
+                .headerNav ul li:nth-child(2)::after{
+                    width: 0;
+                } */
+
+                .uploadTitle {
+                    display: none;
+                }
+                
+                .uploadAnnouncements {
+                    display: none;
+                }
+                .database {
+                    display: none;
+                }
+                .databaseTitle {
+                    display: none;
+                }
+
+
+                /* status's */
+                .green {
+                    background: #c2f5c5;
+                    padding: 2px 10px;
+                    display: inline-block;
+                    border-radius: 40px;
+                    color: #2b2b2b;
+                }
+                .red {
+                    background: #f68c8c;
+                    padding: 2px 10px;
+                    display: inline-block;
+                    border-radius: 40px;
+                    color: #2b2b2b;
+                }
+
+                /* edit buttons */
+                .button {
+                    display: flex;
+                    height: 35px;
+                    padding: 0;
+                    /* background: #01bd97c7; */
+                    background: #0149bd9c;
+                    border: none;
+                    outline: none;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    font-family: "Quicksand", sans-serif;
+                    font-size: 13px;
+                    font-weight: 400;
+                    cursor: pointer;
+                }
+
+                .button:hover {
+                    /* background: #01b38fae; */
+                    background: #013a8fae;
+                }
+
+                .button:active {
+                    /* background: #019e7f96; */
+                    background: #013a8f96;
+                }
+
+                .buttonRed {
+                    background: #e72103ac;
+                }
+                .buttonRed:hover {
+                    background: #a5140190;
+                }
+                .buttonRed:active {
+                    background: #710c018d;
+                }
+
+                .button__text,
+                .button__icon {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #fff;
+                    height: 100%;
+                }
+
+                .button__icon {
+                    font-size: 1.2em;
+                    background: rgba(0, 0, 0, 0.08);
+                }
+
+                .databaseButton {
+                    position: absolute;
+                    /* left: 120px; */
+                    right: 120px;
+                }
+
+
+            </style>
+
+            <script>
+               document.querySelector(".uploadLink").addEventListener('click', function() {
+                document.querySelector(".uploadAnnouncements").style.display = "block";
+                document.querySelector(".verifyCouples").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".verifyTitle").style.display = "none";
+                document.querySelector(".uploadTitle").style.display = "block";
+
+               })
+               document.querySelector(".verifyLink").addEventListener('click', function() {
+                document.querySelector(".uploadAnnouncements").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".verifyCouples").style.display = "block";
+                document.querySelector(".verifyTitle").style.display = "block";
+                document.querySelector(".uploadTitle").style.display = "none";
+               })
+
+               document.querySelector(".databaseLink").addEventListener('click', function() {
+                document.querySelector(".uploadAnnouncements").style.display = "none";
+                document.querySelector(".verifyCouples").style.display = "none";
+                document.querySelector(".database").style.display = "block";
+                document.querySelector(".databaseTitle").style.display = "block";
+                document.querySelector(".verifyTitle").style.display = "none";
+                document.querySelector(".uploadTitle").style.display = "none";
+               })
+               
+            </script>
+        
+        
+            
+            <h1 style="margin-top: 25px;" class="verifyTitle">Verify Couples</h1>
+            <h1 style="margin-top: 25px;" class="uploadTitle">Upload Announcements</h1>
+            <div class="databaseTitle">
+                <h1 style="margin-top: 25px;">Database</h1>
+                <button type="button" class="button databaseButton" id="showForm">
+                    <span class="button__text">Add Couple</span>
+                    <span class="button__icon"><i class="fa-solid  fa-plus"></i>
+                    </span>
+                </button>
+            </div>
+            <form action="/announcements/search" method="GET" class="search-bar">
+                <input type="text" placeholder="search" name="query" id="searchBar" pattern="[a-zA-Z]+">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        
+            
+         
+            <div class="table">
+                <%- include('coupleTableAdmin'); -%>
+            </div>         
+
+            
+
+
+
+
+
+            <!-- popup form -->
+<form class="formPopup" id="couplesForm">
+    <div id="Form">
+        <h3>Personal Info</h3>
+        <input type="text" name="chossonName" placeholder="Name" id="name"  >
+        <label class="placeholder placeholder01">Enter Name: (on behalf of couple)</label>
+        <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
+        <label class="placeholder placeholder02">Phone Number: (to contact the couple)</label>
+        <input type="text" name="chossonName" placeholder="Email" id="email"  >
+        <label class="placeholder placeholder03">Email: (to contact the couple)</label>
+        <input type="text" name="chossonName" placeholder="Address" id="address"  >
+        <label class="placeholder placeholder04">Address: (on behalf of couple)</label>
+        <div class="btn-box">
+            <button type="button" id="close-btn">Cancel</button>
+            <button type="button" id="Next">Next</button>
+        </div>
+
+    </div>
+    <div id="Form1">
+        <h3>Enter Chosson's Info</h3>
+        <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
+        <label class="placeholder placeholder1">Chosson's Full Name:</label>
+        <div class=combine>
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
+                <option>Title</option>
+                <option value="Mr.">Mr.</option>
+                <option value="Rabbi">Rabbi</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
+            <label class="placeholder placeholder2">Chosson's Father:</label>
+        </div>
+        <div class="combine">
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
+                <option>Title</option>
+                <option value="Mrs.">Mrs.</option>
+                <option value="Rebbetzin">Rebbetzin</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
+        <label class="placeholder placeholder3">Chosson's Mother:</label>
+        </div>
+        <select class="select" name="chossonOrigin" id="chossonOrigin">
+            <option>Where is the chosson from?</option>
+            <option value="detroit">Detroit</option>
+            <option value="other">Other</option>
+        </select>
+        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back">Back</button>
+            <button type="button" id="Next1">Next</button>
+        </div>
+
+    </div>
+
+    <div id="Form2">
+        <h3>Enter Kallah's Info</h3>
+        <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
+        <label class="placeholder placeholder1">Kallah's Full Name:</label>
+        <div class=combine>
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
+                <option>Title</option>
+                <option value="Mr.">Mr.</option>
+                <option value="Rabbi">Rabbi</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+            <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
+            <label class="placeholder placeholder2">Kallah's Father:</label>
+        </div>
+        <div class="combine">
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
+                <option>Title</option>
+                <option value="Mrs.">Mrs.</option>
+                <option value="Rebbetzin">Rebbetzin</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+        <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
+        <label class="placeholder placeholder3">Kallah's Mother:</label>
+        </div>
+        <select class="select" name="kallahOrigin" id="kallahOrigin">
+            <option>Where is the kallah from?</option>
+            <option value="detroit">Detroit</option>
+            <option value="other">Other</option>
+        </select>
+        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back1">back</button>
+            <button type="button" id="Next2">Next</button>
+        </div>
+
+    </div>
+
+    <div id="Form3">
+        <h3>Other Info</h3>
+        <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
+        <!-- <label class="placeholder placeholder1">Address:</label>
+        <div class="combine combine2">
+            <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+            <input type="email" placeholder="Email" name="email" id="email"  >
+            <label class="placeholder placeholder4">Email:</label>
+        </div> -->
+        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+        <label class="placeholder placeholder001">WeddingDate:</label>
+
+        <script>
+            const date = document.getElementById('weddingDate')
+            const label = document.querySelector('.placeholder001')
+
+            date.addEventListener('click', function() {
+                label.style.top = '60px'
+                label.style.left = '-10px'
+                label.style.color = '#84aa6d'
+                label.style.transform = 'scale(.8)'
+            })
+        </script>
+
+        <select class="select" name="personalShopper" id="personalShopper">
+            <option>Would they like personal shopper?</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
+        <label class="placeholder placeholder03">Detroit Chesed Package Gift:</label>
+        <input type="text" placeholder="" name="" id="DCPG"  >
+        <!-- <span class="down-arrow">&blacktriangledown;</span> -->
+
+        <div class="list">
+
+            <span class="close-btn">&times;</span>
+
+            <label for="task1" class="task">
+                 <input type="checkbox" name="toaster" id="task1" value="Toaster">
+                 Toaster
+                 <!-- <span>10 mins</span> -->
+          </label>
+            <label for="task2" class="task">
+                 <input type="checkbox" name="urn" id="task2" value="Urn">
+                 Urn
+                 <!-- <span>20 mins</span> -->
+          </label>
+            <label for="task3" class="task">
+                 <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
+                 Kitchen towels
+                 <!-- <span>30 mins</span> -->
+          </label>
+            <label for="task4" class="task">
+                 <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
+                 Vacuum
+                 <!-- <span>40 mins</span> -->
+          </label>
+          <label for="task5" class="task">
+            <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
+            Cholent pot
+            <!-- <span>40 mins</span> -->
+            </label>
+     
+          </div>
+        <!-- <select class="select">
+            <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
+            <option>Toaster</option>
+            <option>Urn</option>
+            <option>Kitchen towels</option>
+            <option>Vacuum</option>
+            <option>Cholent pot</option>
+        </select> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back2">back</button>
+            <button type="button" onclick="addCouple()">submit</button>
+            <!-- onclick="coupleSubmit()" -->
+        </div>
+
+    </div>
+
+    <div class="step-row">
+        <div id="progress"></div>
+        <div class="step-col"><small>Step 1</small></div>
+        <div class="step-col"><small>Step 2</small></div>
+        <div class="step-col"><small>Step 3</small></div>
+        <div class="step-col"><small>Step 4</small></div>
+    </div>
+
+</form>
+
+
+
+
+
+<!-- popup modal -->
+<div class="popupModal center successPopup">
+    <div class="iconCheck">
+        <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="title">
+        
+    </div><br>
+    <div class="description">
+        
+    </div><br>
+    <!-- first class is for javascript, second is for css and the id is for js to close the modal-->
+    <div class="dismissButton dismiss-btn">
+        <button id="dismiss-popup-btn">
+            Dismiss
+        </button>
+    </div>
+ </div>
+
+ <!-- couple info modal -->
+<div id="InfoModal" class="infoModal">
+    <div class="info-modal-content">
+      <p>
+        <ul>
+            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li>
+            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phonenumberFill"></div></li>
+            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li>
+            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li>
+            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li>
+            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li>
+            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li>
+            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li>
+            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li>
+            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li>
+            <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
+
+ <style>
+
+    .center {
+        font-family: "source sans pro";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .popupModal {
+        position: fixed;
+        width: 350px;
+        height: 280px;
+        padding: 30px 20px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        box-sizing: border-box;
+        z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+        text-align: center;
+        opacity: 0;
+        top: -200%;
+        transform: translate(-50%, -50%) scale(0.5);
+        transition: opacity 300ms ease-in-out,
+                    top 1000ms ease-in-out,
+                    transform 1000ms ease-in-out;
+
+    }
+    .popupModal.active {
+        opacity: 1;
+        top: 40%;
+        transform: translate(-50%, -50%) scale(1);
+        transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19)
+    }
+    .popupModal .iconCheck {
+        margin: 5px 0px;
+        width: 50px;
+        height: 50px;
+        border: 2px solid #34f234;
+        text-align: center;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 60px;
+    }
+    .popupModal .iconCheck i {
+        font-size: 30px;
+    }
+    .popupModal .iconCheck .fa-check {
+        color: #34f234;
+    }
+    .popupModal .title {
+        margin: 5px 0px;
+        font-size: 30px;
+        font-weight: 600;
+    }
+    .popupModal .description {
+        color: #222;
+        font-size: 15px;
+        padding: 5px;
+    }
+    .popupModal .dismiss-btn {
+        margin-top: 15px;
+    }
+    .popupModal .dismiss-btn button {
+        padding: 10px 20px;
+        background: #34f234;
+        color: #f5f5f5;
+        border: 2px solid #34f234;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+    }
+    .popupModal .dismiss-btn button:hover {
+        color:rgb(5, 202, 5);
+        background:rgba(255, 255, 255, 0.804);
+    }
+
+            /* error popup */
+
+            .popupModalFalse {
+            position: fixed;
+            width: 350px;
+            height: 280px;
+            padding: 30px 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            box-sizing: border-box;
+            z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+            text-align: center;
+            opacity: 0;
+            top: -200%;
+            transform: translate(-50%, -50%) scale(0.5);
+            transition: opacity 300ms ease-in-out,
+                        top 1000ms ease-in-out,
+                        transform 1000ms ease-in-out;
+
+        }
+        .popupModalFalse.active {
+            opacity: 1;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
+        }
+        .popupModalFalse .iconCheckFalse {
+            margin: 5px 0px;
+            width: 50px;
+            height: 50px;
+            /* border: 2px solid #34f234; */
+            text-align: center;
+            display: inline-block;
+            border-radius: 50%;
+            line-height: 60px;
+        }
+        .popupModal .iconCheckFalse i {
+            font-size: 30px;
+            color: red;
+        }
+        .popupModalFalse .title {
+            margin: 5px 0px;
+            font-size: 30px;
+            font-weight: 600;
+        }
+        .popupModalFalse .description {
+            color: #222;
+            font-size: 15px;
+            padding: 5px;
+        }
+        .popupModalFalse .dismiss-btnFalse {
+            margin-top: 15px;
+        }
+        .popupModal .dismiss-btnFalse button {
+            padding: 10px 20px;
+            background: red;
+            color: #f5f5f5;
+            border: 2px solid red;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 300ms ease-in-out;
+        }
+        .popupModal .dismiss-btnFalse button:hover {
+            color: red;
+            background:rgba(255, 255, 255, 0.804);
+        }
+
+
+
+        /* info popup modal */
+
+/* .infoModal {
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+} */
+
+/* .info-modal-content{
+    position: fixed;
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.853);
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 10px;
+    top: -50px;
+    right: 250px;
+} */
+
+/* .activeInfoModal {
+    transform: scale(1.1);
+    visibility: visible;
+} */
+
+.infoModal {
+  display: none;
+  position: absolute;
+  top: 0;
+  width: fit-content;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.853);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.activeInfoModal {
+  display: block;
+}
+
+
+</style>
+<script>
+            //couple info modal
+const coupleInfo = document.querySelectorAll(".coupleInfo")
+const infoModal = document.querySelector(".infoModal")
+
+
+let infoId = null;
+let isHovering = false;
+
+Array.from(coupleInfo).forEach((el) => {
+
+  el.addEventListener("mouseover", async function() {
+    infoId = this.getAttribute('data-id');
+
+    const response = await fetch('admin/fillInfoModal', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        id: infoId
+      })
+    })
+
+    const data = await response.json()
+    console.log(data);
+
+    isHovering = true;
+
+    // add a mousemove event listener to the parent element
+    // to update the position of the modal while the mouse is
+    // hovering over the element
+    el.parentNode.addEventListener("mousemove", function(event) {
+      if (isHovering) {
+        const rect = el.getBoundingClientRect();
+        infoModal.style.top = `${event.clientY - infoModal.offsetHeight - 10}px`;
+        infoModal.style.left = `${event.clientX - infoModal.offsetWidth/2}px`;
+      }
+    });
+  })
+
+  el.addEventListener("mouseleave", function() {
+    isHovering = false;
+    infoModal.classList.remove("activeInfoModal")
+    infoId = null;
+  })
+})
+
+
+Array.from(coupleInfo).forEach((el) => {
+  el.addEventListener("mouseout", function() {
+    infoModal.classList.remove("activeInfoModal")
+  })
+})
+
+const nameFill = document.querySelector(".nameFill")
+const phonenumberFill = document.querySelector(".phonenumberFill")
+const emailFill = document.querySelector(".emailFill")
+const addressFill = document.querySelector(".addressFill")
+const chossonFatherFill = document.querySelector(".chossonFatherFill")
+const chossonMotherFill = document.querySelector(".chossonMotherFill")
+const kallahFatherFill = document.querySelector(".kallahFatherFill")
+const kallahMotherFill = document.querySelector(".kallahMotherFill")
+const chossonHometownFill = document.querySelector(".chossonHometownFill")
+const kallahHometownFill = document.querySelector(".kallahHometownFill")
+
+
+</script>
+
+
+        
+
+</div>
+
+
+
+
+
+
+
+<script>
+    const searchB = document.querySelector('input[name="query"]')
+    const form = document.querySelector('form')
+
+    searchB.addEventListener('input', (event) => {
+        const query = '^'+event.target.value
+        const url = `/announcements/search?query=${query}`
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', url)
+        xhr.onload = () => {
+            const tbody = document.querySelector('.table')
+            tbody.innerHTML = xhr.responseText
+        }
+        xhr.send()
+    })
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault()  
+    })
+
+    const inputField = document.getElementById("searchBar");
+
+    inputField.addEventListener("keypress", (event) => {
+    const key = event.key;
+    const onlyLetters = /^[a-zA-Z]*$/;
+    
+    if (!onlyLetters.test(key)) {
+        event.preventDefault();
+    }
+    });
+
+
+
+    // add to database
+    async function addCouple() {
+            const coupleObject = {
+            name : document.querySelector("#name").value,
+            phoneNumber : document.querySelector("#phoneNumber").value,
+            email : document.querySelector("#email").value,
+            address : document.querySelector("#address").value,
+            chossonName : document.querySelector("#chossonName").value,
+            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+            chossonFatherName : document.querySelector("#chossonFatherName").value,
+            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+            chossonMotherName : document.querySelector("#chossonMotherName").value,
+            chossonOrigin : document.querySelector("#chossonOrigin").value,
+            kallahName : document.querySelector("#kallahName").value,
+            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+            kallahFatherName : document.querySelector("#kallahFatherName").value,
+            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+            kallahMotherName : document.querySelector("#kallahMotherName").value,
+            kallahOrigin : document.querySelector("#kallahOrigin").value,
+            weddingDate : document.querySelector("#weddingDate").value,
+            personalShopper : document.querySelector("#personalShopper").value,
+            toaster : document.querySelector("#task1").checked,
+            urn : document.querySelector("#task2").checked,
+            kitchenTowels : document.querySelector("#task3").checked,
+            vacuum : document.querySelector("#task4").checked,
+            cholentPot : document.querySelector("#task5").checked,
+            
+        }
+            const request = new Request('/admin/addEntry', {
+                method: 'POST',
+                body: JSON.stringify(coupleObject),
+                headers: {
+                    'Content-Type' : 'application/json'
+                }
+            })
+            const response = await fetch(request)
+            .then( async (res) => {
+                let data = await res.json()
+
+                if(data.status === true) {
+                    fillInModal(data.title, data.message, true)
+                    document.querySelector(".formPopup").classList.remove("active")
+                    // document.querySelector(".overlay").classList.remove("overlayActive")
+                    openModal()
+                    clearModal()
+                }
+                else {
+                    fillInModal(data.title, data.message, false)
+                    openModal()
+
+                }
+            })
+        }
+
+
+        //control modal script
+        function fillInModal(title, message, color) {
+            const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
+            const titleFill = document.querySelector(".title")
+            const messageFill = document.querySelector(".description")
+            titleFill.innerText = title
+            messageFill.innerText = message 
+            if(color === true) {
+                iconFill.style.color = "rgb(5, 202, 5)"
+                iconFill.classList.remove("fa-circle-xmark")
+                iconFill.classList.add("fa-check")
+                document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
+                document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
+                document.querySelector(".dismissButton").classList.add("dismiss-btn")
+            }
+            else {
+                iconFill.style.color = "red"
+                iconFill.classList.remove("fa-check")
+                iconFill.classList.add("fa-circle-xmark")
+                document.querySelector(".iconCheck").style.border = "none"
+                document.querySelector(".dismissButton").classList.remove("dismiss-btn")
+                document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
+            }
+        }
+        function openModal() {
+            document.querySelector(".popupModal").classList.add("active")
+            document.querySelector("#subscribeEmail").value = ""
+        }
+
+        function clearModal() {
+            document.querySelector("#name").value = ""
+            document.querySelector("#email").value = ""
+            document.querySelector("#phoneNumber").value = ""
+            document.querySelector("#address").value = ""
+            document.querySelector("#chossonName").value = ""
+            document.querySelector("#chossonFatherTitle").value = ""
+            document.querySelector("#chossonFatherName").value = ""
+            document.querySelector("#chossonMotherTitle").value = ""
+            document.querySelector("#chossonMotherName").value = ""
+            document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
+            document.querySelector("#kallahName").value = ""
+            document.querySelector("#kallahFatherTitle").value = ""
+            document.querySelector("#kallahFatherName").value = ""
+            document.querySelector("#kallahMotherTitle").value = ""
+            document.querySelector("#kallahMotherName").value = ""
+            document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
+            document.querySelector("#weddingDate").value = ""
+            document.querySelector("#personalShopper").value = "Personal Shopper?"
+            document.querySelector("#DCPG").value = ""
+        }
+
+
+        //close modal
+        document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
+            document.getElementsByClassName("popupModal")
+            [0].classList.remove("active")
+            location.reload()
+        })
+
+
+
+        //delete couple from database
+        const deleteCouple = document.querySelectorAll(".deleteCouple")
+        // const databaseCouples = document.querySelectorAll(".databaseCouple")
+
+        Array.from(deleteCouple).forEach((el) => {
+            el.addEventListener("click", deleteEntry)
+        })
+
+
+        async function deleteEntry() {
+            const coupleId = this.getAttribute('data-id')
+            console.log(coupleId)
+            try {
+                const response = await fetch('admin/deleteEntry', {
+                    method: 'delete',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: coupleId
+                    })
+                })
+                const data = await response.json()
+                console.log(data)
+                location.reload()
+            } catch (err) {
+                console.log(err)
+            }
+        }
+
+
+
+
+// function openCoupleInfo() {
+//     const coupleId = this.getAttribute('data-id')
+//     fetchCoupleInfo(coupleId)
+// }
+
+// async function fetchCoupleInfo(coupleId) {
+//     const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
+//         method: 'get',
+//     })
+//     if (response.status === 404) {
+//         console.error("Couple not found")
+//         // handle the 404 error here
+//     } else if (response.status !== 200) {
+//         console.error("Server error")
+//         // handle other errors here
+//     } else {
+//         const data = await response.json()
+//         console.log(data)
+//         fillInCoupleInfo(data)
+//     }
+// }
+
+// function fillInCoupleInfo(data) {
+//     // Get the modal elements
+//     const modalContent = coupleInfoModal.querySelector(".modal-content")
+//     const table = modalContent.querySelector(".table")
+//     const closeBtn = modalContent.querySelector(".close")
+
+//     // Fill in the data
+//     table.innerHTML = `
+//         <p>chossonName: ${data.chossonName}</p>
+//         <p>kallahName: ${data.kallahName}</p>
+//         <!-- Add more fields here as needed -->
+//     `
+
+//     // Display the modal
+//     coupleInfoModal.style.display = "block"
+
+//     // Add event listener for the close button
+//     closeBtn.addEventListener("click", () => {
+//         coupleInfoModal.style.display = "none"
+//     })
+// }
+
+        
+</script>
+
+  
+  <style>
+    /* Modal styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal content styles */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Close button styles */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+  </style>
+
+
+<!-- <script src="../assets/js/menu.js"></script> -->
+<!-- <script src="../assets/js/imagePopup.js"></script> -->
+<script src="../assets/js/adminFormSlide.js"></script>
+<script src="../assets/js/searchBar.js"></script>
+
+
+</body>
+
+</html>
