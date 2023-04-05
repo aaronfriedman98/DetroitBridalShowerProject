@@ -63,7 +63,7 @@ const couplesListSchema = new mongoose.Schema({
     weddingDate : {
         type: String,
     },
-    personalShoppers : {
+    personalShopper : {
         type: String,
     },
     announcement: {

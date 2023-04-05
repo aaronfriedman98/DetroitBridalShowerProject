@@ -719,15 +719,35 @@ Array.from(coupleInfo).forEach((el) => {
     });
 
     const data = await response.json();
-    console.log(data);
+    console.log(data.fatherName);
     nameFill.innerHTML = data.name;
     phoneNumberFill.innerHTML = data.phoneNumber;
     emailFill.innerHTML = data.email;
     addressFill.innerHTML = data.address;
-    chossonFatherFill.innerHTML = data.chossonFatherName;
-    chossonMotherFill.innerHTML = data.chossonMotherName;
-    kallahFatherFill.innerHTML = data.kallahFatherName;
-    kallahMotherFill.innerHTML = data.kallahMotherName;
+    if(data.chossonFatherName === 'Title ') {
+        chossonFatherFill.innerHTML = '-'
+    }
+    else {
+        chossonFatherFill.innerHTML = data.chossonFatherName;
+    }
+    if(data.chossonMotherName === 'Title ') {
+        chossonMotherFill.innerHTML = '-'
+    }
+    else {
+        chossonMotherFill.innerHTML = data.chossonMotherName;
+    }
+    if(data.kallahFatherName === 'Title ') {
+        kallahFatherFill.innerHTML = '-'
+    }
+    else {
+        kallahFatherFill.innerHTML = data.kallahFatherName;
+    }
+    if(data.kallahMotherName === 'Title ') {
+        kallahMotherFill.innerHTML = '-'
+    }
+    else {
+        kallahMotherFill.innerHTML = data.kallahMotherName;
+    }
     chossonHometownFill.innerHTML = data.chossonOrigin;
     kallahHometownFill.innerHTML = data.kallahOrigin;
     weddingDateFill.innerHTML = data.weddingDate;
