@@ -166,7 +166,135 @@
          
             <div class="table">
                 <%- include('coupleTable'); -%>
-            </div>                
+            </div>       
+            
+             <!-- couple info modal -->
+<div id="InfoModal" class="infoModal">
+    <div class="info-modal-content">
+      <p>
+        <ul>
+            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
+            <!-- <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br> -->
+        </ul>
+      </p>
+    </div>
+  </div>
+
+  <style>
+    .infoModal {
+  display: none;
+  position: absolute;
+  top: 0;
+  width: fit-content;
+  height: fit-content;
+  background-color: rgba(255, 255, 255, 0.901);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.activeInfoModal {
+  display: block;
+}
+
+  </style>
+
+<script>
+
+
+    //couple info modal
+const chossonFatherFill = document.querySelector(".chossonFatherFill")
+const chossonMotherFill = document.querySelector(".chossonMotherFill")
+const kallahFatherFill = document.querySelector(".kallahFatherFill")
+const kallahMotherFill = document.querySelector(".kallahMotherFill")
+// const weddingDateFill = document.querySelector(".weddingDateFill")
+
+
+const coupleInfo = document.querySelectorAll(".coupleInfo");
+const infoModal = document.querySelector(".infoModal");
+
+let infoId = null;
+let isHovering = false;
+
+Array.from(coupleInfo).forEach((el) => {
+
+el.addEventListener("mouseover", async function() {
+infoId = this.getAttribute('data-id');
+
+const response = await fetch('admin/fillInfoModal', {
+  method: 'post',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    id: infoId
+  })
+});
+
+const data = await response.json();
+console.log(data.fatherName);
+if(data.chossonFatherName === 'Title ') {
+    chossonFatherFill.innerHTML = '-'
+}
+else {
+    chossonFatherFill.innerHTML = data.chossonFatherName;
+}
+if(data.chossonMotherName === 'Title ') {
+    chossonMotherFill.innerHTML = '-'
+}
+else {
+    chossonMotherFill.innerHTML = data.chossonMotherName;
+}
+if(data.kallahFatherName === 'Title ') {
+    kallahFatherFill.innerHTML = '-'
+}
+else {
+    kallahFatherFill.innerHTML = data.kallahFatherName;
+}
+if(data.kallahMotherName === 'Title ') {
+    kallahMotherFill.innerHTML = '-'
+}
+else {
+    kallahMotherFill.innerHTML = data.kallahMotherName;
+}
+// weddingDateFill.innerHTML = data.weddingDate;
+
+
+isHovering = true;
+
+// add a mousemove event listener to the parent element
+// to update the position of the modal while the mouse is
+// hovering over the element
+el.parentNode.addEventListener("mousemove", function(event) {
+  if (isHovering) {
+    const rect = el.getBoundingClientRect();
+    infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 50}px`;
+    infoModal.style.left = `${event.clientX - infoModal.offsetWidth/1.5}px`;
+
+    if (!infoModal.classList.contains("activeInfoModal")) {
+      infoModal.classList.add("activeInfoModal");
+    }
+  }
+});
+});
+
+el.addEventListener("mouseleave", function() {
+isHovering = false;
+infoModal.classList.remove("activeInfoModal");
+infoId = null;
+});
+});
+
+
+Array.from(coupleInfo).forEach((el) => {
+el.addEventListener("mouseout", function() {
+infoModal.classList.remove("activeInfoModal")
+})
+})
+
+
+</script>
+
 
         
 
