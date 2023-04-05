@@ -3,7 +3,7 @@ const router = express.Router()
 const adminController = require('../controllers/admin')
 
 router.get('/', adminController.getAdminPage)
-router.get('/search', adminController.searchCouples)
+router.get('/searchCouples', adminController.searchCouples)
 router.post('/addEntry', adminController.addEntry)
 router.delete('/deleteEntry', adminController.deleteEntry)
 router.post('/fillInfoModal', adminController.fillInfoModal)

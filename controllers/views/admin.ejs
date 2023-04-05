@@ -236,7 +236,7 @@
                     </span>
                 </button>
             </div>
-            <form action="/announcements/search" method="GET" class="search-bar">
+            <form action="/announcements/searchCouples" method="GET" class="search-bar">
                 <input type="text" placeholder="search" name="query" id="searchBar" pattern="[a-zA-Z]+">
                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
@@ -806,7 +806,7 @@ Array.from(coupleInfo).forEach((el) => {
 
     searchB.addEventListener('input', (event) => {
         const query = '^'+event.target.value
-        const url = `/announcements/search?query=${query}`
+        const url = `/admin/searchCouples?query=${query}`
         const xhr = new XMLHttpRequest()
         xhr.open('GET', url)
         xhr.onload = () => {
