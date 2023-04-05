@@ -52,7 +52,9 @@ module.exports = {
                 name: req.body.name,
                 email: req.body.email,
                 phoneNumber: req.body.phoneNumber,
-                address: req.body.address
+                address: req.body.address,
+                weddingDate: req.body.weddingDate,
+                personalShopper: req.body.personalShopper
             }
             )
             await newCouple.save()
@@ -62,7 +64,7 @@ module.exports = {
           return res.json({
             status : true,
             title : 'Success!',
-            message: 'Couple information submitted successfully. Please refresh the page in order to update the database'
+            message: 'Couple information submitted successfully.'
           })
         } catch (err) {
             console.error(err)
@@ -91,7 +93,20 @@ module.exports = {
                 //     return res.status(404).json({ error: "Couple not found" })
                 // }
                 // res.render(__dirname + '/views/admin.ejs', { couple })
-                res.json(couple)
+                res.json({
+                    name: couple.name,
+                    phoneNumber: couple.phoneNumber,
+                    email: couple.email,
+                    address: couple.address,
+                    chossonFatherName: couple.chossonFatherTitle + ' ' + couple.chossonFather,
+                    chossonMotherName: couple.chossonMotherTitle + ' ' + couple.chossonMother,
+                    kallahFatherName: couple.kallahFatherTitle + ' ' + couple.kallahFather,
+                    kallahMotherName: couple.kallahMotherTitle + ' ' + couple.kallahMother,
+                    chossonOrigin: couple.chossonOrigin,
+                    kallahOrigin: couple.kallahOrigin,
+                    weddingDate: couple.weddingDate,
+                    personalShopper: couple.personalShopper
+                })
             } catch (err) {
                 console.error(err)
                 return res.status(500).json({ error: "Internal server error" })

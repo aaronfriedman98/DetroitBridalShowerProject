@@ -1280,6 +1280,8 @@ body {font-family: 'Muli', sans-serif;}
               email: req.body.email,
               phoneNumber: req.body.phoneNumber,
               address: req.body.address,
+              weddingDate: req.body.weddingDate,
+              personalShopper: req.body.personalShopper,
               confNumber : confNum
           }
       )

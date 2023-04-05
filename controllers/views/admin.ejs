@@ -471,17 +471,17 @@
     <div class="info-modal-content">
       <p>
         <ul>
-            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li>
-            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phonenumberFill"></div></li>
-            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li>
-            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li>
-            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li>
-            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li>
-            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li>
-            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li>
-            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li>
-            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li>
-            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li>
+            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li><br>
+            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li><br>
+            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li><br>
+            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li><br>
+            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br>
             <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
         </ul>
       </p>
@@ -670,7 +670,7 @@
   top: 0;
   width: fit-content;
   height: fit-content;
-  background-color: rgba(255, 255, 255, 0.853);
+  background-color: rgba(255, 255, 255, 0.901);
   padding: 20px;
   border-radius: 10px;
 }
@@ -682,8 +682,24 @@
 
 </style>
 <script>
-            //couple info modal
-            const coupleInfo = document.querySelectorAll(".coupleInfo");
+
+
+        //couple info modal
+const nameFill = document.querySelector(".nameFill")
+const phoneNumberFill = document.querySelector(".phoneNumberFill")
+const emailFill = document.querySelector(".emailFill")
+const addressFill = document.querySelector(".addressFill")
+const chossonFatherFill = document.querySelector(".chossonFatherFill")
+const chossonMotherFill = document.querySelector(".chossonMotherFill")
+const kallahFatherFill = document.querySelector(".kallahFatherFill")
+const kallahMotherFill = document.querySelector(".kallahMotherFill")
+const chossonHometownFill = document.querySelector(".chossonHometownFill")
+const kallahHometownFill = document.querySelector(".kallahHometownFill")
+const weddingDateFill = document.querySelector(".weddingDateFill")
+const personalShopperFill = document.querySelector(".personalShopperFill")
+
+
+const coupleInfo = document.querySelectorAll(".coupleInfo");
 const infoModal = document.querySelector(".infoModal");
 
 let infoId = null;
@@ -704,6 +720,19 @@ Array.from(coupleInfo).forEach((el) => {
 
     const data = await response.json();
     console.log(data);
+    nameFill.innerHTML = data.name;
+    phoneNumberFill.innerHTML = data.phoneNumber;
+    emailFill.innerHTML = data.email;
+    addressFill.innerHTML = data.address;
+    chossonFatherFill.innerHTML = data.chossonFatherName;
+    chossonMotherFill.innerHTML = data.chossonMotherName;
+    kallahFatherFill.innerHTML = data.kallahFatherName;
+    kallahMotherFill.innerHTML = data.kallahMotherName;
+    chossonHometownFill.innerHTML = data.chossonOrigin;
+    kallahHometownFill.innerHTML = data.kallahOrigin;
+    weddingDateFill.innerHTML = data.weddingDate;
+    personalShopperFill.innerHTML = data.personalShopper;
+
 
     isHovering = true;
 
@@ -713,7 +742,7 @@ Array.from(coupleInfo).forEach((el) => {
     el.parentNode.addEventListener("mousemove", function(event) {
       if (isHovering) {
         const rect = el.getBoundingClientRect();
-        infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 10}px`;
+        infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight + 20}px`;
         infoModal.style.left = `${event.clientX - infoModal.offsetWidth/2}px`;
 
         if (!infoModal.classList.contains("activeInfoModal")) {
@@ -736,17 +765,6 @@ Array.from(coupleInfo).forEach((el) => {
     infoModal.classList.remove("activeInfoModal")
   })
 })
-
-const nameFill = document.querySelector(".nameFill")
-const phonenumberFill = document.querySelector(".phonenumberFill")
-const emailFill = document.querySelector(".emailFill")
-const addressFill = document.querySelector(".addressFill")
-const chossonFatherFill = document.querySelector(".chossonFatherFill")
-const chossonMotherFill = document.querySelector(".chossonMotherFill")
-const kallahFatherFill = document.querySelector(".kallahFatherFill")
-const kallahMotherFill = document.querySelector(".kallahMotherFill")
-const chossonHometownFill = document.querySelector(".chossonHometownFill")
-const kallahHometownFill = document.querySelector(".kallahHometownFill")
 
 
 </script>

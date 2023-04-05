@@ -60,6 +60,12 @@ const couplesListSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    weddingDate : {
+        type: String,
+    },
+    personalShoppers : {
+        type: String,
+    },
     announcement: {
         type: Boolean,
         default: false
