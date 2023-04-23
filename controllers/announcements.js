@@ -4,6 +4,7 @@ module.exports = {
     getAnnouncementsPage : async (req, res) => {
         try {
             const couples = await Couples.find()
+            console.log(couples[0].image)
             res.render(__dirname + '/views/announcements.ejs', {coupleInfo : couples})
         } catch (err) {
             return res.status(500).send(err)

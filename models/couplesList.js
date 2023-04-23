@@ -76,7 +76,16 @@ const couplesListSchema = new mongoose.Schema({
     },
     confNumber: {
         type: Number,
+    },
+    image: {
+        type: Buffer,
+        contentType: String
+    },
+    imageString : {
+        type: String,
+        required: false
     }
+
     // address: {
     //     type: String,
     //     // required: true

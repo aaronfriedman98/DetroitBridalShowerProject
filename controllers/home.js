@@ -67,29 +67,38 @@ sgClient.setApiKey(process.env.API_KEY)
 
           //send newsletter to list function
           async function sendNewsletterToList(req, htmlNewsletter, listID) {
+            console.log("step 1")
             const data = {
               "query": `CONTAINS(list_ids, '${listID}')`
             }
+            console.log("step 2: " + data)
             const request = {
               url: `/v3/marketing/contacts/search`,
               method: 'POST',
               body: data
           }
+          console.log("step 3: " + request.toString())
           const response = await sgClient.request(request)
+          console.log("step 4: " + response.toString())
           for (const subscriber of response[1].result) {
             const params = new URLSearchParams({
               conf_num: subscriber.custom_fields.conf_num,
               email: subscriber.email
             })
+            console.log("step 5: " + params.toString())
             const unsubscribeURL = req.protocol + '://' + req.get('host') + '/delete/?' + params
+            console.log("step 6: " + unsubscribeURL)
             const msg = {
               to: subscriber.email, // Change to your recipient
-              from: "SENDER_EMAIL", // Change to your verified sender
-              subject: req.body.subject,
+              from: "aronfriedman98@gmail.com", // Change to your verified sender
+              subject: 'newsletter',
               html: htmlNewsletter + `<a href="${unsubscribeURL}">Unsubscribe</a>`
             }
-            sgMail.send(msg)
+            console.log("step 7: " + msg.toString())
+            var result=await sgMail.send(msg)
+            console.log("sent: "+result.toString())
           }
+          console.log("finished sending")
         }
 
         //get List ID function
@@ -844,25 +853,74 @@ module.exports = {
       const confNum = Math.floor(Math.random() * 90000) + 10000
       
         // res.redirect("/")
+
+        function toUpper(str) {
+          return str
+              .toLowerCase()
+              .split(' ')
+              .map(function(word) {
+                  return word[0].toUpperCase() + word.substr(1);
+              })
+              .join(' ');
+           }
         
         // send confirmation email with sendgrid
+        //capitalize the first letter of the user inputs
+        let name = toUpper(req.body.name)
+        let chossonName = toUpper(req.body.chossonName)
+        let kallahName = toUpper(req.body.kallahName)
+        let chossonFatherTitle = ""
+        let chossonMotherTitle = ""
+        let kallahFatherTitle = ""
+        let kallahMotherTitle = ""
+        let chossonFatherName = ""
+        let chossonMotherName = ""
+        let kallahFatherName = ""
+        let kallahMotherName = ""
+
+        console.log(name)
+
+        if(req.body.chossonFatherTitle !== "Title") {
+          chossonFatherTitle = req.body.chossonFatherTitle
+        }
+        if(req.body.chossonMotherTitle !== "Title") {
+          chossonMotherTitle = req.body.chossonMotherTitle
+        }
+        if(req.body.kallahFatherTitle !== "Title") {
+          kallahFatherTitle = req.body.kallahFatherTitle
+        }
+        if(req.body.kallahMotherTitle !== "Title") {
+          kallahMotherTitle = req.body.kallahMotherTitle
+        }
+        if(req.body.chossonFatherName !== "") {
+          chossonFatherName = toUpper(req.body.chossonFatherName)
+        }
+        if(req.body.chossonMotherName !== "") {
+          chossonMotherName = toUpper(req.body.chossonMotherName)
+        }
+        if(req.body.kallahFatherName !== "") {
+          kallahFatherName = toUpper(req.body.kallahFatherName)
+        }
+        if(req.body.kallahMotherName !== "") {
+          kallahMotherName = toUpper(req.body.kallahMotherName)
+        }
         
         const params = new URLSearchParams({
-          name: req.body.name,
+          name: name,
           email: req.body.email,
           phoneNumber: req.body.phoneNumber,
           address: req.body.address,
-          chossonName: req.body.chossonName,
-          chossonFatherTitle: req.body.chossonFatherTitle,
-          chossonFatherName: req.body.chossonFatherName,
-          chossonMotherTitle: req.body.chossonMotherTitle,
-          chossonMotherName: req.body.chossonMotherName,
+          chossonName: chossonName,
+          chossonFatherTitle: chossonFatherTitle,
+          chossonFatherName: chossonFatherName,
+          chossonMotherTitle: chossonMotherTitle,
+          chossonMotherName: chossonMotherName,
           chossonOrigin: req.body.chossonOrigin,
-          kallahName: req.body.kallahName,
-          kallahFatherTitle: req.body.kallahFatherTitle,
-          kallahFatherName: req.body.kallahFatherName,
-          kallahMotherTitle: req.body.kallahMotherTitle,
-          kallahMotherName: req.body.kallahMotherName,
+          kallahName: kallahName,
+          kallahFatherTitle: kallahFatherTitle,
+          kallahFatherName: kallahFatherName,
+          kallahMotherTitle: kallahMotherTitle,
+          kallahMotherName: kallahMotherName,
           kallahOrigin: req.body.kallahOrigin,
           weddingDate: req.body.weddingDate,
           personalShopper: req.body.personalShopper,
@@ -1082,22 +1140,22 @@ body {font-family: 'Muli', sans-serif;}
   </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
     <tbody>
       <tr>
-        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 33px; line-height: 50px; margin-bottom:50px; display:inline-block;">${req.body.name}, thank you for your submission.</span></div><div></div></div></td>
+        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 33px; line-height: 50px; margin-bottom:50px; display:inline-block;">${name}, thank you for your submission.</span></div><div></div></div></td>
       </tr>
     </tbody>
   </table><p style="margin: 20px auto; text-align: center">Please confirm that all the information is correct.</p><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
     <tbody style="display: flex; flex-direction: column;">
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:10px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff; width: 100%;" >${req.body.chossonName}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff; width: 100%;" >${chossonName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Father:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonFatherTitle} ${req.body.chossonFatherName}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonFatherTitle} ${chossonFatherName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Mother: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonMotherTitle} ${req.body.chossonMotherName}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonMotherTitle} ${chossonMotherName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Hometown:</b></td>
@@ -1110,15 +1168,15 @@ body {font-family: 'Muli', sans-serif;}
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah: </b></td>
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:in
-        herit; background-color:#ffffff;width: 100%;" >${req.body.kallahName}</td>
+        herit; background-color:#ffffff;width: 100%;" >${kallahName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Father:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahFatherTitle} ${req.body.kallahFatherName}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahFatherTitle} ${kallahFatherName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah's Mother: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahMotherTitle} ${req.body.kallahMotherName}</td>
+        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahMotherTitle} ${kallahMotherName}</td>
       </tr>
       <tr style="border-bottom: solid 1px grey;">
         <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Hometown:</b></td>
@@ -1264,19 +1322,19 @@ body {font-family: 'Muli', sans-serif;}
         //save to database
         const newCouple = new Couples(
           {
-              chossonName: req.body.chossonName,
-              chossonFatherTitle: req.body.chossonFatherTitle,
-              chossonFather: req.body.chossonFatherName,
-              chossonMotherTitle: req.body.chossonMotherTitle,
-              chossonMother: req.body.chossonMotherName,
+              chossonName: chossonName,
+              chossonFatherTitle: chossonFatherTitle,
+              chossonFather: chossonFatherName,
+              chossonMotherTitle: chossonMotherTitle,
+              chossonMother: chossonMotherName,
               chossonOrigin: req.body.chossonOrigin,
-              kallahName: req.body.kallahName,
-              kallahFatherTitle: req.body.kallahFatherTitle,
-              kallahFather: req.body.kallahFatherName,
-              kallahMotherTitle: req.body.kallahMotherTitle,
-              kallahMother: req.body.kallahMotherName,
+              kallahName: kallahName,
+              kallahFatherTitle: kallahFatherTitle,
+              kallahFather: kallahFatherName,
+              kallahMotherTitle: kallahMotherTitle,
+              kallahMother: kallahMotherName,
               kallahOrigin: req.body.kallahOrigin,
-              name: req.body.name,
+              name: name,
               email: req.body.email,
               phoneNumber: req.body.phoneNumber,
               address: req.body.address,
@@ -1304,10 +1362,10 @@ body {font-family: 'Muli', sans-serif;}
         let chossonFatherFNameNew = req.body.chossonFatherName.split(" ").slice(0, -1).join(" ")
         let kallahFatherFNameNew = req.body.kallahFatherName.split(" ").slice(0, -1).join(" ")
 
-        if(req.body.chossonOrigin === '1' && req.body.kallahOrigin === '1') {
+        if(req.body.chossonOrigin === 'detroit' && req.body.kallahOrigin === 'detroit') {
             newCoupleString += `<strong>${req.body.chossonName}</strong> is engaged to <strong>${req.body.kallahName}</strong> <br> son of ${req.body.chossonFatherTitle} & ${req.body.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.body.chossonMotherName} <br> and daughter of ${req.body.kallahFatherTitle} & ${req.body.kallahMotherTitle} ${kallahFatherFNameNew} and ${req.body.kallahMotherName} <br> <br>`
         }
-        else if(req.body.chossonOrigin === '1') {
+        else if(req.body.chossonOrigin === 'detroit') {
             newCoupleString += `<strong>${req.body.chossonName}</strong> is engaged to ${req.body.kallahName} <br> son of ${req.body.chossonFatherTitle} & ${req.body.chossonMotherTitle} ${chossonFatherFNameNew} and ${req.body.chossonMotherName} <br> <br>`
         }
         else {

@@ -55,11 +55,11 @@
             <nav class="headerNav" id="navLinks">
                 <i class="fa fa-times" onclick="hideMenu()"></i>
                 <ul>
-                    <li style="cursor: pointer;" class="verifyLink">Database</li>
+                    <li style="cursor: pointer;" class="verifyLink">Verify Couple</li>
                     <span style="color: #648880">|</span>
                     <li style="cursor: pointer;" class="uploadLink">Upload Announcements</li>
-                    <!-- <span style="color: #648880">|</span> -->
-                    <!-- <li style="cursor: pointer;" class="databaseLink">Database</li> -->
+                    <span style="color: #648880">|</span>
+                    <li style="cursor: pointer;" class="databaseLink">Database</li>
 
                     <!-- <li><a href="/">HOME</a></li>
                     <li><a href="about">ABOUT</a></li>
@@ -198,30 +198,29 @@
                document.querySelector(".uploadLink").addEventListener('click', function() {
                 document.querySelector(".uploadAnnouncements").style.display = "block";
                 document.querySelector(".verifyCouples").style.display = "none";
-                // document.querySelector(".database").style.display = "none";
-                // document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
                 document.querySelector(".verifyTitle").style.display = "none";
                 document.querySelector(".uploadTitle").style.display = "block";
-                document.querySelector(".uploadTitle").style.gray = "gray";
 
                })
                document.querySelector(".verifyLink").addEventListener('click', function() {
                 document.querySelector(".uploadAnnouncements").style.display = "none";
-                // document.querySelector(".database").style.display = "none";
-                // document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
                 document.querySelector(".verifyCouples").style.display = "block";
                 document.querySelector(".verifyTitle").style.display = "block";
                 document.querySelector(".uploadTitle").style.display = "none";
                })
 
-            //    document.querySelector(".databaseLink").addEventListener('click', function() {
-            //     document.querySelector(".uploadAnnouncements").style.display = "none";
-            //     document.querySelector(".verifyCouples").style.display = "none";
-            //     document.querySelector(".database").style.display = "block";
-            //     document.querySelector(".databaseTitle").style.display = "block";
-            //     document.querySelector(".verifyTitle").style.display = "none";
-            //     document.querySelector(".uploadTitle").style.display = "none";
-            //    })
+               document.querySelector(".databaseLink").addEventListener('click', function() {
+                document.querySelector(".uploadAnnouncements").style.display = "none";
+                document.querySelector(".verifyCouples").style.display = "none";
+                document.querySelector(".database").style.display = "block";
+                document.querySelector(".databaseTitle").style.display = "block";
+                document.querySelector(".verifyTitle").style.display = "none";
+                document.querySelector(".uploadTitle").style.display = "none";
+               })
                
             </script>
         
@@ -229,7 +228,8 @@
             
             <h1 style="margin-top: 25px;" class="verifyTitle">Verify Couples</h1>
             <h1 style="margin-top: 25px;" class="uploadTitle">Upload Announcements</h1>
-            <div class="">
+            <div class="databaseTitle">
+                <h1 style="margin-top: 25px;">Database</h1>
                 <button type="button" class="button databaseButton" id="showForm">
                     <span class="button__text">Add Couple</span>
                     <span class="button__icon"><i class="fa-solid  fa-plus"></i>
@@ -244,204 +244,49 @@
             
          
             <div class="table">
-                <%- include('coupleTableAdmin'); -%>
+                <div class="table_body verifyCouples">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Chosson</th>
+                                <th>Kallah</th>
+                                <!-- <th><i class="fa-solid fa-info"></i></th> -->
+                                <th>Info</th>
+                                <th>Status</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% coupleInfo.forEach(couple => { %>
+                            <tr>
+                                <td><%= couple.chossonName %></td>
+                                <td><%= couple.kallahName %></td>
+                                <td>
+                                    <p><i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;" data-id="<%= couple._id %>" class="coupleInfo fa-solid fa-circle-info"></i></p>
+                                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                                </td>
+                                <td>
+                                    <p class="<% if (couple.collecting === false) { %> red <% } else { %> green <% } %>"><% if (couple.collecting === false) { %> unverified <% } else { %> verified <% } %></p>
+                                </td>
+                                <td><button type="button" class="button">
+                                    <span class="button__text"><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
+                                    <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
+                                    </span>
+                                </button></td>
+                
+                
+                                
+                                <!-- <div class="img-container"  id="announcements"></div> -->
+                            </tr>
+                            <% }) %>
+                            
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>         
 
             
-
-
-
-
-
-            <!-- popup form -->
-<form class="formPopup" id="couplesForm">
-    <div id="Form">
-        <h3>Personal Info</h3>
-        <input type="text" name="chossonName" placeholder="Name" id="name"  >
-        <label class="placeholder placeholder01">Enter Name: (on behalf of couple)</label>
-        <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
-        <label class="placeholder placeholder02">Phone Number: (to contact the couple)</label>
-        <input type="text" name="chossonName" placeholder="Email" id="email"  >
-        <label class="placeholder placeholder03">Email: (to contact the couple)</label>
-        <input type="text" name="chossonName" placeholder="Address" id="address"  >
-        <label class="placeholder placeholder04">Address: (on behalf of couple)</label>
-        <div class="btn-box">
-            <button type="button" id="close-btn">Cancel</button>
-            <button type="button" id="Next">Next</button>
-        </div>
-
-    </div>
-    <div id="Form1">
-        <h3>Enter Chosson's Info</h3>
-        <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
-        <label class="placeholder placeholder1">Chosson's Full Name:</label>
-        <div class=combine>
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
-                <option>Title</option>
-                <option value="Mr.">Mr.</option>
-                <option value="Rabbi">Rabbi</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
-            <label class="placeholder placeholder2">Chosson's Father:</label>
-        </div>
-        <div class="combine">
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
-                <option>Title</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Rebbetzin">Rebbetzin</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
-        <label class="placeholder placeholder3">Chosson's Mother:</label>
-        </div>
-        <select class="select" name="chossonOrigin" id="chossonOrigin">
-            <option>Where is the chosson from?</option>
-            <option value="detroit">Detroit</option>
-            <option value="other">Other</option>
-        </select>
-        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back">Back</button>
-            <button type="button" id="Next1">Next</button>
-        </div>
-
-    </div>
-
-    <div id="Form2">
-        <h3>Enter Kallah's Info</h3>
-        <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
-        <label class="placeholder placeholder1">Kallah's Full Name:</label>
-        <div class=combine>
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
-                <option>Title</option>
-                <option value="Mr.">Mr.</option>
-                <option value="Rabbi">Rabbi</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-            <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
-            <label class="placeholder placeholder2">Kallah's Father:</label>
-        </div>
-        <div class="combine">
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
-                <option>Title</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Rebbetzin">Rebbetzin</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-        <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
-        <label class="placeholder placeholder3">Kallah's Mother:</label>
-        </div>
-        <select class="select" name="kallahOrigin" id="kallahOrigin">
-            <option>Where is the kallah from?</option>
-            <option value="detroit">Detroit</option>
-            <option value="other">Other</option>
-        </select>
-        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back1">back</button>
-            <button type="button" id="Next2">Next</button>
-        </div>
-
-    </div>
-
-    <div id="Form3">
-        <h3>Other Info</h3>
-        <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
-        <!-- <label class="placeholder placeholder1">Address:</label>
-        <div class="combine combine2">
-            <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-            <input type="email" placeholder="Email" name="email" id="email"  >
-            <label class="placeholder placeholder4">Email:</label>
-        </div> -->
-        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-        <label class="placeholder placeholder001">WeddingDate:</label>
-
-        <script>
-            const date = document.getElementById('weddingDate')
-            const label = document.querySelector('.placeholder001')
-
-            date.addEventListener('click', function() {
-                label.style.top = '60px'
-                label.style.left = '-10px'
-                label.style.color = '#84aa6d'
-                label.style.transform = 'scale(.8)'
-            })
-        </script>
-
-        <select class="select" name="personalShopper" id="personalShopper">
-            <option>Would they like personal shopper?</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-        <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
-        <label class="placeholder placeholder03">Detroit Chesed Package Gift:</label>
-        <input type="text" placeholder="" name="" id="DCPG"  >
-        <!-- <span class="down-arrow">&blacktriangledown;</span> -->
-
-        <div class="list">
-
-            <span class="close-btn">&times;</span>
-
-            <label for="task1" class="task">
-                 <input type="checkbox" name="toaster" id="task1" value="Toaster">
-                 Toaster
-                 <!-- <span>10 mins</span> -->
-          </label>
-            <label for="task2" class="task">
-                 <input type="checkbox" name="urn" id="task2" value="Urn">
-                 Urn
-                 <!-- <span>20 mins</span> -->
-          </label>
-            <label for="task3" class="task">
-                 <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
-                 Kitchen towels
-                 <!-- <span>30 mins</span> -->
-          </label>
-            <label for="task4" class="task">
-                 <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
-                 Vacuum
-                 <!-- <span>40 mins</span> -->
-          </label>
-          <label for="task5" class="task">
-            <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
-            Cholent pot
-            <!-- <span>40 mins</span> -->
-            </label>
-     
-          </div>
-        <!-- <select class="select">
-            <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
-            <option>Toaster</option>
-            <option>Urn</option>
-            <option>Kitchen towels</option>
-            <option>Vacuum</option>
-            <option>Cholent pot</option>
-        </select> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back2">back</button>
-            <button type="button" onclick="addCouple()">submit</button>
-            <!-- onclick="coupleSubmit()" -->
-        </div>
-
-    </div>
-
-    <div class="step-row">
-        <div id="progress"></div>
-        <div class="step-col"><small>Step 1</small></div>
-        <div class="step-col"><small>Step 2</small></div>
-        <div class="step-col"><small>Step 3</small></div>
-        <div class="step-col"><small>Step 4</small></div>
-    </div>
-
-</form>
 
 
 
@@ -951,298 +796,31 @@ Array.from(coupleInfo).forEach((el) => {
 
         //delete couple from database
         const deleteCouple = document.querySelectorAll(".deleteCouple")
-        //verify couple from database
-        const verifyCouple = document.querySelectorAll(".verifyCouple")
-        //upload announcement
-        const upload = document.querySelectorAll(".upload")
         // const databaseCouples = document.querySelectorAll(".databaseCouple")
-
 
         Array.from(deleteCouple).forEach((el) => {
             el.addEventListener("click", deleteEntry)
         })
-        Array.from(verifyCouple).forEach((el) => {
-            el.addEventListener("click", verifyEntry)
-        })
-        Array.from(upload).forEach((el) => {
-            el.addEventListener("click", uploadAnnouncement)
-        })
 
 
         async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-
-
-function showConfirmationModal(message, buttons) {
-  return new Promise(resolve => {
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.zIndex = '999';
-    modal.style.top = '0';
-    modal.style.right = '0';
-    modal.style.bottom = '0';
-    modal.style.left = '0';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.display = 'flex';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-
-    const innerModal = document.createElement('div');
-    innerModal.style.backgroundColor = '#fff';
-    innerModal.style.padding = '20px';
-    innerModal.style.borderRadius = '5px';
-    innerModal.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.3)';
-
-    const messageElement = document.createElement('p');
-    messageElement.textContent = message;
-    messageElement.style.marginBottom = '20px';
-    messageElement.style.fontSize = '20px';
-
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.style.display = 'flex';
-    buttonsContainer.style.justifyContent = 'flex-end';
-
-    buttons.forEach((button, index) => {
-      const buttonElement = document.createElement('button');
-      buttonElement.textContent = button.text;
-      buttonElement.style.marginRight = index === buttons.length - 1 ? '0' : '10px';
-      buttonElement.style.padding = '10px 20px';
-      buttonElement.style.borderRadius = '5px';
-      buttonElement.style.backgroundColor = button.backgroundColor || '#fff';
-      buttonElement.style.color = button.color || 'black';
-      buttonElement.style.border = button.border || '1px solid #ccc';
-      buttonElement.style.cursor = 'pointer';
-
-      buttonElement.addEventListener('click', () => {
-        resolve(index);
-        document.body.removeChild(modal);
-      });
-
-      buttonsContainer.appendChild(buttonElement);
-    });
-
-    innerModal.appendChild(messageElement);
-    innerModal.appendChild(buttonsContainer);
-
-    modal.appendChild(innerModal);
-
-    document.body.appendChild(modal);
-  });
-}
-
-async function verifyEntry() {
-  const coupleId = this.getAttribute('data-id');
-  try {
-    const response = await fetch('admin/verifyEntry', {
-      method: 'put',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: coupleId })
-    });
-    const data = await response.json();
-    console.log(data);
-
-    if (data === 'verified') {
-      
-    
-    
-    const sendNewsletter = await showConfirmationModal('Would you like to send out a collection email for this newly verified couple?', [
-      { text: 'Yes', backgroundColor: 'green', color: '#fff' },
-      { text: 'No', backgroundColor: 'red', color: '#fff' }
-    ]);
-
-    if (sendNewsletter === 0) {
-      try {
-        const newsletterResponse = await fetch('admin/sendNewsletter', {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: coupleId })
-        });
-        const newsletterData = await newsletterResponse.json();
-        console.log(newsletterData);
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    }
-    
-    location.reload();
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-
-async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-function uploadAnnouncement() {
-    const coupleId = this.getAttribute('data-id')
-    console.log('begin function')
-    openForm(coupleId)
-}
-
-function openForm(coupleId) {
-  // create form element
-  const uploadForm = document.createElement('form')
-  const fileInput = document.createElement('input')
-  console.log(uploadForm)
-  fileInput.type = 'file'
-  uploadForm.appendChild(fileInput)
-
-  // add submit button to form
-  const submitButton = document.createElement('button')
-  submitButton.type = 'submit'
-  submitButton.innerText = 'Submit'
-  uploadForm.appendChild(submitButton)
-
-  // add cancel button to form
-  const cancelButton = document.createElement('button')
-  cancelButton.type = 'button'
-  cancelButton.innerText = 'Cancel'
-  uploadForm.appendChild(cancelButton)
-
-  // add form to modal and display modal
-  const formContainer = document.createElement('div')
-  formContainer.id = 'form-container'
-  formContainer.appendChild(uploadForm)
-  document.body.appendChild(formContainer)
-  formContainer.style.display = 'block'
-
-  // add event listener to cancel button to close modal
-  cancelButton.addEventListener('click', () => {
-    formContainer.style.display = 'none'
-  })
-
-  // add submit event listener to form
-  uploadForm.addEventListener('submit', async (event) => {
-    event.preventDefault()
-
-    // get selected file data
-    const file = fileInput.files[0]
-
-    // make http post request to server
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('coupleId', coupleId)
-    const response = await fetch('/admin/uploadAnnouncement', {
-      method: 'post',
-      body: formData
-    })
-
-    // handle response
-  })
-}
-
-// add styles for #form-container
-const style = document.createElement('style')
-style.innerHTML = `
-  #form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #form-container form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    bottom: 50%;
-    left: 50%;
-    position: fixed;
-  }
-
-  #form-container input[type="file"] {
-    margin-bottom: 10px;
-  }
-
-  #form-container button {
-    margin-right: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  #form-container button[type="submit"] {
-    background-color: #008CBA;
-  }
-
-  #form-container button[type="button"] {
-    background-color: #f44336;
-  }
-`
-document.head.appendChild(style)
-
-        // async function deleteEntry() {
-        //     const coupleId = this.getAttribute('data-id')
-        //     console.log(coupleId)
-        //     try {
-        //         const response = await fetch('admin/deleteEntry', {
-        //             method: 'delete',
-        //             headers: {'Content-Type': 'application/json'},
-        //             body: JSON.stringify({
-        //                 id: coupleId
-        //             })
-        //         })
-        //         const data = await response.json()
-        //         console.log(data)
-        //         location.reload()
-
-        //     } catch (err) {
-        //         console.log(err)
-        //     }
-        // }
+            const coupleId = this.getAttribute('data-id')
+            console.log(coupleId)
+            try {
+                const response = await fetch('admin/deleteEntry', {
+                    method: 'delete',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: coupleId
+                    })
+                })
+                const data = await response.json()
+                console.log(data)
+                location.reload()
+            } catch (err) {
+                console.log(err)
+            }
+        }
 
 
 
@@ -1294,61 +872,6 @@ document.head.appendChild(style)
         
 </script>
 
-<style>
-    /* upload form popup */
-    /* The form container */
-#form-container {
-  display: none;
-  position: fixed;
-  bottom: 50%;
-  right: 50%;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-#form-container input[type=file] {
-  width: 300px;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: none;
-  border-bottom: 2px solid #ccc;
-}
-
-#form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-}
-
-#form-container .cancel {
-  background-color: #f44336;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-}
-
-#form-container .btn:hover {
-  opacity: 1;
-}
-
-#form-container .close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 30px;
-  margin-left: 50px;
-}
-
-</style>
-
   
   <style>
     /* Modal styles */
@@ -1393,7 +916,7 @@ document.head.appendChild(style)
 
 <!-- <script src="../assets/js/menu.js"></script> -->
 <!-- <script src="../assets/js/imagePopup.js"></script> -->
-<script src="../assets/js/adminFormSlide.js"></script>
+<!-- <script src="../assets/js/adminFormSlide.js"></script> -->
 <script src="../assets/js/searchBar.js"></script>
 
 

@@ -8,6 +8,7 @@
                 <th>Info</th>
                 <th>Status</th>
                 <th>Edit</th>
+                <th>Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -22,9 +23,14 @@
                 <td>
                     <p class="<% if (couple.collecting === false) { %> red <% } else { %> green <% } %>"><% if (couple.collecting === false) { %> unverified <% } else { %> verified <% } %></p>
                 </td>
-                <td><button type="button" class="button">
-                    <span class="button__text"><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
+                <td><button type="button" class="button verifyCouple" data-id="<%= couple._id %>">
+                    <span class="button__text" ><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
                     <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
+                    </span>
+                </button></td>
+                <td style="text-align: center; padding-left:20px;"><button type="button" class="button buttonRed">
+                    <span class="button__text deleteCouple" data-id="<%= couple._id %>">Delete</span>
+                    <span class="button__icon"><i class="fa-solid  fa-xmark"></i>
                     </span>
                 </button></td>
 
@@ -63,7 +69,7 @@
                     <p class="green">uploaded</p>
                 </td>
                 <td><button type="button" class="button">
-                    <span class="button__text">upload</span>
+                    <span class="button__text upload" data-id="<%= couple._id %>">upload</span>
                     <span class="button__icon"><i class="fa-solid  fa-plus"></i>
                     </span>
                 </button></td>

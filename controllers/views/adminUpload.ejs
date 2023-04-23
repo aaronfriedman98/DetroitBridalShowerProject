@@ -55,11 +55,11 @@
             <nav class="headerNav" id="navLinks">
                 <i class="fa fa-times" onclick="hideMenu()"></i>
                 <ul>
-                    <li style="cursor: pointer;" class="verifyLink">Database</li>
+                    <li style="cursor: pointer;" class="verifyLink">Verify Couple</li>
                     <span style="color: #648880">|</span>
                     <li style="cursor: pointer;" class="uploadLink">Upload Announcements</li>
-                    <!-- <span style="color: #648880">|</span> -->
-                    <!-- <li style="cursor: pointer;" class="databaseLink">Database</li> -->
+                    <span style="color: #648880">|</span>
+                    <li style="cursor: pointer;" class="databaseLink">Database</li>
 
                     <!-- <li><a href="/">HOME</a></li>
                     <li><a href="about">ABOUT</a></li>
@@ -198,30 +198,29 @@
                document.querySelector(".uploadLink").addEventListener('click', function() {
                 document.querySelector(".uploadAnnouncements").style.display = "block";
                 document.querySelector(".verifyCouples").style.display = "none";
-                // document.querySelector(".database").style.display = "none";
-                // document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
                 document.querySelector(".verifyTitle").style.display = "none";
                 document.querySelector(".uploadTitle").style.display = "block";
-                document.querySelector(".uploadTitle").style.gray = "gray";
 
                })
                document.querySelector(".verifyLink").addEventListener('click', function() {
                 document.querySelector(".uploadAnnouncements").style.display = "none";
-                // document.querySelector(".database").style.display = "none";
-                // document.querySelector(".databaseTitle").style.display = "none";
+                document.querySelector(".database").style.display = "none";
+                document.querySelector(".databaseTitle").style.display = "none";
                 document.querySelector(".verifyCouples").style.display = "block";
                 document.querySelector(".verifyTitle").style.display = "block";
                 document.querySelector(".uploadTitle").style.display = "none";
                })
 
-            //    document.querySelector(".databaseLink").addEventListener('click', function() {
-            //     document.querySelector(".uploadAnnouncements").style.display = "none";
-            //     document.querySelector(".verifyCouples").style.display = "none";
-            //     document.querySelector(".database").style.display = "block";
-            //     document.querySelector(".databaseTitle").style.display = "block";
-            //     document.querySelector(".verifyTitle").style.display = "none";
-            //     document.querySelector(".uploadTitle").style.display = "none";
-            //    })
+               document.querySelector(".databaseLink").addEventListener('click', function() {
+                document.querySelector(".uploadAnnouncements").style.display = "none";
+                document.querySelector(".verifyCouples").style.display = "none";
+                document.querySelector(".database").style.display = "block";
+                document.querySelector(".databaseTitle").style.display = "block";
+                document.querySelector(".verifyTitle").style.display = "none";
+                document.querySelector(".uploadTitle").style.display = "none";
+               })
                
             </script>
         
@@ -229,7 +228,8 @@
             
             <h1 style="margin-top: 25px;" class="verifyTitle">Verify Couples</h1>
             <h1 style="margin-top: 25px;" class="uploadTitle">Upload Announcements</h1>
-            <div class="">
+            <div class="databaseTitle">
+                <h1 style="margin-top: 25px;">Database</h1>
                 <button type="button" class="button databaseButton" id="showForm">
                     <span class="button__text">Add Couple</span>
                     <span class="button__icon"><i class="fa-solid  fa-plus"></i>
@@ -244,7 +244,42 @@
             
          
             <div class="table">
-                <%- include('coupleTableAdmin'); -%>
+                <div class="table_body uploadAnnouncements">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Chosson</th>
+                                <th>Kallah</th>
+                                <!-- <th><i class="fa-solid fa-info"></i></th> -->
+                                <th>Info</th>
+                                <th>Status</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% coupleInfo.forEach(couple => { %> 
+                            <tr>
+                                <td><%= couple.chossonName %></td>
+                                <td><%= couple.kallahName %></td>
+                                <td>
+                                    <p><i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;" data-id="<%= couple._id %>" class="coupleInfo fa-solid fa-circle-info"></i></p>
+                                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                                </td>
+                                <td>
+                                    <p class="green">uploaded</p>
+                                </td>
+                                <td><button type="button" class="button">
+                                    <span class="button__text">upload</span>
+                                    <span class="button__icon"><i class="fa-solid  fa-plus"></i>
+                                    </span>
+                                </button></td>
+                                <!-- <div class="img-container"  id="announcements"></div> -->
+                            </tr>
+                            <% }) %>
+                            
+                        </tbody>
+                    </table>
+                </div>
             </div>         
 
             
@@ -951,298 +986,31 @@ Array.from(coupleInfo).forEach((el) => {
 
         //delete couple from database
         const deleteCouple = document.querySelectorAll(".deleteCouple")
-        //verify couple from database
-        const verifyCouple = document.querySelectorAll(".verifyCouple")
-        //upload announcement
-        const upload = document.querySelectorAll(".upload")
         // const databaseCouples = document.querySelectorAll(".databaseCouple")
-
 
         Array.from(deleteCouple).forEach((el) => {
             el.addEventListener("click", deleteEntry)
         })
-        Array.from(verifyCouple).forEach((el) => {
-            el.addEventListener("click", verifyEntry)
-        })
-        Array.from(upload).forEach((el) => {
-            el.addEventListener("click", uploadAnnouncement)
-        })
 
 
         async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-
-
-function showConfirmationModal(message, buttons) {
-  return new Promise(resolve => {
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.zIndex = '999';
-    modal.style.top = '0';
-    modal.style.right = '0';
-    modal.style.bottom = '0';
-    modal.style.left = '0';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.display = 'flex';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-
-    const innerModal = document.createElement('div');
-    innerModal.style.backgroundColor = '#fff';
-    innerModal.style.padding = '20px';
-    innerModal.style.borderRadius = '5px';
-    innerModal.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.3)';
-
-    const messageElement = document.createElement('p');
-    messageElement.textContent = message;
-    messageElement.style.marginBottom = '20px';
-    messageElement.style.fontSize = '20px';
-
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.style.display = 'flex';
-    buttonsContainer.style.justifyContent = 'flex-end';
-
-    buttons.forEach((button, index) => {
-      const buttonElement = document.createElement('button');
-      buttonElement.textContent = button.text;
-      buttonElement.style.marginRight = index === buttons.length - 1 ? '0' : '10px';
-      buttonElement.style.padding = '10px 20px';
-      buttonElement.style.borderRadius = '5px';
-      buttonElement.style.backgroundColor = button.backgroundColor || '#fff';
-      buttonElement.style.color = button.color || 'black';
-      buttonElement.style.border = button.border || '1px solid #ccc';
-      buttonElement.style.cursor = 'pointer';
-
-      buttonElement.addEventListener('click', () => {
-        resolve(index);
-        document.body.removeChild(modal);
-      });
-
-      buttonsContainer.appendChild(buttonElement);
-    });
-
-    innerModal.appendChild(messageElement);
-    innerModal.appendChild(buttonsContainer);
-
-    modal.appendChild(innerModal);
-
-    document.body.appendChild(modal);
-  });
-}
-
-async function verifyEntry() {
-  const coupleId = this.getAttribute('data-id');
-  try {
-    const response = await fetch('admin/verifyEntry', {
-      method: 'put',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: coupleId })
-    });
-    const data = await response.json();
-    console.log(data);
-
-    if (data === 'verified') {
-      
-    
-    
-    const sendNewsletter = await showConfirmationModal('Would you like to send out a collection email for this newly verified couple?', [
-      { text: 'Yes', backgroundColor: 'green', color: '#fff' },
-      { text: 'No', backgroundColor: 'red', color: '#fff' }
-    ]);
-
-    if (sendNewsletter === 0) {
-      try {
-        const newsletterResponse = await fetch('admin/sendNewsletter', {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: coupleId })
-        });
-        const newsletterData = await newsletterResponse.json();
-        console.log(newsletterData);
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    }
-    
-    location.reload();
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-
-async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-function uploadAnnouncement() {
-    const coupleId = this.getAttribute('data-id')
-    console.log('begin function')
-    openForm(coupleId)
-}
-
-function openForm(coupleId) {
-  // create form element
-  const uploadForm = document.createElement('form')
-  const fileInput = document.createElement('input')
-  console.log(uploadForm)
-  fileInput.type = 'file'
-  uploadForm.appendChild(fileInput)
-
-  // add submit button to form
-  const submitButton = document.createElement('button')
-  submitButton.type = 'submit'
-  submitButton.innerText = 'Submit'
-  uploadForm.appendChild(submitButton)
-
-  // add cancel button to form
-  const cancelButton = document.createElement('button')
-  cancelButton.type = 'button'
-  cancelButton.innerText = 'Cancel'
-  uploadForm.appendChild(cancelButton)
-
-  // add form to modal and display modal
-  const formContainer = document.createElement('div')
-  formContainer.id = 'form-container'
-  formContainer.appendChild(uploadForm)
-  document.body.appendChild(formContainer)
-  formContainer.style.display = 'block'
-
-  // add event listener to cancel button to close modal
-  cancelButton.addEventListener('click', () => {
-    formContainer.style.display = 'none'
-  })
-
-  // add submit event listener to form
-  uploadForm.addEventListener('submit', async (event) => {
-    event.preventDefault()
-
-    // get selected file data
-    const file = fileInput.files[0]
-
-    // make http post request to server
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('coupleId', coupleId)
-    const response = await fetch('/admin/uploadAnnouncement', {
-      method: 'post',
-      body: formData
-    })
-
-    // handle response
-  })
-}
-
-// add styles for #form-container
-const style = document.createElement('style')
-style.innerHTML = `
-  #form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #form-container form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    bottom: 50%;
-    left: 50%;
-    position: fixed;
-  }
-
-  #form-container input[type="file"] {
-    margin-bottom: 10px;
-  }
-
-  #form-container button {
-    margin-right: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  #form-container button[type="submit"] {
-    background-color: #008CBA;
-  }
-
-  #form-container button[type="button"] {
-    background-color: #f44336;
-  }
-`
-document.head.appendChild(style)
-
-        // async function deleteEntry() {
-        //     const coupleId = this.getAttribute('data-id')
-        //     console.log(coupleId)
-        //     try {
-        //         const response = await fetch('admin/deleteEntry', {
-        //             method: 'delete',
-        //             headers: {'Content-Type': 'application/json'},
-        //             body: JSON.stringify({
-        //                 id: coupleId
-        //             })
-        //         })
-        //         const data = await response.json()
-        //         console.log(data)
-        //         location.reload()
-
-        //     } catch (err) {
-        //         console.log(err)
-        //     }
-        // }
+            const coupleId = this.getAttribute('data-id')
+            console.log(coupleId)
+            try {
+                const response = await fetch('admin/deleteEntry', {
+                    method: 'delete',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: coupleId
+                    })
+                })
+                const data = await response.json()
+                console.log(data)
+                location.reload()
+            } catch (err) {
+                console.log(err)
+            }
+        }
 
 
 
@@ -1293,61 +1061,6 @@ document.head.appendChild(style)
 
         
 </script>
-
-<style>
-    /* upload form popup */
-    /* The form container */
-#form-container {
-  display: none;
-  position: fixed;
-  bottom: 50%;
-  right: 50%;
-  border: 3px solid #f1f1f1;
-  z-index: 9;
-}
-
-#form-container input[type=file] {
-  width: 300px;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-  border: none;
-  border-bottom: 2px solid #ccc;
-}
-
-#form-container .btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-}
-
-#form-container .cancel {
-  background-color: #f44336;
-  color: white;
-  padding: 16px 20px;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  margin-bottom:10px;
-}
-
-#form-container .btn:hover {
-  opacity: 1;
-}
-
-#form-container .close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 30px;
-  margin-left: 50px;
-}
-
-</style>
 
   
   <style>

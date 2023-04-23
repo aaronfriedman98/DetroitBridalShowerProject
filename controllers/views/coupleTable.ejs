@@ -10,7 +10,7 @@
             </thead>
             <tbody>
                 <% coupleInfo.forEach(couple => { %> 
-                <tr data-original= "<%= couple.chossonName + ' ' + couple.kallahName%>.png" >
+                    <tr data-original="<%= couple.imageString %>">
                     <td><%= couple.chossonName %></td>
                     <td><%= couple.kallahName %></td>
                     <td>
