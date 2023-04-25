@@ -1,0 +1,88 @@
+<div class="contain" style="background: #eeeeeea7; width: 90%;">
+
+
+            
+
+    <h1>Recent Announcements</h1>
+
+
+    <div class="recents">
+          
+            
+            
+            <%  
+            let i = coupleInfo.length - 1
+            let count = 0
+            <!-- for (let i = 0; i < 3; i++) {  -->
+            while (count < 3 && i>=0) {
+
+    
+        <!-- while (count < 3) { -->
+
+             if (coupleInfo[i]!=null && coupleInfo[i].announcement === true) { %>
+
+
+        <div class="img-container"  id="announcements">
+            <h1 class="mazel">Mazel tov!</h1>
+
+
+          <% if (coupleInfo[i].chossonOrigin === 'detroit' && coupleInfo[i].kallahOrigin === 'detroit') { %>
+                <p>
+                    <span><b><%= coupleInfo[i].chossonName %></b></span>
+                    <br>and<br>
+                    <span><b><%= coupleInfo[i].kallahName %></b></span>
+                </p>
+                
+            <% }
+                else if (coupleInfo[i].chossonOrigin === 'detroit') { %>
+                <p>
+                    <span><b><%= coupleInfo[i].chossonName %></b></span>
+                    <br>and<br>
+                    <span><%= coupleInfo[i].kallahName %></span>
+                </p>                            
+              <%  }
+                else { %>
+                    <p>
+                        <span><b><%= coupleInfo[i].kallahName %></b></span>
+                        <br>and<br>
+                        <span><%= coupleInfo[i].chossonName %></span>
+                    </p>
+               <% } %>
+
+            <!-- <img src="https://tse2.mm.bing.net/th?id=OIP.N3OV4KpjQ5Yun0Ksx9lWCAHaHa&pid=Api&P=0"> -->
+            <!-- <p><span class="kallah"><b>Yehudis Greenbaum</b></span><br>and<br><span class="chosson">Ahron Yosef Blumenfeld</span></p> -->
+            <a data-original="<%= coupleInfo[i].imageString %>" class=" view">View</a>
+        </div>
+
+        <% 
+           
+           count++
+            } %>
+        <% i--
+     } %>
+    
+        <!-- <div class="img-container">
+            <h1 class="mazel">Mazel tov!</h1>
+                <p><span class="kallah"><b>Yael Devorah Goldberg</b></span><br>and<br><span class="chosson">Dovi Kleiman</span></p>
+                <a data-original="bridalshowerpic.png" class=" view">View</a>
+            </div>
+        <div class="img-container">
+            <h1 class="mazel">Mazel tov!</h1>
+                <p><span class="kallah"><b>Rochel Schechter</b></span><br>and<br><span class="chosson">Yechiel Jaskiel</span></p>
+                <a data-original="bridalshowerpic.png" class=" view">View</a>
+            </div> -->
+    </div>
+
+
+    <h1 style="margin-top: 25px;">All couples</h1>
+    <form action="/announcements/search" method="GET" class="search-bar">
+        <input type="text" placeholder="search" name="query" id="searchBar" pattern="[a-zA-Z]+">
+        <!-- onkeyup="sendData(this)" -->
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+
+    
+ 
+    <div class="table">
+        <%- include('coupleTable'); -%>
+    </div>       
