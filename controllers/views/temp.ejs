@@ -86,3 +86,27 @@
     <div class="table">
         <%- include('coupleTable'); -%>
     </div>       
+
+
+
+
+
+    <%
+              let i = coupleInfo.length - 1
+              let count = 0
+              while (count < 2 && i >= 0) {
+                if (coupleInfo[i]!=null && coupleInfo[i].announcement === true) { %>
+               
+                  <li data-original="<%= coupleInfo[i].imageString %>" class="view">
+                    <i class='bx bxs-bell-ring' ></i>
+                    <span class="text">
+                      <h3>Announcement</h3>
+                      <p><%= coupleInfo[i].chossonName %> & <%= coupleInfo[i].kallahName%>'s hostesses have been posted.</p>
+                    </span>
+                    <span style="color:rgba(104, 103, 103, 0.865); position: absolute; bottom: 5px; right: 25px;">Click to view</span>
+                  </li>
+                  <%
+                  count++
+                   } %>
+             <% i--
+            } %>

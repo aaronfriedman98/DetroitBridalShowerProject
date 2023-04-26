@@ -840,6 +840,8 @@ body {
   display: flex;
   align-items: center;
   grid-gap: 24px;
+  cursor: pointer;
+  position: relative;
 }
 #content main .box-info li .bx {
   /* width: 130px; */
@@ -853,11 +855,12 @@ body {
   align-items: center;
   cursor: pointer;
   transition: 200ms ease-in-out;
+  box-shadow: 0 0 5px rgba(184, 180, 247, 0.3);
+
 }
-#content main .box-info li .bx:hover {
-  /* transform: scale(1.2); */
-  margin-bottom: 20px;
-}
+#content main .box-info li:hover .bx {
+    margin-bottom: 20px;
+  }
 #content main .box-info li:nth-child(1) .bx {
   background: var(--light-yellow);
   color: var(--yellow);

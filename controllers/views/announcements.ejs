@@ -192,7 +192,20 @@
               </a> -->
             </div>
             <ul class="box-info">
-              <li>
+
+                
+                <% newAnnouncements.forEach(couple => { %>
+                  <li data-original="<%= couple.imageString %>" class="view">
+                    <i class='bx bxs-bell-ring' ></i>
+                    <span class="text">
+                      <h3>Announcement</h3>
+                      <p><%= couple.chosson %> & <%= couple.kallah %>'s hostesses have been posted.</p>
+                    </span>
+                    <span style="color:rgba(104, 103, 103, 0.865); position: absolute; bottom: 5px; right: 25px;">Click to view</span>
+                  </li>
+                  <% }) %>
+                 
+              <!-- <li>
                 <i class='bx bxs-bell-ring' ></i>
                 <span class="text">
                   <h3>Announcement</h3>
@@ -205,7 +218,7 @@
                   <h3>Announcement</h3>
                   <p>chosson chosson And kallah kallah's hostesses have been posted</p>
                 </span>
-              </li>
+              </li> -->
               <li>
                 <i class='bx bxs-party' ></i>
                 <span class="text">
@@ -245,7 +258,7 @@
                           <td>Hostesses</td>
                         </tr>
                         <% coupleInfo.forEach(couple => { %>
-                          <tr data-original="<%= couple.imageString %>">
+                          <tr data-original="<%= couple.imageString %>" class="displayCouples">
                               <td><%= couple.chossonName %></td>
                               <td><%= couple.kallahName %></td>
                               <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>

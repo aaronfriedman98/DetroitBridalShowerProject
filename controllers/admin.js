@@ -1,4 +1,7 @@
 const Couples = require('../models/couplesList')
+const Announcements = require('../models/newAnnouncements')
+
+
 
 const sgMail = require('@sendgrid/mail')
 const sgClient = require('@sendgrid/client')
@@ -8,6 +11,7 @@ const fs = require('fs');
 const path = require('path');
 
 const sharp = require('sharp');
+const newAnnouncements = require('../models/newAnnouncements');
 
 
 
@@ -613,7 +617,27 @@ console.log('success')
               await couple.save();
               console.log('saved image to db')
               await Couples.updateOne({ _id: coupleId}, { $set: { announcement: true } });
+
+
+
+              const newAnouncement = new Announcements(
+                {
+                  chosson: couple.chossonName,
+                  kallah: couple.kallahName,
+                  imageString: couple.imageString=btoa(imageBuffer),  
+                }
+            )
+                await newAnouncement.save()
+                console.log('saved announcement to db')
+
+                
+                
               
+                const oldestAnnouncement = await Announcements.findOneAndDelete({}, { sort: { _id: 1 } });
+                console.log(`Deleted oldest announcement: ${oldestAnnouncement.value}`);
+                
+              
+
               return res.status(200).json({ message: "Image uploaded successfully" });
             } catch (err) {
               console.error(err);

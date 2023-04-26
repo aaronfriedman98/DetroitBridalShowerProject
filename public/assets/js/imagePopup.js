@@ -64,7 +64,7 @@
 
 
 const modal = document.querySelector('.imgModal');
-const previews = document.querySelectorAll('tbody tr');
+const previews = document.querySelectorAll('.displayCouples');
 const original = document.querySelector('.full-img');
 const previews2 = document.querySelectorAll('.view')
 
@@ -86,11 +86,11 @@ previews2.forEach(preview => {
         modal.classList.add("open");
         original.classList.add("open");
         let originalSrc = preview.getAttribute('data-original');
-        console.log('ImageString='+originalSrc)
+        // console.log('ImageString='+originalSrc)
         //originalSrc=atob(originalSrc)
         //console.log('Converted imageString='+originalSrc)
         original.src = 'data:image/jpg;base64,'+originalSrc;
-        console.log('ImageData='+originalSrc)
+        // console.log('ImageData='+originalSrc)
       });
 })
 
@@ -101,6 +101,13 @@ modal.addEventListener('click', (e) => {
     original.classList.remove("open");
   }
 });
+
+original.addEventListener('click', (e) => {
+    if(e.target.classList.contains("full-img")) {
+      modal.classList.remove("open");
+      original.classList.remove("open");
+    }
+  });
 
 
 // const modal = document.querySelector('.modal');

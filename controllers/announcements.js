@@ -1,11 +1,14 @@
 const Couples = require('../models/couplesList')
+const Announcements = require('../models/newAnnouncements')
+
 
 module.exports = {
     getAnnouncementsPage : async (req, res) => {
         try {
             const couples = await Couples.find()
+            const announcements = await Announcements.find()
             console.log(couples[0].image)
-            res.render(__dirname + '/views/announcements.ejs', {coupleInfo : couples})
+            res.render(__dirname + '/views/announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements})
         } catch (err) {
             return res.status(500).send(err)
         }
