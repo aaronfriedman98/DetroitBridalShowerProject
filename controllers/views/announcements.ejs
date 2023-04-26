@@ -25,6 +25,16 @@
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js" defer></script>
 
+     <!-- <link rel="stylesheet" href="adminTrial1.css"> -->
+          <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+          <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+          <!-- icons for mobile menu -->
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+      
+          <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
+          <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js" defer></script>
+         
+
 
     <!-- Styles -->
     <!-- <link rel="stylesheet" href="assets/css/headerFooter.css"> -->
@@ -37,7 +47,7 @@
 </head>
 <body>
 
-    <div class="modal">
+    <div class="imgModal">
           
         <img src="" class="full-img"/>
     </div>
@@ -84,17 +94,8 @@
 
         <!-- here             -->
 
-        <head>
-          <link rel="stylesheet" href="adminTrial1.css">
-          <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-          <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-          <!-- icons for mobile menu -->
-          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-      
-          <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
-          <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js" defer></script>
-          
-      </head>
+        <%- include('addCoupleForm'); -%>
+
       
       <div class="contain">
       <!-- <section id="sidebar" [ngClass]="status ? 'hide' : ''">
@@ -221,7 +222,7 @@
                   <i class='bx bx-filter' ></i> -->
                   <form action="#" class="searchForm">
                       <div class="form-input">
-                        <input type="search" placeholder="Search...">
+                        <input type="search" placeholder="Search" class="search">
                         <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
                       </div>
                     </form>
@@ -243,156 +244,23 @@
                           <td>Info</td>
                           <td>Hostesses</td>
                         </tr>
-                    <tr>
-                      <td>
-                        <!--  -->
-                        <p>chosson chosson</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">View</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <!--  -->
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status process">Pending</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <!--  -->
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status process">Pending</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status pending">Pending</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <p>chosson chosson Doe</p>
-                      </td>
-                      <td>kallah kallah</td>
-                      <td><i class="bx bx-info-circle"></i> </td>
-                      <td><span class="status completed">Completed</span></td>
-                    </tr>
+                        <% coupleInfo.forEach(couple => { %>
+                          <tr data-original="<%= couple.imageString %>">
+                              <td><%= couple.chossonName %></td>
+                              <td><%= couple.kallahName %></td>
+                              <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
+                              <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
+                            </tr>
+                          <% }) %>
+                    
+                    
                   </tbody>
                 </table>
               </div>
               <div class="todo">
                 <div class="head">
                   <h3>Still collecting for: </h3>
-                  <i class='bx bx-plus' ></i>
+                  <i class='bx bx-plus' id="showForm"></i>
                   <i class='bx bx-dollar' ></i>
                 </div>
                 <ul class="todo-list" data-simplebar>
@@ -404,7 +272,7 @@
                     <p>chosson chosson chosson <br> kallah kallah kallah</p>
                     <i class='bx bx-info-circle' ></i>
                   </li>
-                  <li class="not-completed">
+                  <li class="completed">
                     <p>chosson chosson chosson <br> kallah kallah kallah</p>
                     <i class='bx bx-info-circle' ></i>
                   </li>
@@ -412,11 +280,11 @@
                     <p>chosson chosson chosson <br> kallah kallah kallah</p>
                     <i class='bx bx-info-circle' ></i>
                   </li>
-                  <li class="not-completed">
+                  <li class="completed">
                     <p>chosson chosson chosson <br> kallah kallah kallah</p>
                     <i class='bx bx-info-circle' ></i>
                   </li>
-                  <li class="not-completed">
+                  <li class="completed">
                       <p>chosson chosson chosson <br> kallah kallah kallah</p>
                       <i class='bx bx-info-circle' ></i>
                     </li>
@@ -424,11 +292,7 @@
                       <p>chosson chosson chosson <br> kallah kallah kallah</p>
                       <i class='bx bx-info-circle' ></i>
                     </li>
-                    <li class="not-completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
-                    <li class="not-completed">
+                    <li class="completed">
                       <p>chosson chosson chosson <br> kallah kallah kallah</p>
                       <i class='bx bx-info-circle' ></i>
                     </li>
@@ -436,7 +300,11 @@
                       <p>chosson chosson chosson <br> kallah kallah kallah</p>
                       <i class='bx bx-info-circle' ></i>
                     </li>
-                    <li class="not-completed">
+                    <li class="completed">
+                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
+                      <i class='bx bx-info-circle' ></i>
+                    </li>
+                    <li class="completed">
                       <p>chosson chosson chosson <br> kallah kallah kallah</p>
                       <i class='bx bx-info-circle' ></i>
                     </li>
@@ -460,13 +328,15 @@
         </script>
              <!-- couple info modal -->
 <div id="InfoModal" class="infoModal">
-    <div class="info-modal-content">
+    <div class="info-modal-content" style="font-family: poppins;">
       <p>
         <ul>
-            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Parents: <div style="color: rgba(104, 103, 103, 0.865);" class=chossonParentsFill></div></li><br>
+            <li style="font-weight: 500">Kallah's Parents: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahParentsFill"></div></li><br>
+            <!-- <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
             <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
             <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br> -->
             <!-- <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br> -->
         </ul>
       </p>
@@ -480,9 +350,10 @@
   top: 0;
   width: fit-content;
   height: fit-content;
-  background-color: rgba(255, 255, 255, 0.901);
+  background-color: rgba(244, 241, 241, 0.955);
   padding: 20px;
   border-radius: 10px;
+  border: solid 1px rgba(0, 0, 0, 0.293);
 }
 
 .activeInfoModal {
@@ -495,10 +366,12 @@
 
 
     //couple info modal
-const chossonFatherFill = document.querySelector(".chossonFatherFill")
-const chossonMotherFill = document.querySelector(".chossonMotherFill")
-const kallahFatherFill = document.querySelector(".kallahFatherFill")
-const kallahMotherFill = document.querySelector(".kallahMotherFill")
+    const chossonParentsFill = document.querySelector(".chossonParentsFill")
+    const kallahParentsFill = document.querySelector(".kallahParentsFill")
+let chossonFatherFill = ""
+let chossonMotherFill = ""
+let kallahFatherFill = ""
+let kallahMotherFill = ""
 // const weddingDateFill = document.querySelector(".weddingDateFill")
 
 
@@ -513,7 +386,7 @@ Array.from(coupleInfo).forEach((el) => {
 el.addEventListener("mouseover", async function() {
 infoId = this.getAttribute('data-id');
 
-const response = await fetch('admin/fillInfoModal', {
+const response = await fetch('announcements/fillInfoModal', {
   method: 'post',
   headers: {'Content-Type': 'application/json'},
   body: JSON.stringify({
@@ -522,31 +395,73 @@ const response = await fetch('admin/fillInfoModal', {
 });
 
 const data = await response.json();
-console.log(data.fatherName);
-if(data.chossonFatherName === 'Title ') {
-    chossonFatherFill.innerHTML = '-'
+console.log(data.chossonFatherName);
+console.log(data.chossonMotherName);
+console.log(data.kallahFatherName);
+console.log(data.kallahMotherName);
+// console.log(chossonFatherFill)
+// if(data.chossonFatherName === 'Title ') {
+//     chossonFatherFill = '-'
+// }
+// else {
+//     chossonFatherFill = data.chossonFatherName;
+// }
+// if(data.chossonMotherName === 'Title ') {
+//     chossonMotherFill = '-'
+// }
+// else {
+//     chossonMotherFill = data.chossonMotherName;
+// }
+// if(data.kallahFatherName === 'Title ') {
+//     kallahFatherFill = '-'
+// }
+// else {
+//     kallahFatherFill = data.kallahFatherName;
+// }
+// if(data.kallahMotherName === 'Title ') {
+//     kallahMotherFill = '-'
+// }
+// else {
+//     kallahMotherFill = data.kallahMotherName;
+// }
+
+// if (data.chossonFatherName === '-' && data.chossonMotherName == '-' ) {
+//   chossonParentsFill.innerHTML = "-"
+// }
+// else if(chossonFatherFill == '-' || chossonMotherFill == '-' || chossonFatherFill == '' || chossonMotherFill == '') {
+//   chossonParentsFill.innerHTML = `${chossonFatherFill}${chossonMotherFill}`
+// }
+// else {
+//   chossonParentsFill.innerHTML = `${chossonFatherFill} <br>${chossonMotherFill}`
+// }
+
+// if(kallahFatherFill == '-' && kallahMotherFill == '-') {
+//   kallahParentsFill.innerHTML = "-"
+// }
+// else if(kallahFatherFill == '-' || kallahMotherFill == '-') {
+//   kallahParentsFill.innerHTML = `${kallahFatherFill}${kallahMotherFill}`
+// }
+// else {
+//   kallahParentsFill.innerHTML = `${kallahFatherFill} & <br>${kallahMotherFill}`
+// }
+
+if(data.chossonFatherName !== '-' && data.chossonMotherName !== '-') {
+  chossonParentsFill.innerHTML = `${data.chossonFatherName} & <br>${data.chossonMotherName}`
 }
 else {
-    chossonFatherFill.innerHTML = data.chossonFatherName;
+  chossonParentsFill.innerHTML = `${data.chossonFatherName}<br>${data.chossonMotherName}`
 }
-if(data.chossonMotherName === 'Title ') {
-    chossonMotherFill.innerHTML = '-'
-}
-else {
-    chossonMotherFill.innerHTML = data.chossonMotherName;
-}
-if(data.kallahFatherName === 'Title ') {
-    kallahFatherFill.innerHTML = '-'
+
+if(data.kallahFatherName !== '-' && data.kallahMotherName !== '-') {
+  kallahParentsFill.innerHTML = `${data.kallahFatherName} & <br>${data.kallahMotherName}`
 }
 else {
-    kallahFatherFill.innerHTML = data.kallahFatherName;
+  kallahParentsFill.innerHTML = `${data.kallahFatherName}<br>${data.kallahMotherName}`
 }
-if(data.kallahMotherName === 'Title ') {
-    kallahMotherFill.innerHTML = '-'
-}
-else {
-    kallahMotherFill.innerHTML = data.kallahMotherName;
-}
+
+
+// kallahParentsFill.innerHTML = `${kallahFatherFill} & <br>${kallahMotherFill}`
+
 // weddingDateFill.innerHTML = data.weddingDate;
 
 
@@ -558,8 +473,8 @@ isHovering = true;
 el.parentNode.addEventListener("mousemove", function(event) {
   if (isHovering) {
     const rect = el.getBoundingClientRect();
-    infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 50}px`;
-    infoModal.style.left = `${event.clientX - infoModal.offsetWidth/1.5}px`;
+    infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 25}px`;
+    infoModal.style.left = `${event.clientX - infoModal.offsetWidth/50}px`;
 
     if (!infoModal.classList.contains("activeInfoModal")) {
       infoModal.classList.add("activeInfoModal");
@@ -858,7 +773,7 @@ infoModal.classList.remove("activeInfoModal")
 </div>
 
 
-<script>
+<!-- <script>
     // function sendData(e) {
     //     fetch('announcements/getCouples', {
     //         method: 'POST',
@@ -895,7 +810,190 @@ infoModal.classList.remove("activeInfoModal")
         event.preventDefault();
     }
     });
+</script> -->
+
+<script>
+ //form validaiton for couple submission variables
+const name = document.querySelector("#name")
+const email = document.querySelector("#email")
+const phoneNumber = document.querySelector("#phoneNumber")
+const address = document.querySelector("#address")
+const chossonName = document.querySelector("#chossonName")
+// dont validate these:
+// const chossonFatherTitle = document.querySelector("#chossonFatherTitle")
+// const chossonFather = document.querySelector("#chossonFather")
+// const chossonMotherTitle = document.querySelector("#chossonMotherTitle")
+// const chossonMother = document.querySelector("#chossonMother")
+const chossonOrigin = document.querySelector("#chossonOrigin")
+const kallahName = document.querySelector("#kallahName")
+// dont validate these:
+// const kallahFatherTitle = document.querySelector("#kallahFatherTitle")
+// const kallahFather = document.querySelector("#kallahFather")
+// const kallahMotherTitle = document.querySelector("#kallahMotherTitle")
+// const kallahMother = document.querySelector("#kallahMother")
+const kallahOrigin = document.querySelector("#kallahOrigin")
+const weddingDate = document.querySelector("#weddingDate")
+const personalShoppers = document.querySelector("#personalShoppers")
+const chesedPackage = document.querySelector("#chesedPackage")
+
+console.log('hi')
+
+const Form1 = document.querySelector("#Form1")
+const Form2 = document.querySelector("#Form2")
+const Form3 = document.querySelector("#Form3")
+const Form = document.querySelector("#Form")
+
+const Next1 = document.querySelector("#Next1")
+const Next2 = document.querySelector("#Next2")
+const Back1 = document.querySelector("#Back1")
+const Back2 = document.querySelector("#Back2")
+const Next = document.querySelector("#Next")
+const Back = document.querySelector("#Back")
+
+const progress = document.querySelector("#progress")
+
+Next.onclick = function() {
+    
+    if(name.value == "") {
+        showErrorModal("Please enter your name");
+    }
+    else if(phoneNumber.value == "") {
+        showErrorModal("Please enter your phone number");
+    }
+    else if(email.value == "") {
+        showErrorModal("Please enter your email");
+    }
+    else if(address.value == "") {
+        showErrorModal("Please enter your address");
+    }
+    else if(name.value !== "" && email.value !== "" && phoneNumber.value !== "" && address.value !== "") {
+        Form.style.left = "-450px";
+        Form1.style.left = "40px";
+        progress.style.width = "210px";
+    }
+}
+
+Next1.onclick = function() {
+
+    if(chossonName.value == "") {
+        showErrorModal("Please enter the Chosson's name")
+    }
+    else if(chossonOrigin.value !== "detroit" && chossonOrigin.value !== "other") {
+        showErrorModal("Please enter where the chosson is from")
+    }
+
+    else if(chossonName.value !== "" && chossonOrigin.value !== "") {
+
+    Form1.style.left = "-450px";
+    Form2.style.left = "40px";
+    progress.style.width = "325px";
+    }
+}
+
+Back.onclick = function () {
+    Form.style.left = "40px";
+    Form1.style.left = "450px";
+    progress.style.width = "100px";
+}
+
+Back1.onclick = function() {
+    Form1.style.left = "40px";
+    Form2.style.left = "450px";
+    progress.style.width = "210px";
+}
+
+Next2.onclick = function() {
+
+    if(kallahName.value == "") {
+        showErrorModal("Please enter the Kallah's name")
+    }
+    else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
+        showErrorModal("Please enter where the kallah is from")
+    }
+    else if(kallahName.value !== "" && kallahOrigin.value !== "") {
+
+    Form2.style.left = "-450px";
+    Form3.style.left = "40px";
+    progress.style.width = "450px";
+    }
+}
+
+Back2.onclick = function() {
+    Form2.style.left = "40px";
+    Form3.style.left = "450px";
+    progress.style.width = "325px";
+}
+
+
+document.querySelector('.input-selector').addEventListener('click',()=>{
+document.querySelector('.list').classList.toggle('show')
+})
+document.querySelector('.close-btn').addEventListener('click',()=>{
+    document.querySelector('.list').classList.remove('show')
+    })
+
+
+
+
+document.querySelector("#showForm").addEventListener("click", function() {
+    console.log("clicked")
+    document.querySelector(".formPopup").classList.add("active")
+    document.querySelector(".overlay").classList.add("overlayActive")
+})
+document.querySelector(".overlay").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+})
+document.querySelector("#close-btn").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+})
+
+
+
+
+// Function to display error modal
+function showErrorModal(message) {
+    const errorModal = document.createElement("div");
+    errorModal.classList.add("error-modal");
+  
+    const errorIcon = document.createElement("div");
+    errorIcon.innerHTML = '<i class="fas fa-circle-xmark"></i>';
+    errorIcon.classList.add("error-icon");
+  
+    const errorMessage = document.createElement("div");
+    errorMessage.textContent = message;
+    errorMessage.classList.add("error-description");
+  
+    const dismissButton = document.createElement("button");
+    dismissButton.textContent = "Dismiss";
+    dismissButton.classList.add("dismiss-button");
+    // dismissButton.setAttribute("aria-label", "Dismiss error");
+  
+    errorModal.appendChild(errorIcon);
+    errorModal.appendChild(errorMessage);
+    errorModal.appendChild(dismissButton);
+  
+    document.body.appendChild(errorModal);
+  
+    // Show modal
+    setTimeout(() => {
+      errorModal.classList.add("active");
+    }, 100);
+  
+    // Hide modal
+    dismissButton.addEventListener("click", () => {
+      errorModal.classList.remove("active");
+  
+      setTimeout(() => {
+        document.body.removeChild(errorModal);
+      }, 300);
+    });
+  }
+  
+  
 </script>
+<!-- <script src="..assets/js/formSlide.js"></script> -->
 
 <script src="../assets/js/menu.js"></script>
 <!-- <script src="fade.js"></script> -->

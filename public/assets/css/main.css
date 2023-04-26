@@ -788,14 +788,18 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
 }
 .overlay {
     background: rgb(0,0,0, .4) !important;
-    position: absolute;
     width: 0;
     height: 0;
+    position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
     transition: 300ms;
 }   
 .overlayActive{
-    width: 200vh;
-    height: 200vh;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* .rotate180{

@@ -21,7 +21,7 @@ const weddingDate = document.querySelector("#weddingDate")
 const personalShoppers = document.querySelector("#personalShoppers")
 const chesedPackage = document.querySelector("#chesedPackage")
 
-
+console.log('hi')
 
 const Form1 = document.querySelector("#Form1")
 const Form2 = document.querySelector("#Form2")
@@ -121,6 +121,7 @@ document.querySelector('.close-btn').addEventListener('click',()=>{
 
 
 document.querySelector("#showForm").addEventListener("click", function() {
+    console.log("clicked")
     document.querySelector(".formPopup").classList.add("active")
     document.querySelector(".overlay").classList.add("overlayActive")
 })

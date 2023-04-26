@@ -37,8 +37,17 @@ a, a:visited, a:hover, a:active {
     justify-content: space-between;
     padding-right: 6%;
     padding-left: 15%;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
 }
+
+
+.body {
+    background-image: linear-gradient(to bottom, white 9%, rgba(8,89,104,0.7),rgba(8,89,104,0.7),rgba(8,89,104,0.7), rgba(4,9,30,.7)), url('../images/homepageBackground.jpg') !important;
+    background-size: cover;
+    z-index: 1;
+    position: relative;
+}
+
 
 /*
 *****************
@@ -201,7 +210,7 @@ a, a:visited, a:hover, a:active {
 .dropDownReveal {
     visibility: visible;
     opacity: 1;
-    background: rgba(255, 255, 255, 0.551);
+    background: rgba(255, 255, 255, 0.834);
     z-index: 100000;
 }
 .dropDownReveal {
@@ -434,7 +443,7 @@ a, a:visited, a:hover, a:active {
 
 
 
-.modal{
+.imgModal{
     background: rgba(0,0,0,0.6);
     opacity: 0;
     position: fixed;
@@ -457,7 +466,7 @@ a, a:visited, a:hover, a:active {
 .full-img.open{
     transform: translate(-50%, -50%) scale(1);
 }
-.modal.open{
+.imgModal.open{
     opacity: 1;
     pointer-events: all;
 }
@@ -771,6 +780,8 @@ body {
   margin-left: auto;
   /* border: solid black 4px; */
   padding: 36px 24px;
+  padding-top: 0px;
+  padding-bottom: 17px;
   font-family: var(--poppins);
   max-height: calc(100vh - 56px);
   /* overflow-y: auto; */
@@ -925,6 +936,7 @@ body {
   
   /* padding-top: 0 !important; */
 }
+
 #content main .table-data .todo .todo-list {
   height: 360px;
   padding-bottom: 0;
@@ -1034,7 +1046,7 @@ table {
   border-bottom: 1px solid var(--grey);
 }
 #content main .table-data .order table td {
-  padding: 16px 30px;
+  padding: 16px 38px;
 }
 #content main .table-data .order table tr td:first-child {
   /* display: flex; */
@@ -1063,9 +1075,9 @@ padding-right: 25;
   background: var(--light);
 }
 #content main .table-data .order table tr td .status {
-  font-size: 10px;
+  font-size: 12px;
   padding: 6px 16px;
-  color: var(--light);
+  color: white;
   border-radius: 20px;
   font-weight: 700;
 }
@@ -1098,6 +1110,7 @@ padding-right: 25;
 }
 #content main .table-data .todo .todo-list li .bx {
   cursor: pointer;
+    font-size: 25px;
 }
 #content main .table-data .todo .todo-list li.completed {
   border-left: 10px solid var(--blue);
@@ -1179,7 +1192,10 @@ padding-right: 25;
 
 
 
-
+.search::placeholder {
+    color: var(--dark);
+    opacity: 1; /* Firefox */
+}
 
 
 
@@ -1200,7 +1216,7 @@ padding-right: 25;
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  margin-top: 40px;
+  margin-top: -50px;
   padding-top: -20px;
   /* font-family: poppins; */
 }

@@ -63,7 +63,7 @@
 // })
 
 
-const modal = document.querySelector('.modal');
+const modal = document.querySelector('.imgModal');
 const previews = document.querySelectorAll('tbody tr');
 const original = document.querySelector('.full-img');
 const previews2 = document.querySelectorAll('.view')
@@ -96,7 +96,7 @@ previews2.forEach(preview => {
 
 
 modal.addEventListener('click', (e) => {
-  if(e.target.classList.contains("modal")) {
+  if(e.target.classList.contains("imgModal")) {
     modal.classList.remove("open");
     original.classList.remove("open");
   }

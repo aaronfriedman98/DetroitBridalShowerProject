@@ -1,0 +1,1178 @@
+
+
+<div class="overlay"></div>
+
+
+<form class="formPopup" id="couplesForm">
+    <div id="Form">
+        <h3>Personal Info</h3>
+        <input type="text" name="chossonName" placeholder="Name" id="name"  >
+        <label class="placeholder placeholder01">Enter Your Name:</label>
+        <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
+        <label class="placeholder placeholder02">Phone Number:</label>
+        <input type="text" name="chossonName" placeholder="Email" id="email"  >
+        <label class="placeholder placeholder03">Email: </label>
+        <input type="text" name="chossonName" placeholder="Address" id="address"  >
+        <label class="placeholder placeholder04">Address:</label>
+        <div class="btn-box">
+            <button type="button" id="close-btn">Cancel</button>
+            <button type="button" id="Next">Next</button>
+        </div>
+
+    </div>
+    <div id="Form1">
+        <h3>Enter Chosson's Info</h3>
+        <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
+        <label class="placeholder placeholder1">Chosson's Full Name:</label>
+        <div class=combine>
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
+                <option>Title</option>
+                <option value="Mr.">Mr.</option>
+                <option value="Rabbi">Rabbi</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
+            <label class="placeholder placeholder2">Chosson's Father (Full Name):</label>
+        </div>
+        <div class="combine">
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
+                <option>Title</option>
+                <option value="Mrs.">Mrs.</option>
+                <option value="Rebbetzin">Rebbetzin</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
+        <label class="placeholder placeholder3">Chosson's Mother (Full Name):</label>
+        </div>
+        <select class="select" name="chossonOrigin" id="chossonOrigin">
+            <option>Where is the chosson from?</option>
+            <option value="detroit">Detroit</option>
+            <option value="other">Other</option>
+        </select>
+        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back">Back</button>
+            <button type="button" id="Next1">Next</button>
+        </div>
+
+    </div>
+
+    <div id="Form2">
+        <h3>Enter Kallah's Info</h3>
+        <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
+        <label class="placeholder placeholder1">Kallah's Full Name:</label>
+        <div class=combine>
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
+                <option>Title</option>
+                <option value="Mr.">Mr.</option>
+                <option value="Rabbi">Rabbi</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+            <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
+            <label class="placeholder placeholder2">Kallah's Father (Full Name):</label>
+        </div>
+        <div class="combine">
+            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+            <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
+                <option>Title</option>
+                <option value="Mrs.">Mrs.</option>
+                <option value="Rebbetzin">Rebbetzin</option>
+                <option value="Dr.">Dr.</option>
+            </select>
+        <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
+        <label class="placeholder placeholder3">Kallah's Mother (Full Name):</label>
+        </div>
+        <select class="select" name="kallahOrigin" id="kallahOrigin">
+            <option>Where is the kallah from?</option>
+            <option value="detroit">Detroit</option>
+            <option value="other">Other</option>
+        </select>
+        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back1">back</button>
+            <button type="button" id="Next2">Next</button>
+        </div>
+
+    </div>
+
+    <div id="Form3">
+        <h3>Other Info</h3>
+        <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
+        <!-- <label class="placeholder placeholder1">Address:</label>
+        <div class="combine combine2">
+            <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+            <input type="email" placeholder="Email" name="email" id="email"  >
+            <label class="placeholder placeholder4">Email:</label>
+        </div> -->
+        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+        <label class="placeholder placeholder001">WeddingDate:</label>
+
+        <script>
+            const date = document.getElementById('weddingDate')
+            const label = document.querySelector('.placeholder001')
+
+            date.addEventListener('click', function() {
+                label.style.top = '60px'
+                label.style.left = '-10px'
+                label.style.color = '#84aa6d'
+                label.style.transform = 'scale(.8)'
+            })
+        </script>
+
+        <select class="select" name="personalShopper" id="personalShopper">
+            <option>Would you like a personal shopper?</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
+        <label class="placeholder placeholder03">Detroit Chesed Package Gift: (financial assistance)</label>
+        <input type="text" placeholder="" name="" id="DCPG"  >
+        <!-- <span class="down-arrow">&blacktriangledown;</span> -->
+
+        <div class="list">
+
+            <span class="close-btn">&times;</span>
+
+            <label for="task1" class="task">
+                 <input type="checkbox" name="toaster" id="task1" value="Toaster">
+                 Toaster
+                 <!-- <span>10 mins</span> -->
+          </label>
+            <label for="task2" class="task">
+                 <input type="checkbox" name="urn" id="task2" value="Urn">
+                 Urn
+                 <!-- <span>20 mins</span> -->
+          </label>
+            <label for="task3" class="task">
+                 <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
+                 Kitchen towels
+                 <!-- <span>30 mins</span> -->
+          </label>
+            <label for="task4" class="task">
+                 <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
+                 Vacuum
+                 <!-- <span>40 mins</span> -->
+          </label>
+          <label for="task5" class="task">
+            <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
+            Cholent pot
+            <!-- <span>40 mins</span> -->
+            </label>
+     
+          </div>
+        <!-- <select class="select">
+            <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
+            <option>Toaster</option>
+            <option>Urn</option>
+            <option>Kitchen towels</option>
+            <option>Vacuum</option>
+            <option>Cholent pot</option>
+        </select> -->
+
+        <div class="btn-box">
+            <button type="button" id="Back2">back</button>
+            <button type="button" onclick="addCouple()">submit</button>
+            <!-- onclick="coupleSubmit()" -->
+        </div>
+
+    </div>
+
+    <div class="step-row">
+        <div id="progress"></div>
+        <div class="step-col"><small>Step 1</small></div>
+        <div class="step-col"><small>Step 2</small></div>
+        <div class="step-col"><small>Step 3</small></div>
+        <div class="step-col"><small>Step 4</small></div>
+    </div>
+
+</form>
+
+<style>
+    /*
+==========================
+     Form Popup
+==========================
+*/
+.formPopup {
+    width: 450px;
+    height: 450px;
+    margin: 8% auto;
+    background: white;
+    border-radius: 5px;
+    position: relative;
+    position: fixed;
+    top: 10%;
+    top:-150%;
+    right: 30%;
+    opacity: 0;
+    transform: scale(1.25);
+    z-index: 10000000000000;
+    overflow: hidden;
+    transition: top 0ms ease-in-out 200ms,
+                opacity 200ms ease-in-out 0ms,
+                transform 200ms ease-in-out 0ms;
+}
+.formPopup.active {
+    top: 3%;
+    opacity: 1;
+    transform: scale(1);
+    transition: top 0ms ease-in-out 0ms,
+                opacity 200ms ease-in-out 0ms,
+                transform 200ms ease-in-out 0ms;
+}
+.formPopup h3 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #777;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 22px;
+}
+
+/* .formPopup form {
+    width: 370px;
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    transition: 0.5s;
+} */
+#Form1, #Form2, #Form3, #Form {
+    width: 370px;
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    transition: 0.5s;
+}
+.formPopup #Form1 input, .formPopup #Form2 input, .formPopup #Form3 input, .select, .formPopup #Form input{
+    width: 100%;
+    padding: 10px 5px;
+    margin: 5px 0;
+    border: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.formPopup #Form1 .smallInput, .formPopup #Form2 .smallInput, .formPopup #Form3 .smallInput, .select, .selectTitle, .formPopup #Form .smallInput {
+    width: 77%;
+    padding: 10px 5px;
+    margin: 5px 0;
+    border: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.formPopup #Form1 .smallInput:first-child, .formPopup #Form2 .smallInput:first-child, .formPopup #Form3 .smallInput:first-child, .selectTitle, .formPopup #Form .smallInput:first-child {
+    width: 20%;
+} 
+.formPopup #Form1::placeholder,.formPopup #Form2::placeholder,.formPopup #Form3::placeholder, .formPopup #Form::placeholder {
+    color: #777;
+}
+.formPopup #Form1 .combine,.formPopup #Form2 .combine,.formPopup #Form3 .combine , .formPopup #Form .combine{
+    display: flex;
+    justify-content: space-between;
+}
+.combine2 input{
+    width: 48% !important;
+}
+.select {
+    color: #777;
+    width: 100%;
+}
+.selectTitle {
+    color: #777;
+}
+.btn-box {
+    width: 100%;
+    margin: 30px auto;
+    text-align: center;
+}
+.formPopup button {
+    width: 110px;
+    height: 35px;
+    margin: 0 10px;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    border-radius: 30px;
+    border: 0;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+}
+#Form1 {
+    left: 450px;
+}
+#Form2 {
+    left: 450px;
+}
+#Form3 {
+    left: 450px;
+}
+.step-row {
+    width: 450px;
+    height: 50px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -1px 5px -1px #000;
+    position: absolute;
+    top: 0;
+    z-index: 22222222222222222222222222222222222222222222222222222222222222222222222 !important;
+}
+.step-col {
+   width: 200px;
+   text-align: center;
+   color: #333;
+   position: relative;
+   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+#progress {
+    position: absolute;
+    height: 100%;
+    width: 100px;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    transition: .7s;
+}
+#progress::after {
+    content: '';
+    height: 0;
+    width: 0;
+    border-top: 26px solid transparent;
+    border-bottom: 26px solid transparent;
+    position: absolute;
+    right: -25px;
+    top: 0;
+    border-left: 26px solid #ffad06;
+
+}
+
+.placeholder {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 15px;
+    position: absolute !important;
+    padding: 0px 0px;
+    color: #999;
+    transition: .3s;
+    pointer-events: none;
+    background-color: transparent;
+}
+
+/* input:not(:placeholder-shown) + label {
+    color: #84aa6d !important;
+    transform: scale(.8);
+} */
+
+.placeholder001 {
+    top: 80px;
+    left: 3px;
+}
+/* input:focus + .placeholder001 {
+    top: 60px;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+    
+} */
+
+.placeholder1, .placeholder01 {
+    top: 80px !important;
+    left: 3px;
+}
+input:focus + .placeholder1, input:not(:placeholder-shown) + .placeholder1, input:focus + .placeholder01, input:not(:placeholder-shown) + .placeholder01 {
+    top: 60px !important;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+    
+}
+.placeholder02 {
+    top: 125px;
+    left: 3px;
+}
+
+.placeholder2 {
+    top: 128px !important;
+    left: 88px;
+}
+input:focus + .placeholder02, input:not(:placeholder-shown) + .placeholder02 {
+    top: 105px !important;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+input:focus + .placeholder2, input:not(:placeholder-shown) + .placeholder2 {
+    top: 108px !important;
+    left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder03 {
+    top: 175px;
+    left: 3px;
+}
+input:focus + .placeholder03, input:not(:placeholder-shown) + .placeholder03 {
+    top: 155px !important;
+    left: -7px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder3 {
+    top: 175px !important;
+    left: 88px;
+}
+input:focus + .placeholder3, input:not(:placeholder-shown) + .placeholder3 {
+    top: 154px !important;
+    left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder04 {
+    top: 220px;
+    left: 3px;
+}
+input:focus + .placeholder04, input:not(:placeholder-shown) + .placeholder04 {
+    top: 202px !important;
+    left: -5px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder4 {
+    top: 128px !important;
+    left: 197px;
+}
+input:focus + .placeholder4, input:not(:placeholder-shown) + .placeholder4 {
+    top: 108px !important;
+    left: 189px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder5 {
+    top: 220px !important;
+    left: 3px;
+}
+input:focus + .placeholder5, input:not(:placeholder-shown) + .placeholder5 {
+    top: 202px !important;
+    left: -15px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+input::placeholder {
+    color: transparent;
+}
+
+input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-month-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-day-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-text {
+    color: transparent;
+  }
+
+
+
+.close-btn {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    background: #888;
+    color: #eee;
+    text-align: center;
+    line-height: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    
+}
+
+.select-field,.task,.list{
+    /* width: 100%; */
+    background-color: rgba(238, 237, 237, 0.799);
+    padding: 0.3rem;
+    padding-bottom: 10px;
+    text-align: center;
+    border-radius: 10px;
+}
+.list{
+    box-shadow: 0 30px 60px rgb(0,0,0,0.2);
+    display: none;
+    right:0;
+    transition: .5s;
+}
+.down-arrow{
+    font-size: 1.2rem;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.2s linear;
+}
+.task{
+    display: block;
+    padding-left: 0;
+}
+.task span{
+    float: right;
+    font-size: 0.6rem;
+    padding-top: 6px;
+}
+.task:hover{
+    background-color: aliceblue;
+}
+.show{
+    display: block;
+    top: 5%;
+    right: 5%;
+    position: absolute;
+}
+.overlay {
+    background: rgb(0,0,0, .4) !important;
+    position: fixed;
+    width: 0;
+    height: 0;
+    transition: 300ms;
+}   
+.overlayActive{
+    width: 100%;
+    height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.549); /* Black background with opacity */
+  z-index: 2222222222222222222222; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+
+</style>
+
+<!-- <script src="../assets/js/formSlide.js"></script> -->
+
+
+<script>
+
+    
+    async function addCouple() {
+            const coupleObject = {
+            name : document.querySelector("#name").value,
+            phoneNumber : document.querySelector("#phoneNumber").value,
+            email : document.querySelector("#email").value,
+            address : document.querySelector("#address").value,
+            chossonName : document.querySelector("#chossonName").value,
+            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+            chossonFatherName : document.querySelector("#chossonFatherName").value,
+            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+            chossonMotherName : document.querySelector("#chossonMotherName").value,
+            chossonOrigin : document.querySelector("#chossonOrigin").value,
+            kallahName : document.querySelector("#kallahName").value,
+            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+            kallahFatherName : document.querySelector("#kallahFatherName").value,
+            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+            kallahMotherName : document.querySelector("#kallahMotherName").value,
+            kallahOrigin : document.querySelector("#kallahOrigin").value,
+            weddingDate : document.querySelector("#weddingDate").value,
+            personalShopper : document.querySelector("#personalShopper").value,
+            toaster : document.querySelector("#task1").checked,
+            urn : document.querySelector("#task2").checked,
+            kitchenTowels : document.querySelector("#task3").checked,
+            vacuum : document.querySelector("#task4").checked,
+            cholentPot : document.querySelector("#task5").checked,
+            
+        }
+            const request = new Request('/addEntry', {
+                method: 'POST',
+                body: JSON.stringify(coupleObject),
+                headers: {
+                    'Content-Type' : 'application/json'
+                }
+            })
+            const response = await fetch(request)
+            .then( async (res) => {
+                let data = await res.json()
+
+                if(data.status === true) {
+                    fillInModal(data.title, data.message, true)
+                    document.querySelector(".formPopup").classList.remove("active")
+                    document.querySelector(".overlay").classList.remove("overlayActive")
+                    openModal()
+                    clearModal()
+                }
+                else {
+                    fillInModal(data.title, data.message, false)
+                    openModal()
+
+                }
+            })
+        }
+
+
+
+         //display chesed package choices in input field
+         const toaster = document.querySelector("#task1")
+        const urn = document.querySelector("#task2")
+        const kitchenTowel = document.querySelector("#task3")
+        const vacuum = document.querySelector("#task4")
+        const cholentPot = document.querySelector("#task5")
+        const fillIn = document.querySelector("#DCPG")
+
+        toasterChoice = false
+        urnChoice = false
+        kitchenTowelChoice = false
+        vacuumChoice = false
+        cholentPotChoice = false
+
+        toaster.addEventListener("click", function() {
+            if(toasterChoice === false) {
+                fillIn.value += "Toaster  "
+                toasterChoice = true
+            }
+            else {
+                fillIn.value = fillIn.value.replace("Toaster  ", "")
+                toasterChoice = false
+            }
+        })
+        urn.addEventListener("click", function() {
+            if(urnChoice === false) {
+                fillIn.value += "Urn  "
+                urnChoice = true
+            }
+            else {
+                fillIn.value = fillIn.value.replace("Urn  ", "")
+                urnChoice = false
+            }
+        })
+        kitchenTowel.addEventListener("click", function() {
+            if(kitchenTowelChoice === false) {
+                fillIn.value += "Kitchen Towel  "
+                kitchenTowelChoice = true
+            }
+            else {
+                fillIn.value = fillIn.value.replace("Kitchen Towel  ", "")
+                kitchenTowelChoice = false
+            }
+        })
+        vacuum.addEventListener("click", function() {
+            if(vacuumChoice === false) {
+                fillIn.value += "Vacuum  "
+                vacuumChoice = true
+            }
+            else {
+                fillIn.value = fillIn.value.replace("Vacuum  ", "")
+                vacuumChoice = false
+            }
+        })
+        cholentPot.addEventListener("click", function() {
+            if(cholentPotChoice === false) {
+                fillIn.value += "Cholent Pot  "
+                cholentPotChoice = true
+            }
+            else {
+                fillIn.value = fillIn.value.replace("Cholent Pot  ", "")
+                cholentPotChoice = false
+            }
+        })
+
+       
+        
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- popup modal -->
+<div class="popupModal center successPopup">
+    <div class="iconCheck">
+        <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="title">
+        
+    </div><br>
+    <div class="description">
+        
+    </div><br>
+    <div class="dismissButton dismiss-btn">
+        <button id="dismiss-popup-btn">
+            Dismiss
+        </button>
+    </div>
+ </div>
+
+ <!-- error Popup -->
+ <div class="popupModalFalse center errorPopup">
+    <div class="iconCheckFalse">
+        <i class="fa-solid fa-circle-xmark"></i>
+    </div>
+    <div class="title">
+        Error
+    </div>
+    <div class="description">
+        Your submission was unsuccessful.
+    </div>
+    <div class="dismiss-btnFalse">
+        <button id="dismiss-popup-btnFalse">
+            Dismiss
+        </button>
+    </div>
+ </div>
+
+
+ <!-- missing fields popup modal -->
+ <div class="popupModalFalse center missingFieldsPopup">
+    <div class="iconCheckFalse">
+        <i class="fa-solid fa-circle-xmark"></i>
+    </div>
+    <div class="title">
+        Error
+    </div>
+    <div class="description">
+        You are missing required fields.
+    </div>
+    <div class="dismiss-btnFalse">
+        <button id="dismiss-popup-btnFalse">
+            retry
+        </button>
+    </div>
+ </div>
+
+ <!-- style for popup modal -->
+ <style>
+
+    .center {
+        font-family: "source sans pro";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .popupModal {
+        position: fixed;
+        width: 350px;
+        height: 280px;
+        padding: 30px 20px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        box-sizing: border-box;
+        z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+        text-align: center;
+        opacity: 0;
+        top: -200%;
+        transform: translate(-50%, -50%) scale(0.5);
+        transition: opacity 300ms ease-in-out,
+                    top 1000ms ease-in-out,
+                    transform 1000ms ease-in-out;
+
+    }
+    .popupModal.active {
+        opacity: 1;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19)
+    }
+    .popupModal .iconCheck {
+        margin: 5px 0px;
+        width: 50px;
+        height: 50px;
+        border: 2px solid #34f234;
+        text-align: center;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 60px;
+    }
+    .popupModal .iconCheck i {
+        font-size: 30px;
+    }
+    .popupModal .iconCheck .fa-check {
+        color: #34f234;
+    }
+    .popupModal .title {
+        margin: 5px 0px;
+        font-size: 30px;
+        font-weight: 600;
+    }
+    .popupModal .description {
+        color: #222;
+        font-size: 15px;
+        padding: 5px;
+    }
+    .popupModal .dismiss-btn {
+        margin-top: 15px;
+    }
+    .popupModal .dismiss-btn button {
+        padding: 10px 20px;
+        background: #34f234;
+        color: #f5f5f5;
+        border: 2px solid #34f234;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+    }
+    .popupModal .dismiss-btn button:hover {
+        color:rgb(5, 202, 5);
+        background:rgba(255, 255, 255, 0.804);
+    }
+
+    /* error popup */
+
+    .popupModalFalse {
+        position: fixed;
+        width: 350px;
+        height: 280px;
+        padding: 30px 20px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        box-sizing: border-box;
+        z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+        text-align: center;
+        opacity: 0;
+        top: -200%;
+        transform: translate(-50%, -50%) scale(0.5);
+        transition: opacity 300ms ease-in-out,
+                    top 1000ms ease-in-out,
+                    transform 1000ms ease-in-out;
+
+    }
+    .popupModalFalse.active {
+        opacity: 1;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
+    }
+    .popupModalFalse .iconCheckFalse {
+        margin: 5px 0px;
+        width: 50px;
+        height: 50px;
+        /* border: 2px solid #34f234; */
+        text-align: center;
+        display: inline-block;
+        border-radius: 50%;
+        line-height: 60px;
+    }
+    .popupModal .iconCheckFalse i {
+        font-size: 30px;
+        color: red;
+    }
+    .popupModalFalse .title {
+        margin: 5px 0px;
+        font-size: 30px;
+        font-weight: 600;
+    }
+    .popupModalFalse .description {
+        color: #222;
+        font-size: 15px;
+        padding: 5px;
+    }
+    .popupModalFalse .dismiss-btnFalse {
+        margin-top: 15px;
+    }
+    .popupModal .dismiss-btnFalse button {
+        padding: 10px 20px;
+        background: red;
+        color: #f5f5f5;
+        border: 2px solid red;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 300ms ease-in-out;
+    }
+    .popupModal .dismiss-btnFalse button:hover {
+        color: red;
+        background:rgba(255, 255, 255, 0.804);
+    }
+
+
+
+    /* form validation client side*/
+
+    .error-modal {
+font-family: "source sans pro";
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0.5);
+opacity: 0;
+width: 350px;
+height: 230px;
+padding: 30px 20px;
+background: #f5f5f5;
+border-radius: 10px;
+box-sizing: border-box;
+z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
+text-align: center;
+transition: opacity 300ms ease-in-out,
+          top 1000ms ease-in-out,
+          transform 1000ms ease-in-out;
+border: solid red 1px;
+}
+
+.error-modal.active {
+opacity: 1;
+top: 50%;
+transform: translate(-50%, -50%) scale(1);
+transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
+}
+
+.error-icon {
+margin: 5px 0px;
+width: 50px;
+height: 50px;
+/* border: 2px solid #34f234; */
+text-align: center;
+display: inline-block;
+border-radius: 50%;
+line-height: 60px;
+}
+
+.error-icon i {
+font-size: 30px;
+}
+
+.error-icon .fa-circle-xmark
+{
+color: red;
+}
+
+.error-message {
+margin: 5px 0px;
+font-size: 30px;
+font-weight: 600;
+}
+
+.error-description {
+color: #222;
+font-size: 15px;
+padding: 5px;
+}
+
+.dismiss-button {
+margin-top: 15px;
+}
+
+.dismiss-button {
+padding: 8px 16px;
+background: red;
+color: #f5f5f5;
+border: 2px solid red;
+font-size: 16px;
+font-weight: 600;
+outline: none;
+border-radius: 10px;
+cursor: pointer;
+transition: all 300ms ease-in-out;
+}
+
+.dismiss-button:hover {
+color: red;
+background: #f5f5f5;
+}
+
+
+ </style>
+
+
+
+
+
+
+ <style>
+    /* Style for the overlay */
+.overlayy {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+z-index: 1;
+}
+
+/* Style for the modal */
+.modal {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: rgba(255, 255, 255, 0.804);
+border-radius: 10px;
+padding: 20px;
+z-index: 2;
+width: 500px;
+height: 250px;
+font-family: 'source sans pro';
+font-size: 20px;
+}
+.flexer i {
+color: rgb(5, 202, 5);
+font-size: 50px;
+/* margin-right: 20px; */
+}
+.flexer .fa-circle-xmark {
+color: rgb(0, 5, 71);
+font-size: 25px;
+position: absolute; 
+top: 10px;
+right: 5px;
+}
+
+/* Style for the modal content */
+.modal-content {
+text-align: center;
+}
+
+.flexer {
+display: flex;
+justify-content: space-evenly;
+}
+ </style>
+
+ <script>
+
+    //control modal script
+    function fillInModal(title, message, color) {
+        const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
+        const titleFill = document.querySelector(".title")
+        const messageFill = document.querySelector(".description")
+        titleFill.innerText = title
+        messageFill.innerText = message 
+        if(color === true) {
+            iconFill.style.color = "rgb(5, 202, 5)"
+            iconFill.classList.remove("fa-circle-xmark")
+            iconFill.classList.add("fa-check")
+            document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
+            document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
+            document.querySelector(".dismissButton").classList.add("dismiss-btn")
+        }
+        else {
+            iconFill.style.color = "red"
+            iconFill.classList.remove("fa-check")
+            iconFill.classList.add("fa-circle-xmark")
+            document.querySelector(".iconCheck").style.border = "none"
+            document.querySelector(".dismissButton").classList.remove("dismiss-btn")
+            document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
+        }
+    }
+    function openModal() {
+        document.querySelector(".popupModal").classList.add("active")
+        document.querySelector("#subscribeEmail").value = ""
+    }
+
+    function clearModal() {
+        document.querySelector("#name").value = ""
+        document.querySelector("#email").value = ""
+        document.querySelector("#phoneNumber").value = ""
+        document.querySelector("#address").value = ""
+        document.querySelector("#chossonName").value = ""
+        document.querySelector("#chossonFatherTitle").value = ""
+        document.querySelector("#chossonFatherName").value = ""
+        document.querySelector("#chossonMotherTitle").value = ""
+        document.querySelector("#chossonMotherName").value = ""
+        document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
+        document.querySelector("#kallahName").value = ""
+        document.querySelector("#kallahFatherTitle").value = ""
+        document.querySelector("#kallahFatherName").value = ""
+        document.querySelector("#kallahMotherTitle").value = ""
+        document.querySelector("#kallahMotherName").value = ""
+        document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
+        document.querySelector("#weddingDate").value = ""
+        document.querySelector("#personalShopper").value = "Personal Shopper?"
+        document.querySelector("#DCPG").value = ""
+    }
+
+
+
+
+
+
+
+
+
+    async function addCouple() {
+            const coupleObject = {
+            name : document.querySelector("#name").value,
+            phoneNumber : document.querySelector("#phoneNumber").value,
+            email : document.querySelector("#email").value,
+            address : document.querySelector("#address").value,
+            chossonName : document.querySelector("#chossonName").value,
+            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+            chossonFatherName : document.querySelector("#chossonFatherName").value,
+            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+            chossonMotherName : document.querySelector("#chossonMotherName").value,
+            chossonOrigin : document.querySelector("#chossonOrigin").value,
+            kallahName : document.querySelector("#kallahName").value,
+            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+            kallahFatherName : document.querySelector("#kallahFatherName").value,
+            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+            kallahMotherName : document.querySelector("#kallahMotherName").value,
+            kallahOrigin : document.querySelector("#kallahOrigin").value,
+            weddingDate : document.querySelector("#weddingDate").value,
+            personalShopper : document.querySelector("#personalShopper").value,
+            toaster : document.querySelector("#task1").checked,
+            urn : document.querySelector("#task2").checked,
+            kitchenTowels : document.querySelector("#task3").checked,
+            vacuum : document.querySelector("#task4").checked,
+            cholentPot : document.querySelector("#task5").checked,
+            
+        }
+            const request = new Request('/addEntry', {
+                method: 'POST',
+                body: JSON.stringify(coupleObject),
+                headers: {
+                    'Content-Type' : 'application/json'
+                }
+            })
+            const response = await fetch(request)
+            .then( async (res) => {
+                let data = await res.json()
+
+                if(data.status === true) {
+                    fillInModal(data.title, data.message, true)
+                    document.querySelector(".formPopup").classList.remove("active")
+                    document.querySelector(".overlay").classList.remove("overlayActive")
+                    openModal()
+                    clearModal()
+                }
+                else {
+                    fillInModal(data.title, data.message, false)
+                    openModal()
+
+                }
+            })
+        }
+            
+
+
+        document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
+            document.getElementsByClassName("popupModal")
+            [0].classList.remove("active")
+        })
+        document.getElementById("dismiss-popup-btnFalse").addEventListener("click",function() {
+            document.getElementsByClassName("popupModalFalse")
+            [0].classList.remove("active")
+        })
+        
+
+
+    </script>
+
+
