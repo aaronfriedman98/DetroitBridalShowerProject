@@ -233,9 +233,9 @@
                   <h3>All couples</h3>
                   <!-- <i class='bx bx-search' ></i>
                   <i class='bx bx-filter' ></i> -->
-                  <form action="#" class="searchForm">
+                  <form action="/announcements/search" class="searchForm">
                       <div class="form-input">
-                        <input type="search" placeholder="Search" class="search">
+                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search">
                         <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
                       </div>
                     </form>
@@ -273,58 +273,114 @@
               <div class="todo">
                 <div class="head">
                   <h3>Still collecting for: </h3>
-                  <i class='bx bx-plus' id="showForm"></i>
-                  <i class='bx bx-dollar' ></i>
+                  
+                  <div class="icon-container">
+                    <i class='bx bx-plus' id="showForm"></i>
+                    <i class='bx bx-dollar'></i>
+                    <div class="moneyModal">
+                    <p>Please send payment to Becky Friedman in one of the following ways: <br>
+                      <li><b>PayPal</b> - beckyfriedman1@gmail.com</li>
+                      <li><b>Venmo</b> - @Becky-Friedman-8</li>
+                      <li><b>Zelle</b> - beckyfriedman1@gmail.com</li>
+                      <li><b>Check</b> - Made out to Detroit Bridal Shower Project. <br>
+                        Mailed to 17322 Goldwin Dr, Southfield, MI 48075</li></p>
+                  </div>
+                  </div>
+                  
                 </div>
                 <ul class="todo-list" data-simplebar>
-                  <li class="completed">
-                    <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                    <i class='bx bx-info-circle' ></i>
-                  </li>
-                  <li class="completed">
-                    <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                    <i class='bx bx-info-circle' ></i>
-                  </li>
-                  <li class="completed">
-                    <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                    <i class='bx bx-info-circle' ></i>
-                  </li>
-                  <li class="completed">
-                    <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                    <i class='bx bx-info-circle' ></i>
-                  </li>
-                  <li class="completed">
-                    <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                    <i class='bx bx-info-circle' ></i>
-                  </li>
-                  <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
+                  
+
+                  <% for(let i = 0; i < coupleInfo.length; i++) { %>
+
+                   <% if(coupleInfo[i].collecting === true) { %>
+
                     <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
+                      <p> <%= coupleInfo[i].chossonName %> &<br> <%= coupleInfo[i].kallahName %></p>
+                      <td><i class="bx bx-info-circle coupleInfo" data-id="<%= coupleInfo[i]._id %>"></i> </td>
                     </li>
-                    <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
-                    <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
-                    <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
-                    <li class="completed">
-                      <p>chosson chosson chosson <br> kallah kallah kallah</p>
-                      <i class='bx bx-info-circle' ></i>
-                    </li>
+
+                  <% } 
+                   } %>
+
+                  
                 </ul>
               </div>
             </div>
           </main>
+
+
+          <style>
+
+
+.icon-container {
+  position: relative; /* Change to relative */
+}
+
+.moneyModal {
+  position: absolute;
+  top: calc(100% - 40px); /* Move the modal down slightly */
+  left: calc(50% - 400px); /* Move the modal to the left */
+  width: 400px; /* Set a width for the modal */
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 9999;
+  text-align: center; /* Center the text */
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  display: none;
+}
+
+.moneyModal p {
+  margin: 0;
+}
+
+.moneyModal:before {
+  content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    margin-top: -10px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid #fff;
+}
+  
+.icon-container:hover + .moneyModal {
+  display: block;
+}
+
+          </style>
+
+          <script>
+            const moneyIcon = document.querySelector('.bx-dollar');
+const moneyModal = document.querySelector('.moneyModal');
+
+moneyIcon.addEventListener('mouseenter', () => {
+  moneyModal.style.display = 'block';
+  moneyModal.style.opacity = 0;
+  moneyModal.style.transition = 'opacity 0.3s ease-in-out';
+  setTimeout(() => {
+    moneyModal.style.opacity = 1;
+  }, 10);
+});
+
+moneyIcon.addEventListener('mouseleave', () => {
+  moneyModal.style.opacity = 0;
+  setTimeout(() => {
+    moneyModal.style.display = 'none';
+  }, 300);
+});
+
+
+          </script>
+
           <!-- MAIN -->
         </section>
         </div>
@@ -364,9 +420,16 @@
   width: fit-content;
   height: fit-content;
   background-color: rgba(244, 241, 241, 0.955);
+  background-color: white;
   padding: 20px;
-  border-radius: 10px;
-  border: solid 1px rgba(0, 0, 0, 0.293);
+  border-radius: 5px;
+  /* border: solid 1px rgba(0, 0, 0, 0.293); */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+
+  
 }
 
 .activeInfoModal {
@@ -786,7 +849,7 @@ infoModal.classList.remove("activeInfoModal")
 </div>
 
 
-<!-- <script>
+<script>
     // function sendData(e) {
     //     fetch('announcements/getCouples', {
     //         method: 'POST',
@@ -803,7 +866,7 @@ infoModal.classList.remove("activeInfoModal")
         const xhr = new XMLHttpRequest()
         xhr.open('GET', url)
         xhr.onload = () => {
-            const tbody = document.querySelector('.table')
+            const tbody = document.querySelector('table')
             tbody.innerHTML = xhr.responseText
         }
         xhr.send()
@@ -823,7 +886,7 @@ infoModal.classList.remove("activeInfoModal")
         event.preventDefault();
     }
     });
-</script> -->
+</script>
 
 <script>
  //form validaiton for couple submission variables

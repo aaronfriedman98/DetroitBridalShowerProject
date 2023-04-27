@@ -1,4 +1,4 @@
-    <div class="table_body">
+    <!-- <div class="table_body">
         <table>
             <thead>
                 <tr>
@@ -15,18 +15,28 @@
                     <td><%= couple.kallahName %></td>
                     <td>
                         <p><i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;" data-id="<%= couple._id %>" class="coupleInfo fa-solid fa-circle-info"></i></p>
-                        <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
+                        
                     </td>
                     <td class="center">
                         <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p>
                     </td>
-                    <!-- <div class="img-container"  id="announcements"></div> -->
+                    
                 </tr>
                 <% }) %>
                 
             </tbody>
         </table>
-    </div>
+    </div> -->
 
 
     <!-- ADD INFO ICON IN ORDER TO VIEW PARENTS NAMESs -->
+
+
+    <% coupleInfo.forEach(couple => { %>
+        <tr data-original="<%= couple.imageString %>" class="displayCouples">
+            <td><%= couple.chossonName %></td>
+            <td><%= couple.kallahName %></td>
+            <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
+            <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
+          </tr>
+        <% }) %>
