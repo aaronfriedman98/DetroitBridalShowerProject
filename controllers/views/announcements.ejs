@@ -195,7 +195,7 @@
 
                 
                 <% newAnnouncements.forEach(couple => { %>
-                  <li data-original="<%= couple.imageString %>" class="view">
+                  <li data-original="<%= couple.imageString %>" class="view" style="position: relative;">
                     <i class='bx bxs-bell-ring' ></i>
                     <span class="text">
                       <h3>Announcement</h3>
@@ -275,8 +275,8 @@
                   <h3>Still collecting for: </h3>
                   
                   <div class="icon-container">
-                    <i class='bx bx-plus' id="showForm"></i>
-                    <i class='bx bx-dollar'></i>
+                    <i class='bx bx-plus' id="showForm" style="font-size: 20px;"></i>
+                    <i class='bx bx-dollar' style="font-size: 20px;"></i>
                     <div class="moneyModal">
                     <p>Please send payment to Becky Friedman in one of the following ways: <br>
                       <li><b>PayPal</b> - beckyfriedman1@gmail.com</li>

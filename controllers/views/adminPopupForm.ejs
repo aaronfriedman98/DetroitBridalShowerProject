@@ -1,0 +1,233 @@
+
+            <!-- popup form -->
+            <form class="formPopup" id="couplesForm">
+                <div id="Form">
+                    <h3>Personal Info</h3>
+                    <input type="text" name="chossonName" placeholder="Name" id="name"  >
+                    <label class="placeholder placeholder01">Enter Name: (on behalf of couple)</label>
+                    <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
+                    <label class="placeholder placeholder02">Phone Number: (to contact the couple)</label>
+                    <input type="text" name="chossonName" placeholder="Email" id="email"  >
+                    <label class="placeholder placeholder03">Email: (to contact the couple)</label>
+                    <input type="text" name="chossonName" placeholder="Address" id="address"  >
+                    <label class="placeholder placeholder04">Address: (on behalf of couple)</label>
+                    <div class="btn-box">
+                        <button type="button" id="close-btn">Cancel</button>
+                        <button type="button" id="Next">Next</button>
+                    </div>
+            
+                </div>
+                <div id="Form1">
+                    <h3>Enter Chosson's Info</h3>
+                    <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
+                    <label class="placeholder placeholder1">Chosson's Full Name:</label>
+                    <div class=combine>
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
+                            <option>Title</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Rabbi">Rabbi</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                        <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
+                        <label class="placeholder placeholder2">Chosson's Father:</label>
+                    </div>
+                    <div class="combine">
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
+                            <option>Title</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Rebbetzin">Rebbetzin</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
+                    <label class="placeholder placeholder3">Chosson's Mother:</label>
+                    </div>
+                    <select class="select" name="chossonOrigin" id="chossonOrigin">
+                        <option>Where is the chosson from?</option>
+                        <option value="detroit">Detroit</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+            
+                    <div class="btn-box">
+                        <button type="button" id="Back">Back</button>
+                        <button type="button" id="Next1">Next</button>
+                    </div>
+            
+                </div>
+            
+                <div id="Form2">
+                    <h3>Enter Kallah's Info</h3>
+                    <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
+                    <label class="placeholder placeholder1">Kallah's Full Name:</label>
+                    <div class=combine>
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
+                            <option>Title</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Rabbi">Rabbi</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                        <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
+                        <label class="placeholder placeholder2">Kallah's Father:</label>
+                    </div>
+                    <div class="combine">
+                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                        <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
+                            <option>Title</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Rebbetzin">Rebbetzin</option>
+                            <option value="Dr.">Dr.</option>
+                        </select>
+                    <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
+                    <label class="placeholder placeholder3">Kallah's Mother:</label>
+                    </div>
+                    <select class="select" name="kallahOrigin" id="kallahOrigin">
+                        <option>Where is the kallah from?</option>
+                        <option value="detroit">Detroit</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+            
+                    <div class="btn-box">
+                        <button type="button" id="Back1">back</button>
+                        <button type="button" id="Next2">Next</button>
+                    </div>
+            
+                </div>
+            
+                <div id="Form3">
+                    <h3>Other Info</h3>
+                    <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
+                    <!-- <label class="placeholder placeholder1">Address:</label>
+                    <div class="combine combine2">
+                        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+                        <input type="email" placeholder="Email" name="email" id="email"  >
+                        <label class="placeholder placeholder4">Email:</label>
+                    </div> -->
+                    <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
+                    <label class="placeholder placeholder001">WeddingDate:</label>
+            
+                    <script>
+                        const date = document.getElementById('weddingDate')
+                        const label = document.querySelector('.placeholder001')
+            
+                        date.addEventListener('click', function() {
+                            label.style.top = '60px'
+                            label.style.left = '-10px'
+                            label.style.color = '#84aa6d'
+                            label.style.transform = 'scale(.8)'
+                        })
+                    </script>
+            
+                    <select class="select" name="personalShopper" id="personalShopper">
+                        <option>Would they like personal shopper?</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                    <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
+                    <label class="placeholder placeholder03">Detroit Chesed Package Gift:</label>
+                    <input type="text" placeholder="" name="" id="DCPG"  >
+                    <!-- <span class="down-arrow">&blacktriangledown;</span> -->
+            
+                    <div class="list">
+            
+                        <span class="close-btn">&times;</span>
+            
+                        <label for="task1" class="task">
+                             <input type="checkbox" name="toaster" id="task1" value="Toaster">
+                             Toaster
+                             <!-- <span>10 mins</span> -->
+                      </label>
+                        <label for="task2" class="task">
+                             <input type="checkbox" name="urn" id="task2" value="Urn">
+                             Urn
+                             <!-- <span>20 mins</span> -->
+                      </label>
+                        <label for="task3" class="task">
+                             <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
+                             Kitchen towels
+                             <!-- <span>30 mins</span> -->
+                      </label>
+                        <label for="task4" class="task">
+                             <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
+                             Vacuum
+                             <!-- <span>40 mins</span> -->
+                      </label>
+                      <label for="task5" class="task">
+                        <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
+                        Cholent pot
+                        <!-- <span>40 mins</span> -->
+                        </label>
+                 
+                      </div>
+                    <!-- <select class="select">
+                        <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
+                        <option>Toaster</option>
+                        <option>Urn</option>
+                        <option>Kitchen towels</option>
+                        <option>Vacuum</option>
+                        <option>Cholent pot</option>
+                    </select> -->
+            
+                    <div class="btn-box">
+                        <button type="button" id="Back2">back</button>
+                        <button type="button" onclick="addCouple()">submit</button>
+                        <!-- onclick="coupleSubmit()" -->
+                    </div>
+            
+                </div>
+            
+                <div class="step-row">
+                    <div id="progress"></div>
+                    <div class="step-col"><small>Step 1</small></div>
+                    <div class="step-col"><small>Step 2</small></div>
+                    <div class="step-col"><small>Step 3</small></div>
+                    <div class="step-col"><small>Step 4</small></div>
+                </div>
+            
+            </form>
+
+            
+            <!-- success/error popup modal -->
+<div class="popupModal center successPopup">
+    <div class="iconCheck">
+        <i class="fa-solid fa-check"></i>
+    </div>
+    <div class="title">
+        
+    </div><br>
+    <div class="description">
+        
+    </div><br>
+    <!-- first class is for javascript, second is for css and the id is for js to close the modal-->
+    <div class="dismissButton dismiss-btn">
+        <button id="dismiss-popup-btn">
+            Dismiss
+        </button>
+    </div>
+ </div>
+
+
+ <!-- couple info modal -->
+<div id="InfoModal" class="infoModal">
+    <div class="info-modal-content">
+      <p>
+        <ul>
+            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li><br>
+            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li><br>
+            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li><br>
+            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li><br>
+            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br>
+            <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
+        </ul>
+      </p>
+    </div>
+  </div>
