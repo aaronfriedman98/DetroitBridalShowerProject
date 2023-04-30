@@ -1,5 +1,6 @@
 const Couples = require('../models/couplesList')
 const Announcements = require('../models/newAnnouncements')
+const NewCouple = require('../models/newCouple')
 
 
 
@@ -113,6 +114,7 @@ module.exports = {
     deleteEntry : async (req, res) => {
             try{
                 await Couples.deleteOne({_id: req.body.id})
+                await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
                 console.log(req.body.id)
                 return res.json('success')
             } catch (err) {
@@ -123,6 +125,8 @@ module.exports = {
         verifyEntry: async (req, res) => {
   try {
     const couple = await Couples.findOne({ _id: req.body.id });
+ 
+
     if (!couple) {
       return res.json('error');
     }
@@ -130,10 +134,34 @@ module.exports = {
     const newCollectingValue = !couple.collecting;
 
     await Couples.updateOne({ _id: req.body.id }, { $set: { collecting: newCollectingValue } });
+
     if (newCollectingValue) {
+
+      const newCouple = new NewCouple(
+        {
+          chosson: couple.chossonName,
+          kallah: couple.kallahName,
+        }
+      )
+      await newCouple.save()
+      console.log('saved new couple')
+  
+      const count = await NewCouple.countDocuments();
+  
+  if (count > 1) {
+    const oldestAnnouncement = await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
+    console.log(`Deleted oldest announcement: ${oldestAnnouncement.value}`);
+  } else {
+    console.log("Cannot delete the only document in the collection.");
+  }
 
     return res.json('verified');
     } else {
+      const newCouple = await NewCouple.findOne();
+      if(couple.chossonName === newCouple.chosson && couple.kallahName === newCouple.kallah) {
+        // console.log(couple.chossonName + " " + newCouple.chosson)
+        await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
+      }
         return res.json('unverified');
         }
   } catch (err) {

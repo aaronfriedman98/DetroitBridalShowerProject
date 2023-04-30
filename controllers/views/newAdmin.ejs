@@ -486,6 +486,12 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
     color: transparent;
   }
 
+  .search::placeholder {
+    color: var(--dark);
+    opacity: 1; /* Firefox */
+}
+
+
 
 
 .close-btn {
@@ -913,6 +919,17 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
         </div>
       </div>
     </main>
+    <!-- <script>
+        const test = document.querySelectorAll('.completed')
+        test.forEach((item) => {
+            item.addEventListener('mouseover', () => {
+                item.classList.add('deleting')
+            })
+            item.addEventListener('mouseout', () => {
+                item.classList.remove('deleting')
+            })
+        })
+    </script> -->
     <!-- MAIN -->
   </section>
 
@@ -1569,6 +1586,11 @@ padding-right: 25;
 }
 #content main .table-data .todo .todo-list li.completed {
   border-left: 10px solid var(--blue);
+  transition: 200ms ease-in-out;
+}
+ .deleting{
+    /* border-left: 60px; */
+    border-left: 60px solid red !important;
 }
 #content main .table-data .todo .todo-list li.not-completed {
   border-left: 10px solid var(--orange);
