@@ -176,591 +176,30 @@
 
 
 
-                <script>
-                    //add couple form for admin
-                    document.querySelector("#showForm").addEventListener("click", function() {
-                        console.log("clicked")
-                    document.querySelector(".formPopup").classList.add("active")
-                    document.querySelector(".overlay").classList.add("overlayActive")
-                    })
-                    document.querySelector(".overlay").addEventListener("click", function() {
-                    document.querySelector(".formPopup").classList.remove("active")
-                    document.querySelector(".overlay").classList.remove("overlayActive")
-                    })
-                    document.querySelector("#close-btn").addEventListener("click", function() {
-                    document.querySelector(".formPopup").classList.remove("active")
-                    document.querySelector(".overlay").classList.remove("overlayActive")
-                    })
-
-                    // add couple to database form
-    async function addCouple() {
-            const coupleObject = {
-            name : document.querySelector("#name").value,
-            phoneNumber : document.querySelector("#phoneNumber").value,
-            email : document.querySelector("#email").value,
-            address : document.querySelector("#address").value,
-            chossonName : document.querySelector("#chossonName").value,
-            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
-            chossonFatherName : document.querySelector("#chossonFatherName").value,
-            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
-            chossonMotherName : document.querySelector("#chossonMotherName").value,
-            chossonOrigin : document.querySelector("#chossonOrigin").value,
-            kallahName : document.querySelector("#kallahName").value,
-            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
-            kallahFatherName : document.querySelector("#kallahFatherName").value,
-            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
-            kallahMotherName : document.querySelector("#kallahMotherName").value,
-            kallahOrigin : document.querySelector("#kallahOrigin").value,
-            weddingDate : document.querySelector("#weddingDate").value,
-            personalShopper : document.querySelector("#personalShopper").value,
-            toaster : document.querySelector("#task1").checked,
-            urn : document.querySelector("#task2").checked,
-            kitchenTowels : document.querySelector("#task3").checked,
-            vacuum : document.querySelector("#task4").checked,
-            cholentPot : document.querySelector("#task5").checked,
-            
-        }
-            const request = new Request('/admin/addEntry', {
-                method: 'POST',
-                body: JSON.stringify(coupleObject),
-                headers: {
-                    'Content-Type' : 'application/json'
-                }
-            })
-            const response = await fetch(request)
-            .then( async (res) => {
-                let data = await res.json()
-
-                if(data.status === true) {
-                    fillInModal(data.title, data.message, true)
-                    document.querySelector(".formPopup").classList.remove("active")
-                    // document.querySelector(".overlay").classList.remove("overlayActive")
-                    openModal()
-                    clearModal()
-                }
-                else {
-                    fillInModal(data.title, data.message, false)
-                    openModal()
-
-                }
-            })
-        }
-
-
-        //control modal script
-        function fillInModal(title, message, color) {
-            const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
-            const titleFill = document.querySelector(".title")
-            const messageFill = document.querySelector(".description")
-            titleFill.innerText = title
-            messageFill.innerText = message 
-            if(color === true) {
-                iconFill.style.color = "rgb(5, 202, 5)"
-                iconFill.classList.remove("fa-circle-xmark")
-                iconFill.classList.add("fa-check")
-                document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
-                document.querySelector(".dismissButton").classList.add("dismiss-btn")
-            }
-            else {
-                iconFill.style.color = "red"
-                iconFill.classList.remove("fa-check")
-                iconFill.classList.add("fa-circle-xmark")
-                document.querySelector(".iconCheck").style.border = "none"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btn")
-                document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
-            }
-        }
-        function openModal() {
-            document.querySelector(".popupModal").classList.add("active")
-            document.querySelector("#subscribeEmail").value = ""
-        }
-
-        function clearModal() {
-            document.querySelector("#name").value = ""
-            document.querySelector("#email").value = ""
-            document.querySelector("#phoneNumber").value = ""
-            document.querySelector("#address").value = ""
-            document.querySelector("#chossonName").value = ""
-            document.querySelector("#chossonFatherTitle").value = ""
-            document.querySelector("#chossonFatherName").value = ""
-            document.querySelector("#chossonMotherTitle").value = ""
-            document.querySelector("#chossonMotherName").value = ""
-            document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
-            document.querySelector("#kallahName").value = ""
-            document.querySelector("#kallahFatherTitle").value = ""
-            document.querySelector("#kallahFatherName").value = ""
-            document.querySelector("#kallahMotherTitle").value = ""
-            document.querySelector("#kallahMotherName").value = ""
-            document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
-            document.querySelector("#weddingDate").value = ""
-            document.querySelector("#personalShopper").value = "Personal Shopper?"
-            document.querySelector("#DCPG").value = ""
-        }
-
-
-        //close modal
-        document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
-            document.getElementsByClassName("popupModal")
-            [0].classList.remove("active")
-            location.reload()
-        })
-
-        //delete couple from database
-        const deleteCouple = document.querySelectorAll(".deleteCouple")
-        //verify couple from database
-        const verifyCouple = document.querySelectorAll(".verifyCouple")
-        //upload announcement
-        const upload = document.querySelectorAll(".upload")
-        // const databaseCouples = document.querySelectorAll(".databaseCouple")
-
-
-        Array.from(deleteCouple).forEach((el) => {
-            el.addEventListener("click", deleteEntry)
-        })
-        Array.from(verifyCouple).forEach((el) => {
-            el.addEventListener("click", verifyEntry)
-        })
-        Array.from(upload).forEach((el) => {
-            el.addEventListener("click", uploadAnnouncement)
-        })
-
-
-        async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-
-function showConfirmationModal(message, buttons) {
-  return new Promise(resolve => {
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.zIndex = '999';
-    modal.style.top = '0';
-    modal.style.right = '0';
-    modal.style.bottom = '0';
-    modal.style.left = '0';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.display = 'flex';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-
-    const innerModal = document.createElement('div');
-    innerModal.style.backgroundColor = '#fff';
-    innerModal.style.padding = '20px';
-    innerModal.style.borderRadius = '5px';
-    innerModal.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.3)';
-
-    const messageElement = document.createElement('p');
-    messageElement.textContent = message;
-    messageElement.style.marginBottom = '20px';
-    messageElement.style.fontSize = '20px';
-
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.style.display = 'flex';
-    buttonsContainer.style.justifyContent = 'flex-end';
-
-    buttons.forEach((button, index) => {
-      const buttonElement = document.createElement('button');
-      buttonElement.textContent = button.text;
-      buttonElement.style.marginRight = index === buttons.length - 1 ? '0' : '10px';
-      buttonElement.style.padding = '10px 20px';
-      buttonElement.style.borderRadius = '5px';
-      buttonElement.style.backgroundColor = button.backgroundColor || '#fff';
-      buttonElement.style.color = button.color || 'black';
-      buttonElement.style.border = button.border || '1px solid #ccc';
-      buttonElement.style.cursor = 'pointer';
-
-      buttonElement.addEventListener('click', () => {
-        resolve(index);
-        document.body.removeChild(modal);
-      });
-
-      buttonsContainer.appendChild(buttonElement);
-    });
-
-    innerModal.appendChild(messageElement);
-    innerModal.appendChild(buttonsContainer);
-
-    modal.appendChild(innerModal);
-
-    document.body.appendChild(modal);
-  });
-}
-
-async function verifyEntry(element) {
-    console.log('begin function')
-  const coupleId = element.getAttribute('data-id');
-  try {
-    const response = await fetch('admin/verifyEntry', {
-      method: 'put',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: coupleId })
-    });
-    const data = await response.json();
-    console.log(data);
-
-    if (data === 'verified') {
-      
-    
-    
-    const sendNewsletter = await showConfirmationModal('Would you like to send out a collection email for this newly verified couple?', [
-      { text: 'Yes', backgroundColor: 'green', color: '#fff' },
-      { text: 'No', backgroundColor: 'red', color: '#fff' }
-    ]);
-
-    if (sendNewsletter === 0) {
-      try {
-        const newsletterResponse = await fetch('admin/sendNewsletter', {
-          method: 'post',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: coupleId })
-        });
-        const newsletterData = await newsletterResponse.json();
-        console.log(newsletterData);
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    }
-    
-    location.reload();
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-
-async function deleteEntry() {
-  const coupleId = this.getAttribute('data-id');
-  const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
-    { text: 'Yes', backgroundColor: 'red', color: '#fff' },
-    { text: 'No' }
-  ]);
-
-  if (confirmed === 0) {
-    try {
-      const response = await fetch('admin/deleteEntry', {
-        method: 'delete',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: coupleId })
-      });
-      const data = await response.json();
-      console.log(data);
-      location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-function uploadAnnouncement() {
-    const coupleId = this.getAttribute('data-id')
-    console.log('begin function')
-    openForm(coupleId)
-}
-
-function openForm(coupleId) {
-  // create form element
-  const uploadForm = document.createElement('form')
-  const fileInput = document.createElement('input')
-  console.log(uploadForm)
-  fileInput.type = 'file'
-  uploadForm.appendChild(fileInput)
-
-  // add submit button to form
-  const submitButton = document.createElement('button')
-  submitButton.type = 'submit'
-  submitButton.innerText = 'Submit'
-  uploadForm.appendChild(submitButton)
-
-  // add cancel button to form
-  const cancelButton = document.createElement('button')
-  cancelButton.type = 'button'
-  cancelButton.innerText = 'Cancel'
-  uploadForm.appendChild(cancelButton)
-
-  // add form to modal and display modal
-  const formContainer = document.createElement('div')
-  formContainer.id = 'form-container'
-  formContainer.appendChild(uploadForm)
-  document.body.appendChild(formContainer)
-  formContainer.style.display = 'block'
-
-  // add event listener to cancel button to close modal
-  cancelButton.addEventListener('click', () => {
-    formContainer.style.display = 'none'
-  })
-
-  // add submit event listener to form
-  uploadForm.addEventListener('submit', async (event) => {
-    event.preventDefault()
-
-    // get selected file data
-    const file = fileInput.files[0]
-
-    // make http post request to server
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('coupleId', coupleId)
-    const response = await fetch('/admin/uploadAnnouncement', {
-      method: 'post',
-      body: formData
-    })
-
-    // handle response
-  })
-}
-
-// add styles for #form-container
-const style = document.createElement('style')
-style.innerHTML = `
-  #form-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #form-container form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    width: 400px;
-    bottom: 50%;
-    left: 50%;
-    position: fixed;
-  }
-
-  #form-container input[type="file"] {
-    margin-bottom: 10px;
-  }
-
-  #form-container button {
-    margin-right: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  #form-container button[type="submit"] {
-    background-color: #008CBA;
-  }
-
-  #form-container button[type="button"] {
-    background-color: #f44336;
-  }
-`
-document.head.appendChild(style)
-
-        // async function deleteEntry() {
-        //     const coupleId = this.getAttribute('data-id')
-        //     console.log(coupleId)
-        //     try {
-        //         const response = await fetch('admin/deleteEntry', {
-        //             method: 'delete',
-        //             headers: {'Content-Type': 'application/json'},
-        //             body: JSON.stringify({
-        //                 id: coupleId
-        //             })
-        //         })
-        //         const data = await response.json()
-        //         console.log(data)
-        //         location.reload()
-
-        //     } catch (err) {
-        //         console.log(err)
-        //     }
-        // }
-
-
-
-
-// function openCoupleInfo() {
-//     const coupleId = this.getAttribute('data-id')
-//     fetchCoupleInfo(coupleId)
-// }
-
-// async function fetchCoupleInfo(coupleId) {
-//     const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
-//         method: 'get',
-//     })
-//     if (response.status === 404) {
-//         console.error("Couple not found")
-//         // handle the 404 error here
-//     } else if (response.status !== 200) {
-//         console.error("Server error")
-//         // handle other errors here
-//     } else {
-//         const data = await response.json()
-//         console.log(data)
-//         fillInCoupleInfo(data)
-//     }
-// }
-
-// function fillInCoupleInfo(data) {
-//     // Get the modal elements
-//     const modalContent = coupleInfoModal.querySelector(".modal-content")
-//     const table = modalContent.querySelector(".table")
-//     const closeBtn = modalContent.querySelector(".close")
-
-//     // Fill in the data
-//     table.innerHTML = `
-//         <p>chossonName: ${data.chossonName}</p>
-//         <p>kallahName: ${data.kallahName}</p>
-//         <!-- Add more fields here as needed -->
-//     `
-
-//     // Display the modal
-//     coupleInfoModal.style.display = "block"
-
-//     // Add event listener for the close button
-//     closeBtn.addEventListener("click", () => {
-//         coupleInfoModal.style.display = "none"
-//     })
-// }
-
-
-
-
-
-
-
-                    //info modal
-                            //couple info modal
-const nameFill = document.querySelector(".nameFill")
-const phoneNumberFill = document.querySelector(".phoneNumberFill")
-const emailFill = document.querySelector(".emailFill")
-const addressFill = document.querySelector(".addressFill")
-const chossonFatherFill = document.querySelector(".chossonFatherFill")
-const chossonMotherFill = document.querySelector(".chossonMotherFill")
-const kallahFatherFill = document.querySelector(".kallahFatherFill")
-const kallahMotherFill = document.querySelector(".kallahMotherFill")
-const chossonHometownFill = document.querySelector(".chossonHometownFill")
-const kallahHometownFill = document.querySelector(".kallahHometownFill")
-const weddingDateFill = document.querySelector(".weddingDateFill")
-const personalShopperFill = document.querySelector(".personalShopperFill")
-
-
-const coupleInfo = document.querySelectorAll(".coupleInfo");
-const infoModal = document.querySelector(".infoModal");
-
-let infoId = null;
-let isHovering = false;
-
-Array.from(coupleInfo).forEach((el) => {
-
-  el.addEventListener("mouseover", async function() {
-    infoId = this.getAttribute('data-id');
-
-    const response = await fetch('admin/fillInfoModal', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        id: infoId
-      })
-    });
-
-    const data = await response.json();
-    console.log(data.fatherName);
-    nameFill.innerHTML = data.name;
-    phoneNumberFill.innerHTML = data.phoneNumber;
-    emailFill.innerHTML = data.email;
-    addressFill.innerHTML = data.address;
-    if(data.chossonFatherName === 'Title ') {
-        chossonFatherFill.innerHTML = '-'
-    }
-    else {
-        chossonFatherFill.innerHTML = data.chossonFatherName;
-    }
-    if(data.chossonMotherName === 'Title ') {
-        chossonMotherFill.innerHTML = '-'
-    }
-    else {
-        chossonMotherFill.innerHTML = data.chossonMotherName;
-    }
-    if(data.kallahFatherName === 'Title ') {
-        kallahFatherFill.innerHTML = '-'
-    }
-    else {
-        kallahFatherFill.innerHTML = data.kallahFatherName;
-    }
-    if(data.kallahMotherName === 'Title ') {
-        kallahMotherFill.innerHTML = '-'
-    }
-    else {
-        kallahMotherFill.innerHTML = data.kallahMotherName;
-    }
-    chossonHometownFill.innerHTML = data.chossonOrigin;
-    kallahHometownFill.innerHTML = data.kallahOrigin;
-    weddingDateFill.innerHTML = data.weddingDate;
-    personalShopperFill.innerHTML = data.personalShopper;
-
-
-    isHovering = true;
-
-    // add a mousemove event listener to the parent element
-    // to update the position of the modal while the mouse is
-    // hovering over the element
-    el.parentNode.addEventListener("mousemove", function(event) {
-      if (isHovering) {
-        const rect = el.getBoundingClientRect();
-        infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight + 20}px`;
-        infoModal.style.left = `${event.clientX - infoModal.offsetWidth/2}px`;
-
-        if (!infoModal.classList.contains("activeInfoModal")) {
-          infoModal.classList.add("activeInfoModal");
-        }
-      }
-    });
-  });
-
-  el.addEventListener("mouseleave", function() {
-    isHovering = false;
-    infoModal.classList.remove("activeInfoModal");
-    infoId = null;
-  });
-});
-
-
-Array.from(coupleInfo).forEach((el) => {
-  el.addEventListener("mouseout", function() {
-    infoModal.classList.remove("activeInfoModal")
-  })
-})
-
-
-                </script>
-
+                
                 <!-- style popup form and success/error modal-->
+                       <!-- couple info modal -->
+<div id="InfoModal" class="infoModal">
+    <div class="info-modal-content">
+      <p>
+        <ul>
+            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li><br>
+            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li><br>
+            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li><br>
+            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
+            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li><br>
+            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li><br>
+            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br>
+            <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
+        </ul>
+      </p>
+    </div>
+  </div>
+
                 <style>
 
 
@@ -1281,14 +720,22 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
 
 
         .infoModal {
-  display: none;
+            display: none;
   position: absolute;
   top: 0;
   width: fit-content;
   height: fit-content;
-  background-color: rgba(255, 255, 255, 0.901);
+  background-color: rgba(244, 241, 241, 0.955);
+  background-color: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
+  /* border: solid 1px rgba(0, 0, 0, 0.293); */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  font-family: poppins;
+  z-index: 999999999999999999999999999999999999;
 }
 
 .activeInfoModal {
@@ -1428,15 +875,13 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                                 <input type="checkbox" id="<%= couple._id %>" class="toggle" onclick="verifyEntry(this)" data-id="<%= couple._id %>" <% if(couple.collecting === true) { %> checked <% } %>>
                                 <label for="<%= couple._id %>" ></label>
                             </td>
+                            <td>
+                                <i class="bx bxs-x-circle" onclick="deleteEntry(this)" data-id="<%= couple._id %>"></i>
+                            </td>
                             </tr>
                           <% }) %>
 
-                          <script>
-                            function test() {
-                              console.log('test')
-                            }
-                          </script>
-
+                          
                           <style>
                             
                           </style>
@@ -1668,6 +1113,22 @@ body {
 #content nav .bx.bx-menu {
   cursor: pointer;
   color: var(--dark);
+}
+.bxs-x-circle {
+    font-size: 30px;
+    color: var(--grey);
+    transition: 200ms;
+    position: relative;
+    top: 4px;
+}
+#content main .order table tr:hover .bxs-x-circle {
+    color: var(--red);
+}
+.bx-info-circle {
+    color: var(--blue);
+    font-size: 25px;
+    position: relative;
+    top: 4px !important;
 }
 #content nav .nav-link {
   font-size: 16px;
@@ -1928,7 +1389,7 @@ body {
 }
 
 #content main .table-data .todo .todo-list {
-  height: 360px;
+  height: 508px;
   padding-bottom: 0;
   /* border-top: 1px solid var(--gray); */
 }
@@ -2323,6 +1784,584 @@ input[type="checkbox"].toggle:disabled + label::after {
   
   
   </script>
+  <script>
+    //add couple form for admin
+    document.querySelector("#showForm").addEventListener("click", function() {
+        console.log("clicked")
+    document.querySelector(".formPopup").classList.add("active")
+    document.querySelector(".overlay").classList.add("overlayActive")
+    })
+    document.querySelector(".overlay").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+    })
+    document.querySelector("#close-btn").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+    })
+
+    // add couple to database form
+async function addCouple() {
+const coupleObject = {
+name : document.querySelector("#name").value,
+phoneNumber : document.querySelector("#phoneNumber").value,
+email : document.querySelector("#email").value,
+address : document.querySelector("#address").value,
+chossonName : document.querySelector("#chossonName").value,
+chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+chossonFatherName : document.querySelector("#chossonFatherName").value,
+chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+chossonMotherName : document.querySelector("#chossonMotherName").value,
+chossonOrigin : document.querySelector("#chossonOrigin").value,
+kallahName : document.querySelector("#kallahName").value,
+kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+kallahFatherName : document.querySelector("#kallahFatherName").value,
+kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+kallahMotherName : document.querySelector("#kallahMotherName").value,
+kallahOrigin : document.querySelector("#kallahOrigin").value,
+weddingDate : document.querySelector("#weddingDate").value,
+personalShopper : document.querySelector("#personalShopper").value,
+toaster : document.querySelector("#task1").checked,
+urn : document.querySelector("#task2").checked,
+kitchenTowels : document.querySelector("#task3").checked,
+vacuum : document.querySelector("#task4").checked,
+cholentPot : document.querySelector("#task5").checked,
+
+}
+const request = new Request('/admin/addEntry', {
+method: 'POST',
+body: JSON.stringify(coupleObject),
+headers: {
+    'Content-Type' : 'application/json'
+}
+})
+const response = await fetch(request)
+.then( async (res) => {
+let data = await res.json()
+
+if(data.status === true) {
+    fillInModal(data.title, data.message, true)
+    document.querySelector(".formPopup").classList.remove("active")
+    // document.querySelector(".overlay").classList.remove("overlayActive")
+    openModal()
+    clearModal()
+}
+else {
+    fillInModal(data.title, data.message, false)
+    openModal()
+
+}
+})
+}
+
+
+//control modal script
+function fillInModal(title, message, color) {
+const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
+const titleFill = document.querySelector(".title")
+const messageFill = document.querySelector(".description")
+titleFill.innerText = title
+messageFill.innerText = message 
+if(color === true) {
+iconFill.style.color = "rgb(5, 202, 5)"
+iconFill.classList.remove("fa-circle-xmark")
+iconFill.classList.add("fa-check")
+document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
+document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
+document.querySelector(".dismissButton").classList.add("dismiss-btn")
+}
+else {
+iconFill.style.color = "red"
+iconFill.classList.remove("fa-check")
+iconFill.classList.add("fa-circle-xmark")
+document.querySelector(".iconCheck").style.border = "none"
+document.querySelector(".dismissButton").classList.remove("dismiss-btn")
+document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
+}
+}
+function openModal() {
+document.querySelector(".popupModal").classList.add("active")
+document.querySelector("#subscribeEmail").value = ""
+}
+
+function clearModal() {
+document.querySelector("#name").value = ""
+document.querySelector("#email").value = ""
+document.querySelector("#phoneNumber").value = ""
+document.querySelector("#address").value = ""
+document.querySelector("#chossonName").value = ""
+document.querySelector("#chossonFatherTitle").value = ""
+document.querySelector("#chossonFatherName").value = ""
+document.querySelector("#chossonMotherTitle").value = ""
+document.querySelector("#chossonMotherName").value = ""
+document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
+document.querySelector("#kallahName").value = ""
+document.querySelector("#kallahFatherTitle").value = ""
+document.querySelector("#kallahFatherName").value = ""
+document.querySelector("#kallahMotherTitle").value = ""
+document.querySelector("#kallahMotherName").value = ""
+document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
+document.querySelector("#weddingDate").value = ""
+document.querySelector("#personalShopper").value = "Personal Shopper?"
+document.querySelector("#DCPG").value = ""
+}
+
+
+//close modal
+document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
+document.getElementsByClassName("popupModal")
+[0].classList.remove("active")
+location.reload()
+})
+
+//delete couple from database
+// const deleteCouple = document.querySelectorAll(".deleteCouple")
+//verify couple from database
+// const verifyCouple = document.querySelectorAll(".verifyCouple")
+//upload announcement
+const upload = document.querySelectorAll(".upload")
+// const databaseCouples = document.querySelectorAll(".databaseCouple")
+
+
+// Array.from(deleteCouple).forEach((el) => {
+//     el.addEventListener("click", deleteEntry)
+// })
+// Array.from(verifyCouple).forEach((el) => {
+//     el.addEventListener("click", verifyEntry)
+// })
+Array.from(upload).forEach((el) => {
+el.addEventListener("click", uploadAnnouncement)
+})
+
+
+async function deleteEntry(element) {
+console.log('click')
+console.log(element)
+const coupleId = element.getAttribute('data-id');
+const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
+{ text: 'Yes', backgroundColor: 'red', color: '#fff' },
+{ text: 'No' }
+]);
+
+if (confirmed === 0) {
+try {
+const response = await fetch('admin/deleteEntry', {
+method: 'delete',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const data = await response.json();
+console.log(data);
+location.reload();
+} catch (err) {
+console.log(err);
+}
+}
+}
+
+
+function showConfirmationModal(message, buttons) {
+return new Promise(resolve => {
+const modal = document.createElement('div');
+modal.style.position = 'fixed';
+modal.style.zIndex = '999';
+modal.style.top = '0';
+modal.style.right = '0';
+modal.style.bottom = '0';
+modal.style.left = '0';
+modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+modal.style.display = 'flex';
+modal.style.alignItems = 'center';
+modal.style.justifyContent = 'center';
+
+const innerModal = document.createElement('div');
+innerModal.style.backgroundColor = '#fff';
+innerModal.style.padding = '20px';
+innerModal.style.borderRadius = '5px';
+innerModal.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.3)';
+
+const messageElement = document.createElement('p');
+messageElement.textContent = message;
+messageElement.style.marginBottom = '20px';
+messageElement.style.fontSize = '20px';
+
+const buttonsContainer = document.createElement('div');
+buttonsContainer.style.display = 'flex';
+buttonsContainer.style.justifyContent = 'flex-end';
+
+buttons.forEach((button, index) => {
+const buttonElement = document.createElement('button');
+buttonElement.textContent = button.text;
+buttonElement.style.marginRight = index === buttons.length - 1 ? '0' : '10px';
+buttonElement.style.padding = '10px 20px';
+buttonElement.style.borderRadius = '5px';
+buttonElement.style.backgroundColor = button.backgroundColor || '#fff';
+buttonElement.style.color = button.color || 'black';
+buttonElement.style.border = button.border || '1px solid #ccc';
+buttonElement.style.cursor = 'pointer';
+
+buttonElement.addEventListener('click', () => {
+resolve(index);
+document.body.removeChild(modal);
+});
+
+buttonsContainer.appendChild(buttonElement);
+});
+
+innerModal.appendChild(messageElement);
+innerModal.appendChild(buttonsContainer);
+
+modal.appendChild(innerModal);
+
+document.body.appendChild(modal);
+});
+}
+
+async function verifyEntry(element) {
+console.log('begin function')
+const coupleId = element.getAttribute('data-id');
+try {
+const response = await fetch('admin/verifyEntry', {
+method: 'put',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const data = await response.json();
+console.log(data);
+
+if (data === 'verified') {
+
+
+
+const sendNewsletter = await showConfirmationModal('Would you like to send out a collection email for this newly verified couple?', [
+{ text: 'Yes', backgroundColor: 'green', color: '#fff' },
+{ text: 'No', backgroundColor: 'red', color: '#fff' }
+]);
+
+if (sendNewsletter === 0) {
+try {
+const newsletterResponse = await fetch('admin/sendNewsletter', {
+method: 'post',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const newsletterData = await newsletterResponse.json();
+console.log(newsletterData);
+
+} catch (err) {
+console.log(err);
+}
+}
+}
+
+location.reload();
+} catch (err) {
+console.log(err);
+}
+}
+
+
+// async function deleteEntry() {
+//   const coupleId = this.getAttribute('data-id');
+//   const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
+//     { text: 'Yes', backgroundColor: 'red', color: '#fff' },
+//     { text: 'No' }
+//   ]);
+
+//   if (confirmed === 0) {
+//     try {
+//       const response = await fetch('admin/deleteEntry', {
+//         method: 'delete',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ id: coupleId })
+//       });
+//       const data = await response.json();
+//       console.log(data);
+//       location.reload();
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
+// }
+
+function uploadAnnouncement() {
+const coupleId = this.getAttribute('data-id')
+console.log('begin function')
+openForm(coupleId)
+}
+
+function openForm(coupleId) {
+// create form element
+const uploadForm = document.createElement('form')
+const fileInput = document.createElement('input')
+console.log(uploadForm)
+fileInput.type = 'file'
+uploadForm.appendChild(fileInput)
+
+// add submit button to form
+const submitButton = document.createElement('button')
+submitButton.type = 'submit'
+submitButton.innerText = 'Submit'
+uploadForm.appendChild(submitButton)
+
+// add cancel button to form
+const cancelButton = document.createElement('button')
+cancelButton.type = 'button'
+cancelButton.innerText = 'Cancel'
+uploadForm.appendChild(cancelButton)
+
+// add form to modal and display modal
+const formContainer = document.createElement('div')
+formContainer.id = 'form-container'
+formContainer.appendChild(uploadForm)
+document.body.appendChild(formContainer)
+formContainer.style.display = 'block'
+
+// add event listener to cancel button to close modal
+cancelButton.addEventListener('click', () => {
+formContainer.style.display = 'none'
+})
+
+// add submit event listener to form
+uploadForm.addEventListener('submit', async (event) => {
+event.preventDefault()
+
+// get selected file data
+const file = fileInput.files[0]
+
+// make http post request to server
+const formData = new FormData()
+formData.append('file', file)
+formData.append('coupleId', coupleId)
+const response = await fetch('/admin/uploadAnnouncement', {
+method: 'post',
+body: formData
+})
+
+// handle response
+})
+}
+
+// add styles for #form-container
+const style = document.createElement('style')
+style.innerHTML = `
+#form-container {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: none;
+justify-content: center;
+align-items: center;
+}
+
+#form-container form {
+background-color: white;
+padding: 20px;
+border-radius: 5px;
+width: 400px;
+bottom: 50%;
+left: 50%;
+position: fixed;
+}
+
+#form-container input[type="file"] {
+margin-bottom: 10px;
+}
+
+#form-container button {
+margin-right: 10px;
+background-color: #4CAF50;
+color: white;
+border: none;
+padding: 10px;
+border-radius: 5px;
+cursor: pointer;
+}
+
+#form-container button[type="submit"] {
+background-color: #008CBA;
+}
+
+#form-container button[type="button"] {
+background-color: #f44336;
+}
+`
+document.head.appendChild(style)
+
+
+
+
+
+function openCoupleInfo() {
+const coupleId = this.getAttribute('data-id')
+fetchCoupleInfo(coupleId)
+}
+
+async function fetchCoupleInfo(coupleId) {
+const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
+method: 'get',
+})
+if (response.status === 404) {
+console.error("Couple not found")
+// handle the 404 error here
+} else if (response.status !== 200) {
+console.error("Server error")
+// handle other errors here
+} else {
+const data = await response.json()
+console.log(data)
+fillInCoupleInfo(data)
+}
+}
+
+function fillInCoupleInfo(data) {
+// Get the modal elements
+const modalContent = coupleInfoModal.querySelector(".modal-content")
+const table = modalContent.querySelector(".table")
+const closeBtn = modalContent.querySelector(".close")
+
+// Fill in the data
+table.innerHTML = `
+<p>chossonName: ${data.chossonName}</p>
+<p>kallahName: ${data.kallahName}</p>
+<!-- Add more fields here as needed -->
+`
+
+// Display the modal
+coupleInfoModal.style.display = "block"
+
+// Add event listener for the close button
+closeBtn.addEventListener("click", () => {
+coupleInfoModal.style.display = "none"
+})
+}
+
+
+
+
+
+
+
+    //info modal
+            //couple info modal
+const nameFill = document.querySelector(".nameFill")
+const phoneNumberFill = document.querySelector(".phoneNumberFill")
+const emailFill = document.querySelector(".emailFill")
+const addressFill = document.querySelector(".addressFill")
+const chossonFatherFill = document.querySelector(".chossonFatherFill")
+const chossonMotherFill = document.querySelector(".chossonMotherFill")
+const kallahFatherFill = document.querySelector(".kallahFatherFill")
+const kallahMotherFill = document.querySelector(".kallahMotherFill")
+const chossonHometownFill = document.querySelector(".chossonHometownFill")
+const kallahHometownFill = document.querySelector(".kallahHometownFill")
+const weddingDateFill = document.querySelector(".weddingDateFill")
+const personalShopperFill = document.querySelector(".personalShopperFill")
+
+
+const coupleInfo = document.querySelectorAll(".coupleInfo");
+const infoModal = document.querySelector(".infoModal");
+console.log(coupleInfo[0])
+console.log(infoModal)
+
+let infoId = null;
+let isHovering = false;
+
+Array.from(coupleInfo).forEach((el) => {
+console.log('forEach')
+
+el.addEventListener("mouseover", async function() {
+console.log('mouseover')
+infoId = this.getAttribute('data-id');
+
+const response = await fetch('admin/fillInfoModal', {
+method: 'post',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({
+id: infoId
+})
+});
+
+const data = await response.json();
+console.log(data.fatherName);
+nameFill.innerHTML = data.name;
+phoneNumberFill.innerHTML = data.phoneNumber;
+emailFill.innerHTML = data.email;
+addressFill.innerHTML = data.address;
+if(data.chossonFatherName === 'Title ') {
+chossonFatherFill.innerHTML = '-'
+}
+else {
+chossonFatherFill.innerHTML = data.chossonFatherName;
+}
+if(data.chossonMotherName === 'Title ') {
+chossonMotherFill.innerHTML = '-'
+}
+else {
+chossonMotherFill.innerHTML = data.chossonMotherName;
+}
+if(data.kallahFatherName === 'Title ') {
+kallahFatherFill.innerHTML = '-'
+}
+else {
+kallahFatherFill.innerHTML = data.kallahFatherName;
+}
+if(data.kallahMotherName === 'Title ') {
+kallahMotherFill.innerHTML = '-'
+}
+else {
+kallahMotherFill.innerHTML = data.kallahMotherName;
+}
+chossonHometownFill.innerHTML = data.chossonOrigin;
+kallahHometownFill.innerHTML = data.kallahOrigin;
+weddingDateFill.innerHTML = data.weddingDate;
+personalShopperFill.innerHTML = data.personalShopper;
+
+
+isHovering = true;
+
+// add a mousemove event listener to the parent element
+// to update the position of the modal while the mouse is
+// hovering over the element
+el.parentNode.addEventListener("mousemove", function(event) {
+if (isHovering) {
+// const rect = el.getBoundingClientRect();
+// infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 20}px`;
+// infoModal.style.left = `${event.clientX - infoModal.offsetWidth/-2.5}px`;
+const rect = el.getBoundingClientRect();
+const modalTop = 50; // Replace with your desired top position
+const modalLeft = 720; // Replace with your desired left position
+infoModal.style.position = 'fixed';
+infoModal.style.top = `${modalTop}px`;
+infoModal.style.left = `${modalLeft}px`;
+
+
+if (!infoModal.classList.contains("activeInfoModal")) {
+infoModal.classList.add("activeInfoModal");
+}
+}
+});
+});
+
+el.addEventListener("mouseleave", function() {
+isHovering = false;
+infoModal.classList.remove("activeInfoModal");
+infoId = null;
+});
+});
+
+
+Array.from(coupleInfo).forEach((el) => {
+el.addEventListener("mouseout", function() {
+infoModal.classList.remove("activeInfoModal")
+})
+})
+
+
+</script>
+
 
 <script src="../assets/js/adminFormSlide.js"></script>
   
