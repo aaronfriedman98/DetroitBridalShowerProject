@@ -28,13 +28,13 @@
     </a>
     <ul class="side-menu top">
       <li class="active">
-        <a href="#">
+        <a href="/newAdmin">
           <i class='bx bxs-data' ></i>
           <span class="text">Database</span>
         </a>
       </li>
       <li class="">
-        <a href="#" style="color: #648880;">
+        <a href="/adminUpload" style="color: #648880;">
           <i class='bx bx-upload' ></i>
           <span class="text">Upload</span>
         </a>
@@ -899,8 +899,13 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
         <div class="todo">
           <div class="head">
             <h3>Collection List</h3>
-            <i class='bx bx-plus' ></i>
-            <i class='bx bx-filter' ></i>
+            <button type="button" class="button" id="showForm" onclick="sendNewNewsletter()">
+              <span class="button__text">Send Email</span>
+              <span class="button__icon"><i class="fa-regular  fa-paper-plane"></i>
+              </span>
+          </button>
+            <!-- <i class='bx bx-plus' ></i> -->
+            <!-- <i class='bx bx-filter' ></i> -->
           </div>
           <ul class="todo-list" data-simplebar>
             <% for(let i = 0; i < coupleInfo.length; i++) { %>
@@ -2082,6 +2087,27 @@ console.log(err);
 }
 }
 
+// send newsletter function
+async function sendNewNewsletter(element) {
+  const confirmed = await showConfirmationModal('Are you sure you want to send out a collection email?', [
+{ text: 'Yes', backgroundColor: 'red', color: '#fff' },
+{ text: 'No' }
+]);
+if (confirmed === 0) {
+  try {
+    const newsletterResponse = await fetch('newAdmin/sendNewNewsletter', {
+method: 'post',
+headers: { 'Content-Type': 'application/json' }
+});
+const newsletterData = await newsletterResponse.json();
+location.reload()
+  }
+  catch (err) {
+console.log(err);
+}
+}
+
+}
 
 // async function deleteEntry() {
 //   const coupleId = this.getAttribute('data-id');
@@ -2383,6 +2409,66 @@ infoModal.classList.remove("activeInfoModal")
 
 
 </script>
+
+<style>
+  /* edit buttons */
+  .button {
+                    display: flex;
+                    height: 35px;
+                    padding: 0;
+                    /* background: #01bd97c7; */
+                    background: #0149bd9c;
+                    border: none;
+                    outline: none;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    font-family: "Quicksand", sans-serif;
+                    font-size: 13px;
+                    font-weight: 400;
+                    cursor: pointer;
+                }
+
+                .button:hover {
+                    /* background: #01b38fae; */
+                    background: #013a8fae;
+                }
+
+                .button:active {
+                    /* background: #019e7f96; */
+                    background: #013a8f96;
+                }
+
+                .buttonRed {
+                    background: #e72103ac;
+                }
+                .buttonRed:hover {
+                    background: #a5140190;
+                }
+                .buttonRed:active {
+                    background: #710c018d;
+                }
+
+                .button__text,
+                .button__icon {
+                    display: inline-flex;
+                    align-items: center;
+                    padding: 0 8px;
+                    color: #fff;
+                    height: 100%;
+                }
+
+                .button__icon {
+                    font-size: 1.2em;
+                    background: rgba(0, 0, 0, 0.08);
+                }
+
+                .databaseButton {
+                    position: absolute;
+                    /* left: 120px; */
+                    right: 120px;
+                }
+
+</style>
 
 
 <script src="../assets/js/adminFormSlide.js"></script>

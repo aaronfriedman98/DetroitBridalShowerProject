@@ -141,6 +141,17 @@ module.exports = {
         {
           chosson: couple.chossonName,
           kallah: couple.kallahName,
+          chossonFatherTitle: couple.chossonFatherTitle,
+          chossonFather : couple.chossonFather,
+          chossonMotherTitle: couple.chossonMotherTitle,
+          chossonMother: couple.chossonMother,
+          chossonOrigin: couple.chossonOrigin,
+          kallahFatherTitle: couple.kallahFatherTitle,
+          kallahFather: couple.kallahFather,
+          kallahMotherTitle: couple.kallahMotherTitle,
+          kallahMother: couple.kallahMother,
+          kallahOrigin: couple.kallahOrigin,
+          tempId: couple._id
         }
       )
       await newCouple.save()

@@ -1,507 +1,184 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- font family -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&family=Source+Sans+Pro:wght@200;300;400&display=swap" rel="stylesheet">
-
-    <!-- icons for mobile menu -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- icon for popups -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
-    <!-- <link rel="stylesheet" href="href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <!-- font awesome animations -->
-    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="angularTest.css"> -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <!-- Scroll bar -->
     <link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css"/>
     <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js" defer></script>
 
+    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="assets/css/headerFooter.css">
-    <!-- <link rel="stylesheet" href="contact.css"> -->
-    <link rel="stylesheet" href="assets/css/admin.css">
-    
-    
-    <title>Announcements</title>
+    <!-- font family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
+
 </head>
-<body>
 
-    <div class="modal">
-        <img src="" class="full-img"/>
-    </div>
+<!-- overlay for adding couple popup form -->
+<!-- <div class="overlay"></div> -->
+<%- include('adminPopupForm'); -%>
 
-
+<section id="sidebar" class="hide">
+    <a href="#" class="brand" style="margin-top: 30px;">
+      <!-- <i class='bx bxs-smile'></i> -->
+      <img src="../assets/images/bridalshowerpic.jpg" style="height: 50px; width: 35px; margin: 20px;">
+      <span class="text" style="color: #648880">Detroit Bridal Shower Project</span>
+    </a>
+    <ul class="side-menu top">
+      <li class="">
+        <a href="/newAdmin" style="color: #648880;">
+          <i class='bx bxs-data' ></i>
+          <span class="text">Database</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="/adminUpload">
+          <i class='bx bx-upload' ></i>
+          <span class="text">Upload</span>
+        </a>
+      </li>
+      
+    <ul class="side-menu">
+        <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-home' ></i>
+          <span class="text">Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-info-circle' ></i>
+          <span class="text">About</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-message-dots' ></i>
+          <span class="text">Contact</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-bell' ></i>
+          <span class="text">Announcements</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-shopping-bag' ></i>
+          <span class="text">Shopping Guide</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" style="color: #648880;">
+          <i class='bx bxs-donate-heart' ></i>
+          <span class="text">Financial Assistance</span>
+        </a>
+      </li>
+    </ul>
+      <!-- <li>
+        <a href="#">
+          <i class='bx bxs-cog' ></i>
+          <span class="text">Settings</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="logout">
+          <i class='bx bxs-log-out-circle' ></i>
+          <span class="text">Logout</span>
+        </a>
+      </li> -->
+    </ul>
+  </section>
+  <!-- SIDEBAR -->
+  <!-- CONTENT -->
+  <section id="content">
+    <!-- NAVBAR -->
+    <nav>
+      <i onclick="addToggle()" class='bx bx-menu' ></i>
+      <!-- <a href="#" class="nav-link">Categories</a>
+      <form action="#">
+        <div class="form-input">
+          <input type="search" placeholder="Search...">
+          <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
+        </div>
+      </form> -->
+      <!-- <a href="#" class="notification">
+        <i class='bx bxs-bell' ></i>
+        <span class="num">8</span>
+      </a>
+      <a href="#" class="profile">
+        <img src="https://secure.gravatar.com/avatar/d09eaad01aea86c51b4f892b4f8abf6f?s=100&d=wavatar&r=g">
+      </a> -->
+    </nav>
+    <!-- NAVBAR -->
+    <!-- MAIN -->
     
 
-    <div class="body">
+    <main>
+      <div class="head-title">
+        <div class="left">
+          <h1>Dashboard</h1>
+
+          
+          <ul class="breadcrumb">
+            <li>
+              <a href="#">Dashboard</a>
+            </li>
+            <li><i class='bx bx-chevron-right' ></i></li>
+            <li>
+              <a class="active" href="#">Upload
+            </li>
+          </ul>
+        </div>
+        <!-- <a href="#" class="btn-download">
+          <i class='bx bxs-cloud-download' ></i>
+          <span class="text">Download PDF</span>
+        </a> -->
+      </div>
+      <!-- <ul class="box-info">
+        <% newAnnouncements.forEach(couple => { %>
+            <li data-original="<%= couple.imageString %>" class="view">
+              <i class='bx bxs-bell-ring' ></i>
+              <span class="text">
+                <h3>Announcement</h3>
+                <p><%= couple.chosson %> & <%= couple.kallah %>'s hostesses have been posted.</p>
+              </span>
+              <span style="color:rgba(104, 103, 103, 0.865); position: absolute; bottom: 5px; right: 25px;">Click to view</span>
+            </li>
+            <% }) %>
+            -->
         
-
-
-        <section class="header">
-            <section class="logo test">
-                    <img src="assets/images/bridalshowerpic.jpg">
-                    <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
-            </section>
-            <nav class="headerNav" id="navLinks">
-                <i class="fa fa-times" onclick="hideMenu()"></i>
-                <ul>
-                    <li style="cursor: pointer;" class="verifyLink">Verify Couple</li>
-                    <span style="color: #648880">|</span>
-                    <li style="cursor: pointer;" class="uploadLink">Upload Announcements</li>
-                    <span style="color: #648880">|</span>
-                    <li style="cursor: pointer;" class="databaseLink">Database</li>
-
-                    <!-- <li><a href="/">HOME</a></li>
-                    <li><a href="about">ABOUT</a></li>
-                    <li><a href="contact">CONTACT</a></li> -->
-                    <!-- For Mobile -->
-                    <!-- <div class="mobileNav">
-                        <li><a href="addCouple">ADD A COUPLE</a></li>
-                        <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                        <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
-                    </div> -->
-                    <!--  -->
-                    <!-- <li class="drop">MORE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
-                        <ul class="dropDown"> -->
-                            <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
-                            <!-- <li><a href="/#services">ADD A COUPLE</a></li>
-                            <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                            <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
-                            <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
-                        </ul> -->
-                </ul>
-                
-            </nav>
-            <!-- <i class="fa fa-bars" onclick="showMenu()"></i> -->
-        </section>
-
-
-        <div class="contain">
-
-
-
-            <h1 style="width: 100%; text-align: center; padding: 0 !important;">Admin Page</h1>
-
-            <style>
-
-/* 
-                .headerNav ul li:nth-child(1)::after{
-                    width: 100%;
-                } */
-/* 
-                .headerNav ul li:nth-child(2)::after{
-                    width: 0;
-                } */
-
-                .uploadTitle {
-                    display: none;
-                }
-                
-                .uploadAnnouncements {
-                    display: none;
-                }
-                .database {
-                    display: none;
-                }
-                .databaseTitle {
-                    display: none;
-                }
-
-
-                /* status's */
-                .green {
-                    background: #c2f5c5;
-                    padding: 2px 10px;
-                    display: inline-block;
-                    border-radius: 40px;
-                    color: #2b2b2b;
-                }
-                .red {
-                    background: #fb28289a;
-                    padding: 2px 10px;
-                    display: inline-block;
-                    border-radius: 40px;
-                    color: #2b2b2b;
-                }
-
-                /* edit buttons */
-                .button {
-                    display: flex;
-                    height: 35px;
-                    padding: 0;
-                    /* background: #01bd97c7; */
-                    background: #0149bd9c;
-                    border: none;
-                    outline: none;
-                    border-radius: 5px;
-                    overflow: hidden;
-                    font-family: "Quicksand", sans-serif;
-                    font-size: 13px;
-                    font-weight: 400;
-                    cursor: pointer;
-                }
-
-                .button:hover {
-                    /* background: #01b38fae; */
-                    background: #013a8fae;
-                }
-
-                .button:active {
-                    /* background: #019e7f96; */
-                    background: #013a8f96;
-                }
-
-                .buttonRed {
-                    background: #e72103ac;
-                }
-                .buttonRed:hover {
-                    background: #a5140190;
-                }
-                .buttonRed:active {
-                    background: #710c018d;
-                }
-
-                .button__text,
-                .button__icon {
-                    display: inline-flex;
-                    align-items: center;
-                    padding: 0 8px;
-                    color: #fff;
-                    height: 100%;
-                }
-
-                .button__icon {
-                    font-size: 1.2em;
-                    background: rgba(0, 0, 0, 0.08);
-                }
-
-                .databaseButton {
-                    position: absolute;
-                    /* left: 120px; */
-                    right: 120px;
-                }
-
-
-            </style>
-
-            <script>
-               document.querySelector(".uploadLink").addEventListener('click', function() {
-                document.querySelector(".uploadAnnouncements").style.display = "block";
-                document.querySelector(".verifyCouples").style.display = "none";
-                document.querySelector(".database").style.display = "none";
-                document.querySelector(".databaseTitle").style.display = "none";
-                document.querySelector(".verifyTitle").style.display = "none";
-                document.querySelector(".uploadTitle").style.display = "block";
-
-               })
-               document.querySelector(".verifyLink").addEventListener('click', function() {
-                document.querySelector(".uploadAnnouncements").style.display = "none";
-                document.querySelector(".database").style.display = "none";
-                document.querySelector(".databaseTitle").style.display = "none";
-                document.querySelector(".verifyCouples").style.display = "block";
-                document.querySelector(".verifyTitle").style.display = "block";
-                document.querySelector(".uploadTitle").style.display = "none";
-               })
-
-               document.querySelector(".databaseLink").addEventListener('click', function() {
-                document.querySelector(".uploadAnnouncements").style.display = "none";
-                document.querySelector(".verifyCouples").style.display = "none";
-                document.querySelector(".database").style.display = "block";
-                document.querySelector(".databaseTitle").style.display = "block";
-                document.querySelector(".verifyTitle").style.display = "none";
-                document.querySelector(".uploadTitle").style.display = "none";
-               })
-               
-            </script>
-        
-        
-            
-            <h1 style="margin-top: 25px;" class="verifyTitle">Verify Couples</h1>
-            <h1 style="margin-top: 25px;" class="uploadTitle">Upload Announcements</h1>
-            <div class="databaseTitle">
-                <h1 style="margin-top: 25px;">Database</h1>
-                <button type="button" class="button databaseButton" id="showForm">
-                    <span class="button__text">Add Couple</span>
-                    <span class="button__icon"><i class="fa-solid  fa-plus"></i>
-                    </span>
-                </button>
-            </div>
-            <form action="/announcements/searchCouples" method="GET" class="search-bar">
-                <input type="text" placeholder="search" name="query" id="searchBar" pattern="[a-zA-Z]+">
-                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
-        
-            
-         
-            <div class="table">
-                <div class="table_body uploadAnnouncements">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Chosson</th>
-                                <th>Kallah</th>
-                                <!-- <th><i class="fa-solid fa-info"></i></th> -->
-                                <th>Info</th>
-                                <th>Status</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% coupleInfo.forEach(couple => { %> 
-                            <tr>
-                                <td><%= couple.chossonName %></td>
-                                <td><%= couple.kallahName %></td>
-                                <td>
-                                    <p><i style="color: rgba(79, 89, 96, 0.537); font-size: 25px; cursor: pointer;" data-id="<%= couple._id %>" class="coupleInfo fa-solid fa-circle-info"></i></p>
-                                    <!-- <p class="status <% if(couple.announcement === false) { %> pending <% } else { %> view <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></p> -->
-                                </td>
-                                <td>
-                                    <p class="green">uploaded</p>
-                                </td>
-                                <td><button type="button" class="button">
-                                    <span class="button__text">upload</span>
-                                    <span class="button__icon"><i class="fa-solid  fa-plus"></i>
-                                    </span>
-                                </button></td>
-                                <!-- <div class="img-container"  id="announcements"></div> -->
-                            </tr>
-                            <% }) %>
-                            
-                        </tbody>
-                    </table>
+        <!-- <li>
+          <i class='bx bxs-party' ></i>
+          <span class="text">
+            <h3>Mazel Tov!</h3>
+            <p>New engaged couple: chosson chosson and kallah kallah</p>
+          </span>
+        </li>
+      </ul> -->
+      <div class="table-data">
+        <div class="order">
+          <div class="head">
+            <h3>All couples</h3>
+                  <!-- <i class='bx bx-search' ></i>
+                  <i class='bx bx-filter' ></i> -->
+                  <form action="/announcements/search" class="searchForm">
+                      <div class="form-input">
+                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search">
+                        <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
+                      </div>
+                    </form>
+                    <!-- <i class='bx bx-plus' id="showForm" style="font-size: 20px;"></i> -->
                 </div>
-            </div>         
-
-            
 
 
 
-
-
-            <!-- popup form -->
-<form class="formPopup" id="couplesForm">
-    <div id="Form">
-        <h3>Personal Info</h3>
-        <input type="text" name="chossonName" placeholder="Name" id="name"  >
-        <label class="placeholder placeholder01">Enter Name: (on behalf of couple)</label>
-        <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
-        <label class="placeholder placeholder02">Phone Number: (to contact the couple)</label>
-        <input type="text" name="chossonName" placeholder="Email" id="email"  >
-        <label class="placeholder placeholder03">Email: (to contact the couple)</label>
-        <input type="text" name="chossonName" placeholder="Address" id="address"  >
-        <label class="placeholder placeholder04">Address: (on behalf of couple)</label>
-        <div class="btn-box">
-            <button type="button" id="close-btn">Cancel</button>
-            <button type="button" id="Next">Next</button>
-        </div>
-
-    </div>
-    <div id="Form1">
-        <h3>Enter Chosson's Info</h3>
-        <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
-        <label class="placeholder placeholder1">Chosson's Full Name:</label>
-        <div class=combine>
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
-                <option>Title</option>
-                <option value="Mr.">Mr.</option>
-                <option value="Rabbi">Rabbi</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
-            <label class="placeholder placeholder2">Chosson's Father:</label>
-        </div>
-        <div class="combine">
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
-                <option>Title</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Rebbetzin">Rebbetzin</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
-        <label class="placeholder placeholder3">Chosson's Mother:</label>
-        </div>
-        <select class="select" name="chossonOrigin" id="chossonOrigin">
-            <option>Where is the chosson from?</option>
-            <option value="detroit">Detroit</option>
-            <option value="other">Other</option>
-        </select>
-        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back">Back</button>
-            <button type="button" id="Next1">Next</button>
-        </div>
-
-    </div>
-
-    <div id="Form2">
-        <h3>Enter Kallah's Info</h3>
-        <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
-        <label class="placeholder placeholder1">Kallah's Full Name:</label>
-        <div class=combine>
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
-                <option>Title</option>
-                <option value="Mr.">Mr.</option>
-                <option value="Rabbi">Rabbi</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-            <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
-            <label class="placeholder placeholder2">Kallah's Father:</label>
-        </div>
-        <div class="combine">
-            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-            <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
-                <option>Title</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Rebbetzin">Rebbetzin</option>
-                <option value="Dr.">Dr.</option>
-            </select>
-        <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
-        <label class="placeholder placeholder3">Kallah's Mother:</label>
-        </div>
-        <select class="select" name="kallahOrigin" id="kallahOrigin">
-            <option>Where is the kallah from?</option>
-            <option value="detroit">Detroit</option>
-            <option value="other">Other</option>
-        </select>
-        <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back1">back</button>
-            <button type="button" id="Next2">Next</button>
-        </div>
-
-    </div>
-
-    <div id="Form3">
-        <h3>Other Info</h3>
-        <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
-        <!-- <label class="placeholder placeholder1">Address:</label>
-        <div class="combine combine2">
-            <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-            <input type="email" placeholder="Email" name="email" id="email"  >
-            <label class="placeholder placeholder4">Email:</label>
-        </div> -->
-        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-        <label class="placeholder placeholder001">WeddingDate:</label>
-
-        <script>
-            const date = document.getElementById('weddingDate')
-            const label = document.querySelector('.placeholder001')
-
-            date.addEventListener('click', function() {
-                label.style.top = '60px'
-                label.style.left = '-10px'
-                label.style.color = '#84aa6d'
-                label.style.transform = 'scale(.8)'
-            })
-        </script>
-
-        <select class="select" name="personalShopper" id="personalShopper">
-            <option>Would they like personal shopper?</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-        </select>
-        <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
-        <label class="placeholder placeholder03">Detroit Chesed Package Gift:</label>
-        <input type="text" placeholder="" name="" id="DCPG"  >
-        <!-- <span class="down-arrow">&blacktriangledown;</span> -->
-
-        <div class="list">
-
-            <span class="close-btn">&times;</span>
-
-            <label for="task1" class="task">
-                 <input type="checkbox" name="toaster" id="task1" value="Toaster">
-                 Toaster
-                 <!-- <span>10 mins</span> -->
-          </label>
-            <label for="task2" class="task">
-                 <input type="checkbox" name="urn" id="task2" value="Urn">
-                 Urn
-                 <!-- <span>20 mins</span> -->
-          </label>
-            <label for="task3" class="task">
-                 <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
-                 Kitchen towels
-                 <!-- <span>30 mins</span> -->
-          </label>
-            <label for="task4" class="task">
-                 <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
-                 Vacuum
-                 <!-- <span>40 mins</span> -->
-          </label>
-          <label for="task5" class="task">
-            <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
-            Cholent pot
-            <!-- <span>40 mins</span> -->
-            </label>
-     
-          </div>
-        <!-- <select class="select">
-            <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
-            <option>Toaster</option>
-            <option>Urn</option>
-            <option>Kitchen towels</option>
-            <option>Vacuum</option>
-            <option>Cholent pot</option>
-        </select> -->
-
-        <div class="btn-box">
-            <button type="button" id="Back2">back</button>
-            <button type="button" onclick="addCouple()">submit</button>
-            <!-- onclick="coupleSubmit()" -->
-        </div>
-
-    </div>
-
-    <div class="step-row">
-        <div id="progress"></div>
-        <div class="step-col"><small>Step 1</small></div>
-        <div class="step-col"><small>Step 2</small></div>
-        <div class="step-col"><small>Step 3</small></div>
-        <div class="step-col"><small>Step 4</small></div>
-    </div>
-
-</form>
-
-
-
-
-
-<!-- popup modal -->
-<div class="popupModal center successPopup">
-    <div class="iconCheck">
-        <i class="fa-solid fa-check"></i>
-    </div>
-    <div class="title">
-        
-    </div><br>
-    <div class="description">
-        
-    </div><br>
-    <!-- first class is for javascript, second is for css and the id is for js to close the modal-->
-    <div class="dismissButton dismiss-btn">
-        <button id="dismiss-popup-btn">
-            Dismiss
-        </button>
-    </div>
- </div>
-
- <!-- couple info modal -->
+                
+                <!-- style popup form and success/error modal-->
+                       <!-- couple info modal -->
 <div id="InfoModal" class="infoModal">
     <div class="info-modal-content">
       <p>
@@ -523,10 +200,376 @@
     </div>
   </div>
 
+                <style>
 
- <style>
 
-    .center {
+/*
+==========================
+     Form Popup
+==========================
+*/
+.formPopup {
+    width: 450px;
+    height: 450px;
+    margin: 8% auto;
+    background: white;
+    border-radius: 5px;
+    position: relative;
+    position: fixed;
+    top: 10%;
+    top:-150%;
+    right: 30%;
+    opacity: 0;
+    transform: scale(1.25);
+    z-index: 10000000000000;
+    overflow: hidden;
+    transition: top 0ms ease-in-out 200ms,
+                opacity 200ms ease-in-out 0ms,
+                transform 200ms ease-in-out 0ms;
+}
+.formPopup.active {
+    top: 3%;
+    opacity: 1;
+    transform: scale(1);
+    transition: top 0ms ease-in-out 0ms,
+                opacity 200ms ease-in-out 0ms,
+                transform 200ms ease-in-out 0ms;
+}
+.formPopup h3 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #777;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 22px;
+}
+
+/* .formPopup form {
+    width: 370px;
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    transition: 0.5s;
+} */
+#Form1, #Form2, #Form3, #Form {
+    width: 370px;
+    position: absolute;
+    top: 100px;
+    left: 40px;
+    transition: 0.5s;
+}
+.formPopup #Form1 input, .formPopup #Form2 input, .formPopup #Form3 input, .select, .formPopup #Form input{
+    width: 100%;
+    padding: 10px 5px;
+    margin: 5px 0;
+    border: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.formPopup #Form1 .smallInput, .formPopup #Form2 .smallInput, .formPopup #Form3 .smallInput, .select, .selectTitle, .formPopup #Form .smallInput {
+    width: 77%;
+    padding: 10px 5px;
+    margin: 5px 0;
+    border: 0;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.formPopup #Form1 .smallInput:first-child, .formPopup #Form2 .smallInput:first-child, .formPopup #Form3 .smallInput:first-child, .selectTitle, .formPopup #Form .smallInput:first-child {
+    width: 20%;
+} 
+.formPopup #Form1::placeholder,.formPopup #Form2::placeholder,.formPopup #Form3::placeholder, .formPopup #Form::placeholder {
+    color: #777;
+}
+.formPopup #Form1 .combine,.formPopup #Form2 .combine,.formPopup #Form3 .combine , .formPopup #Form .combine{
+    display: flex;
+    justify-content: space-between;
+}
+.combine2 input{
+    width: 48% !important;
+}
+.select {
+    color: #777;
+    width: 100%;
+}
+.selectTitle {
+    color: #777;
+}
+.btn-box {
+    width: 100%;
+    margin: 30px auto;
+    text-align: center;
+}
+.formPopup button {
+    width: 110px;
+    height: 35px;
+    margin: 0 10px;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    border-radius: 30px;
+    border: 0;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+}
+#Form1 {
+    left: 450px;
+}
+#Form2 {
+    left: 450px;
+}
+#Form3 {
+    left: 450px;
+}
+.step-row {
+    width: 450px;
+    height: 50px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 -1px 5px -1px #000;
+    position: absolute;
+    top: 0;
+    z-index: 22222222222222222222222222222222222222222222222222222222222222222222222 !important;
+}
+.step-col {
+   width: 200px;
+   text-align: center;
+   color: #333;
+   position: relative;
+   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+#progress {
+    position: absolute;
+    height: 100%;
+    width: 100px;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    transition: .7s;
+}
+#progress::after {
+    content: '';
+    height: 0;
+    width: 0;
+    border-top: 26px solid transparent;
+    border-bottom: 26px solid transparent;
+    position: absolute;
+    right: -25px;
+    top: 0;
+    border-left: 26px solid #ffad06;
+
+}
+
+.placeholder {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 15px;
+    position: absolute !important;
+    padding: 0px 0px;
+    color: #999;
+    transition: .3s;
+    pointer-events: none;
+    background-color: transparent;
+}
+
+/* input:not(:placeholder-shown) + label {
+    color: #84aa6d !important;
+    transform: scale(.8);
+} */
+
+.placeholder001 {
+    top: 80px;
+    left: 3px;
+}
+/* input:focus + .placeholder001 {
+    top: 60px;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+    
+} */
+
+.placeholder1, .placeholder01 {
+    top: 80px !important;
+    left: 3px;
+}
+input:focus + .placeholder1, input:not(:placeholder-shown) + .placeholder1, input:focus + .placeholder01, input:not(:placeholder-shown) + .placeholder01 {
+    top: 60px !important;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+    
+}
+.placeholder02 {
+    top: 125px;
+    left: 3px;
+}
+
+.placeholder2 {
+    top: 128px !important;
+    left: 88px;
+}
+input:focus + .placeholder02, input:not(:placeholder-shown) + .placeholder02 {
+    top: 105px !important;
+    left: -10px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+input:focus + .placeholder2, input:not(:placeholder-shown) + .placeholder2 {
+    top: 108px !important;
+    left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder03 {
+    top: 175px;
+    left: 3px;
+}
+input:focus + .placeholder03, input:not(:placeholder-shown) + .placeholder03 {
+    top: 155px !important;
+    left: -7px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder3 {
+    top: 175px !important;
+    left: 88px;
+}
+input:focus + .placeholder3, input:not(:placeholder-shown) + .placeholder3 {
+    top: 154px !important;
+    left: 75px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder04 {
+    top: 220px;
+    left: 3px;
+}
+input:focus + .placeholder04, input:not(:placeholder-shown) + .placeholder04 {
+    top: 202px !important;
+    left: -5px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder4 {
+    top: 128px !important;
+    left: 197px;
+}
+input:focus + .placeholder4, input:not(:placeholder-shown) + .placeholder4 {
+    top: 108px !important;
+    left: 189px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+.placeholder5 {
+    top: 220px !important;
+    left: 3px;
+}
+input:focus + .placeholder5, input:not(:placeholder-shown) + .placeholder5 {
+    top: 202px !important;
+    left: -15px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+input::placeholder {
+    color: transparent;
+}
+
+input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-month-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-day-field,
+  input[type='date']:not(:focus):in-range::-webkit-datetime-edit-text {
+    color: transparent;
+  }
+
+  .search::placeholder {
+    color: var(--dark);
+    opacity: 1; /* Firefox */
+}
+
+
+
+
+.close-btn {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    background: #888;
+    color: #eee;
+    text-align: center;
+    line-height: 15px;
+    border-radius: 15px;
+    cursor: pointer;
+    
+}
+
+.select-field,.task,.list{
+    /* width: 100%; */
+    background-color: rgba(238, 237, 237, 0.799);
+    padding: 0.3rem;
+    padding-bottom: 10px;
+    text-align: center;
+    border-radius: 10px;
+}
+.list{
+    box-shadow: 0 30px 60px rgb(0,0,0,0.2);
+    display: none;
+    right:0;
+    transition: .5s;
+}
+.down-arrow{
+    font-size: 1.2rem;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.2s linear;
+}
+.task{
+    display: block;
+    padding-left: 0;
+}
+.task span{
+    float: right;
+    font-size: 0.6rem;
+    padding-top: 6px;
+}
+.task:hover{
+    background-color: aliceblue;
+}
+.show{
+    display: block;
+    top: 5%;
+    right: 5%;
+    position: absolute;
+}
+.overlay {
+    background: rgb(0,0,0, .4) !important;
+    position: absolute;
+    width: 0;
+    height: 0;
+    transition: 300ms;
+    z-index: 999999999999999999999999;
+}   
+.overlayActive{
+    
+    top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+
+
+                    .center {
         font-family: "source sans pro";
         position: absolute;
         top: 50%;
@@ -549,6 +592,8 @@
         transition: opacity 300ms ease-in-out,
                     top 1000ms ease-in-out,
                     transform 1000ms ease-in-out;
+        font-family: poppins;
+        line-height: 1.2;
 
     }
     .popupModal.active {
@@ -558,7 +603,7 @@
         transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19)
     }
     .popupModal .iconCheck {
-        margin: 5px 0px;
+        margin: 0px;
         width: 50px;
         height: 50px;
         border: 2px solid #34f234;
@@ -567,6 +612,9 @@
         border-radius: 50%;
         line-height: 60px;
     }
+    .popupModal .fa-check {
+        margin-top: 10px;
+    }
     .popupModal .iconCheck i {
         font-size: 30px;
     }
@@ -574,7 +622,7 @@
         color: #34f234;
     }
     .popupModal .title {
-        margin: 5px 0px;
+        margin: 0px;
         font-size: 30px;
         font-weight: 600;
     }
@@ -584,7 +632,7 @@
         padding: 5px;
     }
     .popupModal .dismiss-btn {
-        margin-top: 15px;
+        margin-top: 0px;
     }
     .popupModal .dismiss-btn button {
         padding: 10px 20px;
@@ -675,39 +723,25 @@
 
 
 
-        /* info popup modal */
 
-/* .infoModal {
-    visibility: hidden;
-    transition: all 0.3s ease-in-out;
-} */
 
-/* .info-modal-content{
-    position: fixed;
-    width: fit-content;
-    height: fit-content;
-    background-color: rgba(255, 255, 255, 0.853);
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
-    top: -50px;
-    right: 250px;
-} */
-
-/* .activeInfoModal {
-    transform: scale(1.1);
-    visibility: visible;
-} */
-
-.infoModal {
-  display: none;
+        .infoModal {
+            display: none;
   position: absolute;
   top: 0;
   width: fit-content;
   height: fit-content;
-  background-color: rgba(255, 255, 255, 0.901);
+  background-color: rgba(244, 241, 241, 0.955);
+  background-color: white;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
+  /* border: solid 1px rgba(0, 0, 0, 0.293); */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  font-family: poppins;
+  z-index: 999999999999999999999999999999999999;
 }
 
 .activeInfoModal {
@@ -715,356 +749,60 @@
 }
 
 
-</style>
-<script>
 
+ /* upload form popup */
+    /* The form container */
+    #form-container {
+  display: none;
+  position: fixed;
+  bottom: 50%;
+  right: 50%;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
 
-        //couple info modal
-const nameFill = document.querySelector(".nameFill")
-const phoneNumberFill = document.querySelector(".phoneNumberFill")
-const emailFill = document.querySelector(".emailFill")
-const addressFill = document.querySelector(".addressFill")
-const chossonFatherFill = document.querySelector(".chossonFatherFill")
-const chossonMotherFill = document.querySelector(".chossonMotherFill")
-const kallahFatherFill = document.querySelector(".kallahFatherFill")
-const kallahMotherFill = document.querySelector(".kallahMotherFill")
-const chossonHometownFill = document.querySelector(".chossonHometownFill")
-const kallahHometownFill = document.querySelector(".kallahHometownFill")
-const weddingDateFill = document.querySelector(".weddingDateFill")
-const personalShopperFill = document.querySelector(".personalShopperFill")
+#form-container input[type=file] {
+  width: 300px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #ccc;
+}
 
+#form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+}
 
-const coupleInfo = document.querySelectorAll(".coupleInfo");
-const infoModal = document.querySelector(".infoModal");
+#form-container .cancel {
+  background-color: #f44336;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+}
 
-let infoId = null;
-let isHovering = false;
+#form-container .btn:hover {
+  opacity: 1;
+}
 
-Array.from(coupleInfo).forEach((el) => {
+#form-container .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  margin-left: 50px;
+}
 
-  el.addEventListener("mouseover", async function() {
-    infoId = this.getAttribute('data-id');
-
-    const response = await fetch('admin/fillInfoModal', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        id: infoId
-      })
-    });
-
-    const data = await response.json();
-    console.log(data.fatherName);
-    nameFill.innerHTML = data.name;
-    phoneNumberFill.innerHTML = data.phoneNumber;
-    emailFill.innerHTML = data.email;
-    addressFill.innerHTML = data.address;
-    if(data.chossonFatherName === 'Title ') {
-        chossonFatherFill.innerHTML = '-'
-    }
-    else {
-        chossonFatherFill.innerHTML = data.chossonFatherName;
-    }
-    if(data.chossonMotherName === 'Title ') {
-        chossonMotherFill.innerHTML = '-'
-    }
-    else {
-        chossonMotherFill.innerHTML = data.chossonMotherName;
-    }
-    if(data.kallahFatherName === 'Title ') {
-        kallahFatherFill.innerHTML = '-'
-    }
-    else {
-        kallahFatherFill.innerHTML = data.kallahFatherName;
-    }
-    if(data.kallahMotherName === 'Title ') {
-        kallahMotherFill.innerHTML = '-'
-    }
-    else {
-        kallahMotherFill.innerHTML = data.kallahMotherName;
-    }
-    chossonHometownFill.innerHTML = data.chossonOrigin;
-    kallahHometownFill.innerHTML = data.kallahOrigin;
-    weddingDateFill.innerHTML = data.weddingDate;
-    personalShopperFill.innerHTML = data.personalShopper;
-
-
-    isHovering = true;
-
-    // add a mousemove event listener to the parent element
-    // to update the position of the modal while the mouse is
-    // hovering over the element
-    el.parentNode.addEventListener("mousemove", function(event) {
-      if (isHovering) {
-        const rect = el.getBoundingClientRect();
-        infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight + 20}px`;
-        infoModal.style.left = `${event.clientX - infoModal.offsetWidth/2}px`;
-
-        if (!infoModal.classList.contains("activeInfoModal")) {
-          infoModal.classList.add("activeInfoModal");
-        }
-      }
-    });
-  });
-
-  el.addEventListener("mouseleave", function() {
-    isHovering = false;
-    infoModal.classList.remove("activeInfoModal");
-    infoId = null;
-  });
-});
-
-
-Array.from(coupleInfo).forEach((el) => {
-  el.addEventListener("mouseout", function() {
-    infoModal.classList.remove("activeInfoModal")
-  })
-})
-
-
-</script>
-
-
-        
-
-</div>
-
-
-
-
-
-
-
-<script>
-    const searchB = document.querySelector('input[name="query"]')
-    const form = document.querySelector('form')
-
-    searchB.addEventListener('input', (event) => {
-        const query = '^'+event.target.value
-        const url = `/admin/searchCouples?query=${query}`
-        const xhr = new XMLHttpRequest()
-        xhr.open('GET', url)
-        xhr.onload = () => {
-            const tbody = document.querySelector('.table')
-            tbody.innerHTML = xhr.responseText
-        }
-        xhr.send()
-    })
-
-    form.addEventListener('submit', (event) => {
-        event.preventDefault()  
-    })
-
-    const inputField = document.getElementById("searchBar");
-
-    inputField.addEventListener("keypress", (event) => {
-    const key = event.key;
-    const onlyLetters = /^[a-zA-Z]*$/;
-    
-    if (!onlyLetters.test(key)) {
-        event.preventDefault();
-    }
-    });
-
-
-
-    // add to database
-    async function addCouple() {
-            const coupleObject = {
-            name : document.querySelector("#name").value,
-            phoneNumber : document.querySelector("#phoneNumber").value,
-            email : document.querySelector("#email").value,
-            address : document.querySelector("#address").value,
-            chossonName : document.querySelector("#chossonName").value,
-            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
-            chossonFatherName : document.querySelector("#chossonFatherName").value,
-            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
-            chossonMotherName : document.querySelector("#chossonMotherName").value,
-            chossonOrigin : document.querySelector("#chossonOrigin").value,
-            kallahName : document.querySelector("#kallahName").value,
-            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
-            kallahFatherName : document.querySelector("#kallahFatherName").value,
-            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
-            kallahMotherName : document.querySelector("#kallahMotherName").value,
-            kallahOrigin : document.querySelector("#kallahOrigin").value,
-            weddingDate : document.querySelector("#weddingDate").value,
-            personalShopper : document.querySelector("#personalShopper").value,
-            toaster : document.querySelector("#task1").checked,
-            urn : document.querySelector("#task2").checked,
-            kitchenTowels : document.querySelector("#task3").checked,
-            vacuum : document.querySelector("#task4").checked,
-            cholentPot : document.querySelector("#task5").checked,
-            
-        }
-            const request = new Request('/admin/addEntry', {
-                method: 'POST',
-                body: JSON.stringify(coupleObject),
-                headers: {
-                    'Content-Type' : 'application/json'
-                }
-            })
-            const response = await fetch(request)
-            .then( async (res) => {
-                let data = await res.json()
-
-                if(data.status === true) {
-                    fillInModal(data.title, data.message, true)
-                    document.querySelector(".formPopup").classList.remove("active")
-                    // document.querySelector(".overlay").classList.remove("overlayActive")
-                    openModal()
-                    clearModal()
-                }
-                else {
-                    fillInModal(data.title, data.message, false)
-                    openModal()
-
-                }
-            })
-        }
-
-
-        //control modal script
-        function fillInModal(title, message, color) {
-            const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
-            const titleFill = document.querySelector(".title")
-            const messageFill = document.querySelector(".description")
-            titleFill.innerText = title
-            messageFill.innerText = message 
-            if(color === true) {
-                iconFill.style.color = "rgb(5, 202, 5)"
-                iconFill.classList.remove("fa-circle-xmark")
-                iconFill.classList.add("fa-check")
-                document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
-                document.querySelector(".dismissButton").classList.add("dismiss-btn")
-            }
-            else {
-                iconFill.style.color = "red"
-                iconFill.classList.remove("fa-check")
-                iconFill.classList.add("fa-circle-xmark")
-                document.querySelector(".iconCheck").style.border = "none"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btn")
-                document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
-            }
-        }
-        function openModal() {
-            document.querySelector(".popupModal").classList.add("active")
-            document.querySelector("#subscribeEmail").value = ""
-        }
-
-        function clearModal() {
-            document.querySelector("#name").value = ""
-            document.querySelector("#email").value = ""
-            document.querySelector("#phoneNumber").value = ""
-            document.querySelector("#address").value = ""
-            document.querySelector("#chossonName").value = ""
-            document.querySelector("#chossonFatherTitle").value = ""
-            document.querySelector("#chossonFatherName").value = ""
-            document.querySelector("#chossonMotherTitle").value = ""
-            document.querySelector("#chossonMotherName").value = ""
-            document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
-            document.querySelector("#kallahName").value = ""
-            document.querySelector("#kallahFatherTitle").value = ""
-            document.querySelector("#kallahFatherName").value = ""
-            document.querySelector("#kallahMotherTitle").value = ""
-            document.querySelector("#kallahMotherName").value = ""
-            document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
-            document.querySelector("#weddingDate").value = ""
-            document.querySelector("#personalShopper").value = "Personal Shopper?"
-            document.querySelector("#DCPG").value = ""
-        }
-
-
-        //close modal
-        document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
-            document.getElementsByClassName("popupModal")
-            [0].classList.remove("active")
-            location.reload()
-        })
-
-
-
-        //delete couple from database
-        const deleteCouple = document.querySelectorAll(".deleteCouple")
-        // const databaseCouples = document.querySelectorAll(".databaseCouple")
-
-        Array.from(deleteCouple).forEach((el) => {
-            el.addEventListener("click", deleteEntry)
-        })
-
-
-        async function deleteEntry() {
-            const coupleId = this.getAttribute('data-id')
-            console.log(coupleId)
-            try {
-                const response = await fetch('admin/deleteEntry', {
-                    method: 'delete',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        id: coupleId
-                    })
-                })
-                const data = await response.json()
-                console.log(data)
-                location.reload()
-            } catch (err) {
-                console.log(err)
-            }
-        }
-
-
-
-
-// function openCoupleInfo() {
-//     const coupleId = this.getAttribute('data-id')
-//     fetchCoupleInfo(coupleId)
-// }
-
-// async function fetchCoupleInfo(coupleId) {
-//     const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
-//         method: 'get',
-//     })
-//     if (response.status === 404) {
-//         console.error("Couple not found")
-//         // handle the 404 error here
-//     } else if (response.status !== 200) {
-//         console.error("Server error")
-//         // handle other errors here
-//     } else {
-//         const data = await response.json()
-//         console.log(data)
-//         fillInCoupleInfo(data)
-//     }
-// }
-
-// function fillInCoupleInfo(data) {
-//     // Get the modal elements
-//     const modalContent = coupleInfoModal.querySelector(".modal-content")
-//     const table = modalContent.querySelector(".table")
-//     const closeBtn = modalContent.querySelector(".close")
-
-//     // Fill in the data
-//     table.innerHTML = `
-//         <p>chossonName: ${data.chossonName}</p>
-//         <p>kallahName: ${data.kallahName}</p>
-//         <!-- Add more fields here as needed -->
-//     `
-
-//     // Display the modal
-//     coupleInfoModal.style.display = "block"
-
-//     // Add event listener for the close button
-//     closeBtn.addEventListener("click", () => {
-//         coupleInfoModal.style.display = "none"
-//     })
-// }
-
-        
-</script>
-
-  
-  <style>
-    /* Modal styles */
+/* Modal styles */
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -1101,15 +839,1551 @@ Array.from(coupleInfo).forEach((el) => {
   cursor: pointer;
 }
 
+
+
+                </style>
+
+
+
+
+
+                <!-- <p style="margin-top: -20px; margin-bottom: 10px; color: gray; font-size: 14px;">click a couple to view the hostesses</p> -->
+                <table>
+                  <!-- <thead>
+                    <tr>
+                      <th>Chosson</th>
+                      <th>Kallah</th>
+                      <th>Info</th>
+                      <th>Hostesses</th>
+                    </tr>
+                  </thead> -->
+                  <tbody data-simplebar style="height: 485px !important;">
+                      <tr>
+                          <td>Chosson</td>
+                          <td>Kallah</td>
+                          <td>Info</td>
+                          <td>Status</td>
+                          <td>Upload</td>
+                          <td>Remove Upload</td>
+                        </tr>
+                        <% coupleInfo.forEach(couple => { %>
+                          <tr data-original="<%= couple.imageString %>" class="displayCouples">
+                              <td><%= couple.chossonName %></td>
+                              <td><%= couple.kallahName %></td>
+                              <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
+                              <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
+                              <!-- <td><button type="button" class="button verifyCouple" data-id="<%= couple._id %>">
+                                <span class="button__text" ><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
+                                <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
+                                </span>
+                            </button></td> -->
+                            <!-- <td>
+                                <input type="checkbox" id="<%= couple._id %>" class="toggle" onclick="verifyEntry(this)" data-id="<%= couple._id %>" <% if(couple.collecting === true) { %> checked <% } %>>
+                                <label for="<%= couple._id %>" ></label>
+                            </td> -->
+                            <td>
+                                <i class="bx bxs-x-circle" onclick="deleteEntry(this)" data-id="<%= couple._id %>"></i>
+                            </td>
+                            </tr>
+                          <% }) %>
+
+                          
+                          <style>
+                            
+                          </style>
+                    
+                    
+                  </tbody>
+                </table>
+        </div>
+        <!-- <div class="todo">
+          <div class="head">
+            <h3>Collection List</h3>
+            <i class='bx bx-plus' ></i>
+            <i class='bx bx-filter' ></i>
+          </div>
+          <ul class="todo-list" data-simplebar>
+            <% for(let i = 0; i < coupleInfo.length; i++) { %>
+
+                <% if(coupleInfo[i].collecting === true) { %>
+
+                 <li class="completed">
+                   <p> <%= coupleInfo[i].chossonName %> &<br> <%= coupleInfo[i].kallahName %></p>
+                   <td><i class="bx bx-info-circle coupleInfo" data-id="<%= coupleInfo[i]._id %>"></i> </td>
+                 </li>
+
+               <% } 
+                } %>
+
+          </ul>
+        </div>
+      </div>
+    </main> -->
+    <!-- <script>
+        const test = document.querySelectorAll('.completed')
+        test.forEach((item) => {
+            item.addEventListener('mouseover', () => {
+                item.classList.add('deleting')
+            })
+            item.addEventListener('mouseout', () => {
+                item.classList.remove('deleting')
+            })
+        })
+    </script> -->
+    <!-- MAIN -->
+  </section>
+
+  <style>
+    /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+:root {
+  --poppins: 'Poppins', sans-serif;
+  --lato: 'Lato', sans-serif;
+  --light: #F9F9F9;
+  --blue: #3C91E6;
+  --light-blue: #CFE8FF;
+  --grey: #eee;
+  --dark-grey: #AAAAAA;
+  --dark: #342E37;
+  --red: #DB504A;
+  --yellow: #FFCE26;
+  --light-yellow: #FFF2C6;
+  --orange: #FD7238;
+  --light-orange: #FFE0D3;
+  --green: #1bf773;
+    --light-green: #D1F0E5;
+}
+html {
+  overflow-x: hidden;
+}
+body.dark {
+  --light: #0C0C1E;
+  --grey: #060714;
+  --dark: #FBFBFB;
+}
+body {
+  background: var(--grey);
+  /* background-image: linear-gradient(to bottom, white 9%, rgba(8,89,104,0.7),rgba(8,89,104,0.7),rgba(8,89,104,0.7), rgba(4,9,30,.7)), url('../assets/images/homepageBackground.jpg') !important; */
+    /* background-size: cover; */
+    /* z-index: 1; */
+    /* position: relative; */
+  overflow-x: hidden;
+}
+/* SIDEBAR */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background: var(--light);
+  z-index: 2000;
+  font-family: var(--lato);
+  transition: .3s ease;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+#sidebar::--webkit-scrollbar {
+  display: none;
+}
+#sidebar.hide {
+  width: 60px;
+}
+#sidebar .brand {
+  font-size: 24px;
+  font-weight: 700;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  color: var(--blue);
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: var(--light);
+  z-index: 500;
+  /* padding-bottom: 20px; */
+  box-sizing: content-box;
+}
+#sidebar .brand .bx {
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
+}
+#sidebar .side-menu {
+  width: 100%;
+  margin-top: 18px;
+  /* border-bottom-right-radius: 48px; */
+}
+#sidebar .side-menu li {
+  height: 48px;
+  background: transparent;
+  margin-left: 6px;
+  border-radius: 48px 0 0 48px;
+  padding: 4px;
+}
+#sidebar .side-menu li.active {
+  background: var(--grey);
+  position: relative;
+}
+#sidebar .side-menu li.active::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: -40px;
+  right: 0;
+  box-shadow: 20px 20px 0 var(--grey);
+  z-index: -1;
+}
+#sidebar .side-menu li.active::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  bottom: -40px;
+  right: 0;
+  box-shadow: 20px -20px 0 var(--grey);
+  z-index: -1;
+}
+#sidebar .side-menu li a {
+  width: 100%;
+  height: 100%;
+  background: var(--light);
+  display: flex;
+  align-items: center;
+  border-radius: 48px;
+  font-size: 16px;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+#sidebar .side-menu.top li.active a {
+  color: var(--blue);
+}
+#sidebar.hide .side-menu li a {
+  width: calc(48px - (4px * 2));
+  transition: width .3s ease;
+}
+#sidebar .side-menu li a.logout {
+  color: var(--red);
+}
+#sidebar .side-menu.top li a:hover {
+  color: var(--blue) !important;
+}
+#sidebar .side-menu li a .bx {
+  min-width: calc(60px  - ((4px + 6px) * 2));
+  display: flex;
+  justify-content: center;
+}
+/* SIDEBAR */
+/* CONTENT */
+#content {
+  position: relative;
+  width: calc(100% - 280px);
+  left: 280px;
+  transition: .3s ease;
+}
+#sidebar.hide ~ #content {
+  width: calc(100% - 60px);
+  left: 60px;
+}
+/* NAVBAR */
+#content nav {
+  height: 56px;
+  background: var(--light);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  grid-gap: 24px;
+  font-family: var(--lato);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+#content nav::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: -40px;
+  left: 0;
+  border-radius: 50%;
+  box-shadow: -20px -20px 0 var(--light);
+}
+#content nav a {
+  color: var(--dark);
+}
+#content nav .bx.bx-menu {
+  cursor: pointer;
+  color: var(--dark);
+}
+.bxs-x-circle {
+    font-size: 30px;
+    color: var(--grey);
+    transition: 200ms;
+    position: relative;
+    top: 4px;
+}
+#content main .order table tr:hover .bxs-x-circle {
+    color: var(--red);
+}
+.bx-info-circle {
+    color: var(--blue);
+    font-size: 25px;
+    position: relative;
+    top: 4px !important;
+}
+#content nav .nav-link {
+  font-size: 16px;
+  transition: .3s ease;
+}
+#content nav .nav-link:hover {
+  color: var(--blue);
+}
+.searchForm {
+  max-width: 400px;
+  width: 100%;
+  margin-right: auto;
+}
+.searchForm .form-input {
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+.searchForm .form-input input {
+  flex-grow: 1;
+  padding: 0 16px;
+  height: 100%;
+  border: none;
+  background: var(--grey);
+  border-radius: 36px 0 0 36px;
+  outline: none;
+  width: 100%;
+  color: var(--dark);
+}
+.searchForm .form-input button {
+  width: 36px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--blue);
+  color: var(--light);
+  font-size: 18px;
+  border: none;
+  outline: none;
+  border-radius: 0 36px 36px 0;
+  cursor: pointer;
+}
+#content nav .notification {
+  font-size: 20px;
+  position: relative;
+}
+#content nav .notification .num {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--light);
+  background: var(--red);
+  color: var(--light);
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#content nav .profile img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+#content nav .switch-mode {
+  display: block;
+  min-width: 50px;
+  height: 25px;
+  border-radius: 25px;
+  background: var(--grey);
+  cursor: pointer;
+  position: relative;
+}
+#content nav .switch-mode::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  bottom: 2px;
+  width: calc(25px - 4px);
+  background: var(--blue);
+  border-radius: 50%;
+  transition: all .3s ease;
+}
+#content nav #switch-mode:checked + .switch-mode::before {
+  left: calc(100% - (25px - 4px) - 2px);
+}
+/* NAVBAR */
+/* MAIN */
+#content main {
+  width: 100%;
+  padding: 36px 24px;
+  font-family: var(--poppins);
+  max-height: calc(100vh - 56px);
+  /* overflow-y: auto; */
+  /* font-family: var(--poppins); */
+}
+#content main .head-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  grid-gap: 16px;
+  flex-wrap: wrap;
+}
+#content main .head-title .left h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--dark);
+}
+#content main .head-title .left .breadcrumb {
+  display: flex;
+  align-items: center;
+  grid-gap: 16px;
+}
+#content main .head-title .left .breadcrumb li {
+  color: var(--dark);
+}
+#content main .head-title .left .breadcrumb li a {
+  color: var(--dark-grey);
+  pointer-events: none;
+}
+#content main .head-title .left .breadcrumb li a.active {
+  color: var(--blue);
+  pointer-events: unset;
+}
+#content main .head-title .btn-download {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 36px;
+  background: var(--blue);
+  color: var(--light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 10px;
+  font-weight: 500;
+}
+#content main .box-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 24px;
+  margin-top: 36px;
+}
+#content main .box-info li {
+  padding: 24px;
+  background: var(--light);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  grid-gap: 24px;
+  cursor: pointer;
+  position: relative;
+}
+#content main .box-info li .bx {
+  width: 80px;
+  height: 80px;
+  width: 120px;
+  height: 60px;
+  border-radius: 10px;
+  font-size: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 200ms ease-in-out;
+  box-shadow: 0 0 5px rgba(184, 180, 247, 0.3);
+}
+#content main .box-info li:hover .bx {
+    margin-bottom: 20px;
+  }
+  #content main .box-info li:nth-child(1) .bx {
+  background: var(--light-yellow);
+  color: var(--yellow);
+}
+#content main .box-info li:nth-child(2) .bx {
+  background: var(--light-yellow);
+  color: var(--yellow);
+}
+#content main .box-info li:nth-child(3) .bx {
+  background: var(--light-blue);
+  color: var(--blue);
+}
+#content main .box-info li .text h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--dark);
+}
+#content main .box-info li .text p {
+  color: var(--dark);  
+}
+#content main .table-data {
+  display: flex;
+  flex-wrap: wrap;
+  grid-gap: 24px;
+  margin-top: 24px;
+  width: 100%;
+  color: var(--dark);
+}
+#content main .table-data > div {
+  border-radius: 20px;
+  background: var(--light);
+  padding: 24px;
+  overflow-x: auto;
+}
+#content main .table-data .head {
+  display: flex;
+  align-items: center;
+  grid-gap: 16px;
+  margin-bottom: 24px;
+}
+#content main .table-data .head h3 {
+  margin-right: auto;
+  font-size: 24px;
+  font-weight: 600;
+  padding-top: 0 !important;
+}
+#content main .table-data .head .bx {
+  cursor: pointer;
+}
+#content main .table-data .order {
+  flex-grow: 1;
+  flex-basis: 500px;
+  height: fit-content !important;
+  width: fit-content !important;
+}
+#content main .table-data .order table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+}
+#content main .table-data .order tbody::-webkit-scrollbar, #content main .table-data .todo::-webkit-scrollbar {
+    display: none;
+}
+  .simplebar-scrollbar:before{
+    margin-right: 2px;
+    overflow: wrap;
+}
+#content main .table-data .order {
+    height: 600px;
+}
+
+.simplebar-scrollable-y {
+    /* height: 500px !important; */
+}
+#content main .table-data .todo {
+  height: 470px;
+  height: 600px !important;
+  height: fit-content !important;
+  padding-bottom: 0;
+  
+  /* padding-top: 0 !important; */
+}
+
+#content main .table-data .todo .todo-list {
+  height: 508px;
+  padding-bottom: 0;
+  /* border-top: 1px solid var(--gray); */
+}
+#content main .table-data .todo .head {
+  position: sticky;
+  top: 0 !important;
+  /* background-color: var(--light); */
+  z-index: 100000;
+}
+#content main .table-data .todo .head h3 {
+  padding-top: 24px;
+  margin-top: 0;
+}
+/* #content main .table-data .order tbody {
+    
+    border: solid black 3px;
+    height: 200px !important;
+    overflow: hidden;
+    overflow-y: scroll;
+} */
+/* #content main .table-data .order table {
+  height: 200px !important;
+  border: #060714 solid 3px;
+  overflow: hidden !important;
+} */
+/* #content main .table-data .order table tbody {
+    overflow-y: hidden;
+    height: 200px !important;
+    display: block;
+} */
+#content main .table-data .order table thead tr th:nth-child(1){
+    width: 100%;
+    /* display: table-header-group; */
+    /* display: block; */
+    /* display: inline-block; */
+    /* display: unset; */
+  }
+  #content main .table-data .order table tbody tr:nth-child(1){
+    position: sticky;
+    top: 0;
+    /* padding-bottom: 12px; */
+  font-size: 16px;
+  text-align: left;
+  /* border-bottom: 1px solid rgba(197, 195, 195, 0.723) !important; */
+  /* outline: 3px solid var(--grey); */
+  z-index: 10000;
+  font-weight: 600;
+  background: #eee;
+  background-color: #F9F9F9;
+  /* border-radius: 20px; */
+  /* background: var(--light); */
+  
+  /* outline-offset: px; */
+  }
+  #content main .table-data .order table tbody tr:nth-child(1):after {
+    content: "";
+    position: absolute;
+    /* width: 100%; */
+    height: 1px;
+    width: 40px;
+    width: 300px;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    /* right: 90%; */
+    background: #eee;
+    background: rgba(197, 195, 195, 0.723);
+    /* background: black; */
+  }
+  #content main .table-data .order table tbody tr:hover {
+    background: #eee !important;
+  }
+  #content main .table-data .order table tbody tr:nth-child(1):hover {
+    background: #F9F9F9 !important;
+  }
+  
+  #content main .table-data .order table tbody {
+    display: table-row-group;
+    height: 351px !important;
+    /* border: 1px solid black; */
+    display: block;
+    overflow-y: scroll;
+    width: 100%;
+    padding: 0;
+  }
+  #content main .table-data .order table tr {
+    display: table-row;
+    /* width: 100% !important; */
+  }
+table {
+    /* display: block; */
+    width: 100%;
+}
+.div {
+    /* height: 200px; */
+    /* display: block; */
+    /* width: fit-content; */
+    /* display: inline-block; */
+    /* overflow: hidden; */
+    /* overflow-y: scroll; */
+    /* overflow: auto; */
+    /* border: 1px solid black; */
+}
+
+#content main .table-data .order table th {
+  padding-bottom: 12px;
+  font-size: 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--grey);
+}
+#content main .table-data .order table td {
+  padding: 16px 48px;
+}
+#content main .table-data .order table tr td:first-child {
+  /* display: flex; */
+  align-items: center;
+  /* grid-gap: 12px; */
+  padding-left: 26px;
+}
+#content main .table-data .order table tr td:nth-child(3) {
+padding-right: 65;
+/* padding-left: 5px; */
+}
+#content main .table-data .order table tr td:nth-child(4) {
+    padding-right: 65px;
+}
+#content main .table-data .order table td img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#content main .table-data .order table tbody tr {
+  background-color: var(--gray);
+  cursor: pointer;
+}
+#content main .table-data .order table tbody tr:hover {
+  background: var(--light);
+}
+#content main .table-data .order table tr td .status {
+  font-size: 12px;
+  padding: 6px 16px;
+  color: white;
+  border-radius: 20px;
+  font-weight: 700;
+}
+#content main .table-data .order table tr td .status.completed {
+  background: var(--green) !important;
+}
+#content main .table-data .order table tr td .status.process {
+  background: var(--yellow);
+}
+#content main .table-data .order table tr td .status.pending {
+  background: var(--orange);
+}
+#content main .table-data .todo {
+  flex-grow: 1;
+  flex-basis: 300px;
+}
+#content main .table-data .todo .todo-list {
+  width: 100%;
+}
+#content main .table-data .todo .todo-list li {
+  width: 100%;
+  margin-bottom: 16px;
+  background: var(--grey);
+  background-color: white;
+  border-radius: 10px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#content main .table-data .todo .todo-list li .bx {
+  cursor: pointer;
+    font-size: 25px;
+}
+#content main .table-data .todo .todo-list li.completed {
+  border-left: 10px solid var(--blue);
+  transition: 200ms ease-in-out;
+}
+ .deleting{
+    /* border-left: 60px; */
+    border-left: 60px solid red !important;
+}
+#content main .table-data .todo .todo-list li.not-completed {
+  border-left: 10px solid var(--orange);
+}
+#content main .table-data .todo .todo-list li:last-child {
+  margin-bottom: 0;
+}
+/* 
+#content main .table-data .order table th {
+  padding-bottom: 12px;
+  font-size: 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--grey);
+}
+#content main .table-data .order table td {
+  padding: 16px 0;
+}
+#content main .table-data .order table tr td:first-child {
+  display: flex;
+  align-items: center;
+  grid-gap: 12px;
+  padding-left: 6px;
+}
+#content main .table-data .order table td img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#content main .table-data .order table tbody tr:hover {
+  background: var(--grey);
+}
+#content main .table-data .order table tr td .status {
+  font-size: 10px;
+  padding: 6px 16px;
+  color: var(--light);
+  border-radius: 20px;
+  font-weight: 700;
+}
+#content main .table-data .order table tr td .status.completed {
+  background: var(--blue);
+}
+#content main .table-data .order table tr td .status.process {
+  background: var(--yellow);
+}
+#content main .table-data .order table tr td .status.pending {
+  background: var(--orange);
+}
+#content main .table-data .todo {
+  flex-grow: 1;
+  flex-basis: 300px;
+}
+#content main .table-data .todo .todo-list {
+  width: 100%;
+}
+#content main .table-data .todo .todo-list li {
+  width: 100%;
+  margin-bottom: 16px;
+  background: var(--grey);
+  border-radius: 10px;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#content main .table-data .todo .todo-list li .bx {
+  cursor: pointer;
+}
+#content main .table-data .todo .todo-list li.completed {
+  border-left: 10px solid var(--blue);
+}
+#content main .table-data .todo .todo-list li.not-completed {
+  border-left: 10px solid var(--orange);
+}
+#content main .table-data .todo .todo-list li:last-child {
+  margin-bottom: 0;
+} */
+/* MAIN */
+/* CONTENT */
+@media screen and (max-width: 768px) {
+  #sidebar {
+    width: 200px;
+  }
+  #content {
+    width: calc(100% - 60px);
+    left: 200px;
+  }
+  #content nav .nav-link {
+    display: none;
+  }
+}
+@media screen and (max-width: 576px) {
+  #content nav form .form-input input {
+    display: none;
+  }
+  #content nav form .form-input button {
+    width: auto;
+    height: auto;
+    background: transparent;
+    border-radius: none;
+    color: var(--dark);
+  }
+  #content nav form.show .form-input input {
+    display: block;
+    width: 100%;
+  }
+  #content nav form.show .form-input button {
+    width: 36px;
+    height: 100%;
+    border-radius: 0 36px 36px 0;
+    color: var(--light);
+    background: var(--red);
+  }
+  #content nav form.show ~ .notification,
+  #content nav form.show ~ .profile {
+    display: none;
+  }
+  #content main .box-info {
+    grid-template-columns: 1fr;
+  }
+  #content main .table-data .head {
+    min-width: 420px;
+  }
+  #content main .table-data .order table {
+    min-width: 420px;
+  }
+  #content main .table-data .todo .todo-list {
+    min-width: 420px;
+  }
+}
   </style>
 
+  <!-- checkbox css -->
+  <style>
 
-<!-- <script src="../assets/js/menu.js"></script> -->
-<!-- <script src="../assets/js/imagePopup.js"></script> -->
+
+    input[type="checkbox"].toggle {
+  opacity: 0;
+  position: absolute;
+  left: -9000px;
+  top: -9000px;
+}
+
+input[type="checkbox"].toggle + label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transform: scale(1.6) !important;
+}
+
+input[type="checkbox"].toggle + label::before {
+  content: "";
+  width: 2em;
+  height: 1em;
+  background-color: hsl(0, 80%, 90%);
+  border-radius: 1em;
+  margin-right: .25em;
+  transition: background-color 200ms ease-in-out;
+}
+
+input[type="checkbox"].toggle + label::after {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  content: "\2715";
+  font-size: .5em;
+  height: .9em;
+  left: .2em;
+  width: 1.8em;
+  height: 1.8em;
+  background-color: hsl(0, 80%, 60%);
+  color: white;
+  border-radius: 1em;
+  transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
+}
+
+input[type="checkbox"].toggle:focus + label::before {
+  outline: 1px solid black;
+}
+
+input[type="checkbox"].toggle:checked + label::before {
+  background-color: hsl(100, 70%, 90%);
+}
+
+input[type="checkbox"].toggle:checked + label::after {
+  content: "\2713";
+  transform: translateX(100%);
+  background-color: hsl(100, 70%, 60%);
+}
+
+input[type="checkbox"].toggle:disabled + label {
+  color: #777;
+}
+
+input[type="checkbox"].toggle:disabled + label::before {
+  background-color: #CCC;
+}
+
+input[type="checkbox"].toggle:disabled + label::after {
+  background-color: #777;
+}
+  </style>
+
+  <script>
+    // status = false;
+    function addToggle()
+  {
+    // this.status = !this.status;  
+    document.querySelector("#sidebar").classList.toggle("hide");
+  }
+  
+  
+  </script>
+  <script>
+    //add couple form for admin
+    document.querySelector("#showForm").addEventListener("click", function() {
+        console.log("clicked")
+    document.querySelector(".formPopup").classList.add("active")
+    document.querySelector(".overlay").classList.add("overlayActive")
+    })
+    document.querySelector(".overlay").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+    })
+    document.querySelector("#close-btn").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    document.querySelector(".overlay").classList.remove("overlayActive")
+    })
+
+    // add couple to database form
+async function addCouple() {
+const coupleObject = {
+name : document.querySelector("#name").value,
+phoneNumber : document.querySelector("#phoneNumber").value,
+email : document.querySelector("#email").value,
+address : document.querySelector("#address").value,
+chossonName : document.querySelector("#chossonName").value,
+chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+chossonFatherName : document.querySelector("#chossonFatherName").value,
+chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+chossonMotherName : document.querySelector("#chossonMotherName").value,
+chossonOrigin : document.querySelector("#chossonOrigin").value,
+kallahName : document.querySelector("#kallahName").value,
+kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+kallahFatherName : document.querySelector("#kallahFatherName").value,
+kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+kallahMotherName : document.querySelector("#kallahMotherName").value,
+kallahOrigin : document.querySelector("#kallahOrigin").value,
+weddingDate : document.querySelector("#weddingDate").value,
+personalShopper : document.querySelector("#personalShopper").value,
+toaster : document.querySelector("#task1").checked,
+urn : document.querySelector("#task2").checked,
+kitchenTowels : document.querySelector("#task3").checked,
+vacuum : document.querySelector("#task4").checked,
+cholentPot : document.querySelector("#task5").checked,
+
+}
+const request = new Request('/admin/addEntry', {
+method: 'POST',
+body: JSON.stringify(coupleObject),
+headers: {
+    'Content-Type' : 'application/json'
+}
+})
+const response = await fetch(request)
+.then( async (res) => {
+let data = await res.json()
+
+if(data.status === true) {
+    fillInModal(data.title, data.message, true)
+    document.querySelector(".formPopup").classList.remove("active")
+    // document.querySelector(".overlay").classList.remove("overlayActive")
+    openModal()
+    clearModal()
+}
+else {
+    fillInModal(data.title, data.message, false)
+    openModal()
+
+}
+})
+}
+
+
+//control modal script
+function fillInModal(title, message, color) {
+const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
+const titleFill = document.querySelector(".title")
+const messageFill = document.querySelector(".description")
+titleFill.innerText = title
+messageFill.innerText = message 
+if(color === true) {
+iconFill.style.color = "rgb(5, 202, 5)"
+iconFill.classList.remove("fa-circle-xmark")
+iconFill.classList.add("fa-check")
+document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
+document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
+document.querySelector(".dismissButton").classList.add("dismiss-btn")
+}
+else {
+iconFill.style.color = "red"
+iconFill.classList.remove("fa-check")
+iconFill.classList.add("fa-circle-xmark")
+document.querySelector(".iconCheck").style.border = "none"
+document.querySelector(".dismissButton").classList.remove("dismiss-btn")
+document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
+}
+}
+function openModal() {
+document.querySelector(".popupModal").classList.add("active")
+document.querySelector("#subscribeEmail").value = ""
+}
+
+function clearModal() {
+document.querySelector("#name").value = ""
+document.querySelector("#email").value = ""
+document.querySelector("#phoneNumber").value = ""
+document.querySelector("#address").value = ""
+document.querySelector("#chossonName").value = ""
+document.querySelector("#chossonFatherTitle").value = ""
+document.querySelector("#chossonFatherName").value = ""
+document.querySelector("#chossonMotherTitle").value = ""
+document.querySelector("#chossonMotherName").value = ""
+document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
+document.querySelector("#kallahName").value = ""
+document.querySelector("#kallahFatherTitle").value = ""
+document.querySelector("#kallahFatherName").value = ""
+document.querySelector("#kallahMotherTitle").value = ""
+document.querySelector("#kallahMotherName").value = ""
+document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
+document.querySelector("#weddingDate").value = ""
+document.querySelector("#personalShopper").value = "Personal Shopper?"
+document.querySelector("#DCPG").value = ""
+}
+
+
+//close modal
+document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
+document.getElementsByClassName("popupModal")
+[0].classList.remove("active")
+location.reload()
+})
+
+//delete couple from database
+// const deleteCouple = document.querySelectorAll(".deleteCouple")
+//verify couple from database
+// const verifyCouple = document.querySelectorAll(".verifyCouple")
+//upload announcement
+const upload = document.querySelectorAll(".upload")
+// const databaseCouples = document.querySelectorAll(".databaseCouple")
+
+
+// Array.from(deleteCouple).forEach((el) => {
+//     el.addEventListener("click", deleteEntry)
+// })
+// Array.from(verifyCouple).forEach((el) => {
+//     el.addEventListener("click", verifyEntry)
+// })
+Array.from(upload).forEach((el) => {
+el.addEventListener("click", uploadAnnouncement)
+})
+
+
+async function deleteEntry(element) {
+console.log('click')
+console.log(element)
+const coupleId = element.getAttribute('data-id');
+const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
+{ text: 'Yes', backgroundColor: 'red', color: '#fff' },
+{ text: 'No' }
+]);
+
+if (confirmed === 0) {
+try {
+const response = await fetch('admin/deleteEntry', {
+method: 'delete',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const data = await response.json();
+console.log(data);
+location.reload();
+} catch (err) {
+console.log(err);
+}
+}
+}
+
+
+function showConfirmationModal(message, buttons) {
+return new Promise(resolve => {
+const modal = document.createElement('div');
+modal.style.position = 'fixed';
+modal.style.zIndex = '999';
+modal.style.top = '0';
+modal.style.right = '0';
+modal.style.bottom = '0';
+modal.style.left = '0';
+modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+modal.style.display = 'flex';
+modal.style.alignItems = 'center';
+modal.style.justifyContent = 'center';
+
+const innerModal = document.createElement('div');
+innerModal.style.backgroundColor = '#fff';
+innerModal.style.padding = '20px';
+innerModal.style.borderRadius = '5px';
+innerModal.style.boxShadow = '0px 2px 10px rgba(0, 0, 0, 0.3)';
+
+const messageElement = document.createElement('p');
+messageElement.textContent = message;
+messageElement.style.marginBottom = '20px';
+messageElement.style.fontSize = '20px';
+
+const buttonsContainer = document.createElement('div');
+buttonsContainer.style.display = 'flex';
+buttonsContainer.style.justifyContent = 'flex-end';
+
+buttons.forEach((button, index) => {
+const buttonElement = document.createElement('button');
+buttonElement.textContent = button.text;
+buttonElement.style.marginRight = index === buttons.length - 1 ? '0' : '10px';
+buttonElement.style.padding = '10px 20px';
+buttonElement.style.borderRadius = '5px';
+buttonElement.style.backgroundColor = button.backgroundColor || '#fff';
+buttonElement.style.color = button.color || 'black';
+buttonElement.style.border = button.border || '1px solid #ccc';
+buttonElement.style.cursor = 'pointer';
+
+buttonElement.addEventListener('click', () => {
+resolve(index);
+document.body.removeChild(modal);
+});
+
+buttonsContainer.appendChild(buttonElement);
+});
+
+innerModal.appendChild(messageElement);
+innerModal.appendChild(buttonsContainer);
+
+modal.appendChild(innerModal);
+
+document.body.appendChild(modal);
+});
+}
+
+async function verifyEntry(element) {
+console.log('begin function')
+const coupleId = element.getAttribute('data-id');
+try {
+const response = await fetch('admin/verifyEntry', {
+method: 'put',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const data = await response.json();
+console.log(data);
+
+if (data === 'verified') {
+
+
+
+const sendNewsletter = await showConfirmationModal('Would you like to send out a collection email for this newly verified couple?', [
+{ text: 'Yes', backgroundColor: 'green', color: '#fff' },
+{ text: 'No', backgroundColor: 'red', color: '#fff' }
+]);
+
+if (sendNewsletter === 0) {
+try {
+const newsletterResponse = await fetch('admin/sendNewsletter', {
+method: 'post',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ id: coupleId })
+});
+const newsletterData = await newsletterResponse.json();
+console.log(newsletterData);
+
+} catch (err) {
+console.log(err);
+}
+}
+}
+
+location.reload();
+} catch (err) {
+console.log(err);
+}
+}
+
+
+// async function deleteEntry() {
+//   const coupleId = this.getAttribute('data-id');
+//   const confirmed = await showConfirmationModal('Are you sure you want to delete this couple?', [
+//     { text: 'Yes', backgroundColor: 'red', color: '#fff' },
+//     { text: 'No' }
+//   ]);
+
+//   if (confirmed === 0) {
+//     try {
+//       const response = await fetch('admin/deleteEntry', {
+//         method: 'delete',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ id: coupleId })
+//       });
+//       const data = await response.json();
+//       console.log(data);
+//       location.reload();
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   }
+// }
+
+function uploadAnnouncement() {
+const coupleId = this.getAttribute('data-id')
+console.log('begin function')
+openForm(coupleId)
+}
+
+function openForm(coupleId) {
+// create form element
+const uploadForm = document.createElement('form')
+const fileInput = document.createElement('input')
+console.log(uploadForm)
+fileInput.type = 'file'
+uploadForm.appendChild(fileInput)
+
+// add submit button to form
+const submitButton = document.createElement('button')
+submitButton.type = 'submit'
+submitButton.innerText = 'Submit'
+uploadForm.appendChild(submitButton)
+
+// add cancel button to form
+const cancelButton = document.createElement('button')
+cancelButton.type = 'button'
+cancelButton.innerText = 'Cancel'
+uploadForm.appendChild(cancelButton)
+
+// add form to modal and display modal
+const formContainer = document.createElement('div')
+formContainer.id = 'form-container'
+formContainer.appendChild(uploadForm)
+document.body.appendChild(formContainer)
+formContainer.style.display = 'block'
+
+// add event listener to cancel button to close modal
+cancelButton.addEventListener('click', () => {
+formContainer.style.display = 'none'
+})
+
+// add submit event listener to form
+uploadForm.addEventListener('submit', async (event) => {
+event.preventDefault()
+
+// get selected file data
+const file = fileInput.files[0]
+
+// make http post request to server
+const formData = new FormData()
+formData.append('file', file)
+formData.append('coupleId', coupleId)
+const response = await fetch('/admin/uploadAnnouncement', {
+method: 'post',
+body: formData
+})
+
+// handle response
+})
+}
+
+// add styles for #form-container
+const style = document.createElement('style')
+style.innerHTML = `
+#form-container {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: none;
+justify-content: center;
+align-items: center;
+}
+
+#form-container form {
+background-color: white;
+padding: 20px;
+border-radius: 5px;
+width: 400px;
+bottom: 50%;
+left: 50%;
+position: fixed;
+}
+
+#form-container input[type="file"] {
+margin-bottom: 10px;
+}
+
+#form-container button {
+margin-right: 10px;
+background-color: #4CAF50;
+color: white;
+border: none;
+padding: 10px;
+border-radius: 5px;
+cursor: pointer;
+}
+
+#form-container button[type="submit"] {
+background-color: #008CBA;
+}
+
+#form-container button[type="button"] {
+background-color: #f44336;
+}
+`
+document.head.appendChild(style)
+
+
+
+
+
+function openCoupleInfo() {
+const coupleId = this.getAttribute('data-id')
+fetchCoupleInfo(coupleId)
+}
+
+async function fetchCoupleInfo(coupleId) {
+const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
+method: 'get',
+})
+if (response.status === 404) {
+console.error("Couple not found")
+// handle the 404 error here
+} else if (response.status !== 200) {
+console.error("Server error")
+// handle other errors here
+} else {
+const data = await response.json()
+console.log(data)
+fillInCoupleInfo(data)
+}
+}
+
+function fillInCoupleInfo(data) {
+// Get the modal elements
+const modalContent = coupleInfoModal.querySelector(".modal-content")
+const table = modalContent.querySelector(".table")
+const closeBtn = modalContent.querySelector(".close")
+
+// Fill in the data
+table.innerHTML = `
+<p>chossonName: ${data.chossonName}</p>
+<p>kallahName: ${data.kallahName}</p>
+<!-- Add more fields here as needed -->
+`
+
+// Display the modal
+coupleInfoModal.style.display = "block"
+
+// Add event listener for the close button
+closeBtn.addEventListener("click", () => {
+coupleInfoModal.style.display = "none"
+})
+}
+
+
+
+
+
+
+
+    //info modal
+            //couple info modal
+const nameFill = document.querySelector(".nameFill")
+const phoneNumberFill = document.querySelector(".phoneNumberFill")
+const emailFill = document.querySelector(".emailFill")
+const addressFill = document.querySelector(".addressFill")
+const chossonFatherFill = document.querySelector(".chossonFatherFill")
+const chossonMotherFill = document.querySelector(".chossonMotherFill")
+const kallahFatherFill = document.querySelector(".kallahFatherFill")
+const kallahMotherFill = document.querySelector(".kallahMotherFill")
+const chossonHometownFill = document.querySelector(".chossonHometownFill")
+const kallahHometownFill = document.querySelector(".kallahHometownFill")
+const weddingDateFill = document.querySelector(".weddingDateFill")
+const personalShopperFill = document.querySelector(".personalShopperFill")
+
+
+const coupleInfo = document.querySelectorAll(".coupleInfo");
+const infoModal = document.querySelector(".infoModal");
+console.log(coupleInfo[0])
+console.log(infoModal)
+
+let infoId = null;
+let isHovering = false;
+
+Array.from(coupleInfo).forEach((el) => {
+console.log('forEach')
+
+el.addEventListener("mouseover", async function() {
+console.log('mouseover')
+infoId = this.getAttribute('data-id');
+
+const response = await fetch('admin/fillInfoModal', {
+method: 'post',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({
+id: infoId
+})
+});
+
+const data = await response.json();
+console.log(data.fatherName);
+nameFill.innerHTML = data.name;
+phoneNumberFill.innerHTML = data.phoneNumber;
+emailFill.innerHTML = data.email;
+addressFill.innerHTML = data.address;
+if(data.chossonFatherName === 'Title ') {
+chossonFatherFill.innerHTML = '-'
+}
+else {
+chossonFatherFill.innerHTML = data.chossonFatherName;
+}
+if(data.chossonMotherName === 'Title ') {
+chossonMotherFill.innerHTML = '-'
+}
+else {
+chossonMotherFill.innerHTML = data.chossonMotherName;
+}
+if(data.kallahFatherName === 'Title ') {
+kallahFatherFill.innerHTML = '-'
+}
+else {
+kallahFatherFill.innerHTML = data.kallahFatherName;
+}
+if(data.kallahMotherName === 'Title ') {
+kallahMotherFill.innerHTML = '-'
+}
+else {
+kallahMotherFill.innerHTML = data.kallahMotherName;
+}
+chossonHometownFill.innerHTML = data.chossonOrigin;
+kallahHometownFill.innerHTML = data.kallahOrigin;
+weddingDateFill.innerHTML = data.weddingDate;
+personalShopperFill.innerHTML = data.personalShopper;
+
+
+isHovering = true;
+
+// add a mousemove event listener to the parent element
+// to update the position of the modal while the mouse is
+// hovering over the element
+el.parentNode.addEventListener("mousemove", function(event) {
+if (isHovering) {
+// const rect = el.getBoundingClientRect();
+// infoModal.style.top = `${event.clientY + window.scrollY - infoModal.offsetHeight - 20}px`;
+// infoModal.style.left = `${event.clientX - infoModal.offsetWidth/-2.5}px`;
+const rect = el.getBoundingClientRect();
+const modalTop = 50; // Replace with your desired top position
+const modalLeft = 720; // Replace with your desired left position
+infoModal.style.position = 'fixed';
+infoModal.style.top = `${modalTop}px`;
+infoModal.style.left = `${modalLeft}px`;
+
+
+if (!infoModal.classList.contains("activeInfoModal")) {
+infoModal.classList.add("activeInfoModal");
+}
+}
+});
+});
+
+el.addEventListener("mouseleave", function() {
+isHovering = false;
+infoModal.classList.remove("activeInfoModal");
+infoId = null;
+});
+});
+
+
+Array.from(coupleInfo).forEach((el) => {
+el.addEventListener("mouseout", function() {
+infoModal.classList.remove("activeInfoModal")
+})
+})
+
+
+</script>
+
+
 <script src="../assets/js/adminFormSlide.js"></script>
-<script src="../assets/js/searchBar.js"></script>
-
-
-</body>
-
-</html>
+  

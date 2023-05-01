@@ -29,6 +29,7 @@ const registerRoutes = require("./routes/register")
 const authRoutes = require("./Auth/route")
 
 const newAdminRoutes = require("./routes/newAdmin")
+const adminUploadRoutes = require("./routes/adminUpload")
 
 // Import functions/routes
 const connectDB = require("./config/database")
@@ -63,6 +64,7 @@ app.use('/register', registerRoutes)
 app.use('/api/Auth', authRoutes)
 
 app.use('/newAdmin', newAdminRoutes)
+app.use('/adminUpload', adminUploadRoutes)
 
 
 // Start server

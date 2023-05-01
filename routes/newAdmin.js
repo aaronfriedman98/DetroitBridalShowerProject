@@ -21,6 +21,7 @@ router.put('/verifyEntry', adminController.verifyEntry)
 router.post('/fillInfoModal', adminController.fillInfoModal)
 router.post('/sendNewsletter', adminController.sendNewsletter);
 router.post('/uploadAnnouncement', upload.single('file'), adminController.uploadAnnouncement)
+router.post('/sendNewNewsletter', adminController.sendNewNewsletter)
 
 // router.post('/getCouples', announcementsController.couplesSearch)
 
