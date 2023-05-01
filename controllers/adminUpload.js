@@ -111,9 +111,23 @@ module.exports = {
         }
     },
     deleteEntry : async (req, res) => {
+        //fake
             try{
                 await Couples.deleteOne({_id: req.body.id})
                 console.log(req.body.id)
+                return res.json('success')
+            } catch (err) {
+                console.error(err)
+                return res.json('error')
+            }
+        },
+        deleteUpload : async (req, res) => {
+            try{
+                await Couples.update({ _id: req.body.id }, { $set: { imageString: "empty", announcement: false } });
+                console.log(req.body.id)
+                await Announcements.deleteOne({tempId: req.body.id})
+                
+
                 return res.json('success')
             } catch (err) {
                 console.error(err)
@@ -624,17 +638,20 @@ console.log('success')
                 {
                   chosson: couple.chossonName,
                   kallah: couple.kallahName,
-                  imageString: couple.imageString=btoa(imageBuffer),  
+                  imageString: couple.imageString=btoa(imageBuffer), 
+                  tempId: coupleId 
                 }
             )
                 await newAnouncement.save()
                 console.log('saved announcement to db')
 
+                const count = await Announcements.countDocuments();
                 
-                
+                if (count > 2) {
+                    await Announcements.findOneAndDelete({}, { sort: { _id: 1 } })
+                  }
               
-                const oldestAnnouncement = await Announcements.findOneAndDelete({}, { sort: { _id: 1 } });
-                console.log(`Deleted oldest announcement: ${oldestAnnouncement.value}`);
+                
                 
               
 

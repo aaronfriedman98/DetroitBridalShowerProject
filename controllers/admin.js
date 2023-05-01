@@ -111,6 +111,7 @@ module.exports = {
             })
         }
     },
+    //real
     deleteEntry : async (req, res) => {
             try{
                 await Couples.deleteOne({_id: req.body.id})
@@ -160,11 +161,8 @@ module.exports = {
       const count = await NewCouple.countDocuments();
   
   if (count > 1) {
-    const oldestAnnouncement = await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
-    console.log(`Deleted oldest announcement: ${oldestAnnouncement.value}`);
-  } else {
-    console.log("Cannot delete the only document in the collection.");
-  }
+    await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
+  } 
 
     return res.json('verified');
     } else {
@@ -664,13 +662,14 @@ console.log('success')
                   chosson: couple.chossonName,
                   kallah: couple.kallahName,
                   imageString: couple.imageString=btoa(imageBuffer),  
+                  tempId: coupleId
                 }
             )
                 await newAnouncement.save()
                 console.log('saved announcement to db')
 
                 
-                
+                // wrong file
               
                 const oldestAnnouncement = await Announcements.findOneAndDelete({}, { sort: { _id: 1 } });
                 console.log(`Deleted oldest announcement: ${oldestAnnouncement.value}`);

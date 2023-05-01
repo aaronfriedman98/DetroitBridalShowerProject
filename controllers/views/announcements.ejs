@@ -193,7 +193,7 @@
             </div>
             <ul class="box-info">
 
-                
+                <% if (newAnnouncements.length > 0) { %>
                 <% newAnnouncements.forEach(couple => { %>
                   <li data-original="<%= couple.imageString %>" class="view" style="position: relative;">
                     <i class='bx bxs-bell-ring' ></i>
@@ -204,6 +204,7 @@
                     <span style="color:rgba(104, 103, 103, 0.865); position: absolute; bottom: 5px; right: 25px;">Click to view</span>
                   </li>
                   <% }) %>
+                  <% } %>
                  
               <!-- <li>
                 <i class='bx bxs-bell-ring' ></i>
@@ -224,7 +225,7 @@
                 <i class='bx bxs-party' ></i>
                 <span class="text">
                   <h3>Mazel Tov!</h3>
-                  <p>New engaged couple: <b><%= newCouple[0].chosson %></b> & <b><%= newCouple[0].kallah %></b></p>
+                  <p>New engaged couple: <br> <b><%= newCouple[0].chosson %></b> & <b><%= newCouple[0].kallah %></b></p>
                 </span>
               </li>
               <% } %>

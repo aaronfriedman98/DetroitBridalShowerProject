@@ -21,6 +21,7 @@ router.delete('/deleteUpload', adminUploadController.deleteEntry)
 router.post('/fillInfoModal', adminUploadController.fillInfoModal)
 // router.post('/sendNewsletter', adminController.sendNewsletter);
 router.post('/uploadAnnouncement', upload.single('file'), adminUploadController.uploadAnnouncement)
+router.post('/deleteUpload', adminUploadController.deleteUpload)
 
 // router.post('/getCouples', announcementsController.couplesSearch)
 

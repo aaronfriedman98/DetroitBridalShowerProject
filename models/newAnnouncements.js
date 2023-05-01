@@ -11,6 +11,9 @@ const announcementSchema = new mongoose.Schema({
     imageString : {
         type: String,
         required: false
+    },
+    tempId: {
+        type: String,
     }
 })
 
