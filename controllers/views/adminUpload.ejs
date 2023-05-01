@@ -16,6 +16,42 @@
 
 </head>
 
+<div class="imgModal">
+          
+    <img src="" class="full-img"/>
+</div>
+
+<style>
+    .imgModal{
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 30000;
+    pointer-events: none;
+    transition: 0.25s ease-out;
+}
+.full-img{
+    position: absolute;
+    height: 700px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: all 0.25s;
+}
+.full-img.open{
+    transform: translate(-50%, -50%) scale(1);
+}
+.imgModal.open{
+    opacity: 1;
+    pointer-events: all;
+}
+
+</style>
+
 <!-- overlay for adding couple popup form -->
 <!-- <div class="overlay"></div> -->
 <%- include('adminPopupForm'); -%>
@@ -867,11 +903,11 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                           <td>Remove Upload</td>
                         </tr>
                         <% coupleInfo.forEach(couple => { %>
-                          <tr data-original="<%= couple.imageString %>" class="displayCouples">
+                          <tr>
                               <td><%= couple.chossonName %></td>
                               <td><%= couple.kallahName %></td>
                               <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
-                              <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
+                              <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %> displayCouples" data-original="<%= couple.imageString %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
                               <!-- <td><button type="button" class="button verifyCouple" data-id="<%= couple._id %>">
                                 <span class="button__text" ><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
                                 <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
@@ -1619,6 +1655,9 @@ padding-right: 65;
   border-radius: 20px;
   font-weight: 700;
 }
+#content main .table-data .order table tr td .status.completed:hover {
+    box-shadow:rgb(5, 202, 5) 0px 0px 5px 0px;
+}
 #content main .table-data .order table tr td .status.completed {
   background: var(--green) !important;
 }
@@ -1873,74 +1912,8 @@ input[type="checkbox"].toggle:disabled + label::after {
   
   </script>
   <script>
-    //add couple form for admin
-    document.querySelector("#showForm").addEventListener("click", function() {
-        console.log("clicked")
-    document.querySelector(".formPopup").classList.add("active")
-    document.querySelector(".overlay").classList.add("overlayActive")
-    })
-    document.querySelector(".overlay").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-    })
-    document.querySelector("#close-btn").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-    })
-
+    
     // add couple to database form
-async function addCouple() {
-const coupleObject = {
-name : document.querySelector("#name").value,
-phoneNumber : document.querySelector("#phoneNumber").value,
-email : document.querySelector("#email").value,
-address : document.querySelector("#address").value,
-chossonName : document.querySelector("#chossonName").value,
-chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
-chossonFatherName : document.querySelector("#chossonFatherName").value,
-chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
-chossonMotherName : document.querySelector("#chossonMotherName").value,
-chossonOrigin : document.querySelector("#chossonOrigin").value,
-kallahName : document.querySelector("#kallahName").value,
-kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
-kallahFatherName : document.querySelector("#kallahFatherName").value,
-kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
-kallahMotherName : document.querySelector("#kallahMotherName").value,
-kallahOrigin : document.querySelector("#kallahOrigin").value,
-weddingDate : document.querySelector("#weddingDate").value,
-personalShopper : document.querySelector("#personalShopper").value,
-toaster : document.querySelector("#task1").checked,
-urn : document.querySelector("#task2").checked,
-kitchenTowels : document.querySelector("#task3").checked,
-vacuum : document.querySelector("#task4").checked,
-cholentPot : document.querySelector("#task5").checked,
-
-}
-const request = new Request('/admin/addEntry', {
-method: 'POST',
-body: JSON.stringify(coupleObject),
-headers: {
-    'Content-Type' : 'application/json'
-}
-})
-const response = await fetch(request)
-.then( async (res) => {
-let data = await res.json()
-
-if(data.status === true) {
-    fillInModal(data.title, data.message, true)
-    document.querySelector(".formPopup").classList.remove("active")
-    // document.querySelector(".overlay").classList.remove("overlayActive")
-    openModal()
-    clearModal()
-}
-else {
-    fillInModal(data.title, data.message, false)
-    openModal()
-
-}
-})
-}
 
 
 //control modal script
@@ -2546,6 +2519,5 @@ infoModal.classList.remove("activeInfoModal")
 
 </script>
 
-
-<script src="../assets/js/adminFormSlide.js"></script>
+<script src="../assets/js/imagePopup.js"></script>
   

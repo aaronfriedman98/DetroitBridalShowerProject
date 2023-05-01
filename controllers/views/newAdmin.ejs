@@ -165,9 +165,9 @@
             <h3>All couples</h3>
                   <!-- <i class='bx bx-search' ></i>
                   <i class='bx bx-filter' ></i> -->
-                  <form action="/announcements/search" class="searchForm">
+                  <form action="/newAdmin/search" method="GET" class="searchForm">
                       <div class="form-input">
-                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search">
+                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search" name="query" id="searchBar">
                         <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
                       </div>
                     </form>
@@ -858,7 +858,7 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                     </tr>
                   </thead> -->
                   <tbody data-simplebar style="height: 485px !important;">
-                      <tr>
+                      <tr class="header-row">
                           <td>Chosson</td>
                           <td>Kallah</td>
                           <td>Info</td>
@@ -866,26 +866,9 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                           <!-- <td>Edit</td> -->
                           <td>Delete</td>
                         </tr>
-                        <% coupleInfo.forEach(couple => { %>
-                          <tr data-original="<%= couple.imageString %>" class="displayCouples">
-                              <td><%= couple.chossonName %></td>
-                              <td><%= couple.kallahName %></td>
-                              <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
-                              <!-- <td><span class="status <% if(couple.collecting === false) { %> process <% } else { %> completed <% } %>"><% if(couple.collecting === false) { %> unverified <% } else { %> verified <% } %></span></td> -->
-                              <!-- <td><button type="button" class="button verifyCouple" data-id="<%= couple._id %>">
-                                <span class="button__text" ><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
-                                <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
-                                </span>
-                            </button></td> -->
-                            <td>
-                                <input type="checkbox" id="<%= couple._id %>" class="toggle" onclick="verifyEntry(this)" data-id="<%= couple._id %>" <% if(couple.collecting === true) { %> checked <% } %>>
-                                <label for="<%= couple._id %>" ></label>
-                            </td>
-                            <td>
-                                <i class="bx bxs-x-circle" onclick="deleteEntry(this)" data-id="<%= couple._id %>"></i>
-                            </td>
-                            </tr>
-                          <% }) %>
+
+                        <%- include('newAdminTable.ejs') -%>
+                        
 
                           
                           <style>
@@ -2090,8 +2073,8 @@ console.log(err);
 // send newsletter function
 async function sendNewNewsletter(element) {
   const confirmed = await showConfirmationModal('Are you sure you want to send out a collection email?', [
-{ text: 'Yes', backgroundColor: 'red', color: '#fff' },
-{ text: 'No' }
+{ text: 'Yes', backgroundColor: 'green', color: '#fff' },
+{ text: 'No', backgroundColor: 'red', color: '#fff' }
 ]);
 if (confirmed === 0) {
   try {
@@ -2469,7 +2452,43 @@ infoModal.classList.remove("activeInfoModal")
                 }
 
 </style>
+<script>
+  const searchB = document.querySelector('input[name="query"]');
+  const form = document.querySelector('form');
+  const filterableRows = document.querySelectorAll('.filterable');
 
+  searchB.addEventListener('input', (event) => {
+    const query = '^' + event.target.value;
+    const tbody = document.querySelector('tbody');
+
+    // Filter the rows
+    filterableRows.forEach(row => {
+      const chossonCell = row.cells[0];
+      const kallahCell = row.cells[1];
+
+      if (chossonCell.textContent.match(new RegExp(query, 'gi')) || kallahCell.textContent.match(new RegExp(query, 'gi'))) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
+
+  const inputField = document.getElementById("searchBar");
+
+  inputField.addEventListener("keypress", (event) => {
+    const key = event.key;
+    const onlyLetters = /^[a-zA-Z]*$/;
+
+    if (!onlyLetters.test(key)) {
+      event.preventDefault();
+    }
+  });
+</script>
 
 <script src="../assets/js/adminFormSlide.js"></script>
   

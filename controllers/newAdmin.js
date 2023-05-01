@@ -63,7 +63,7 @@ module.exports = {
             // console.log(query)
             // console.log('Couples: '+couples)
 
-            res.render(__dirname + '/views/coupleTableAdmin.ejs', { coupleInfo : couples })
+            res.render(__dirname + '/views/newAdminTable.ejs', { coupleInfo : couples })
         } catch (err) {
             console.error(err)
             res.render('error')

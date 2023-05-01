@@ -1,0 +1,21 @@
+
+<% coupleInfo.forEach(couple => { %>
+    <tr data-original="<%= couple.imageString %>" class="displayCouples filterable">
+        <td><%= couple.chossonName %></td>
+        <td><%= couple.kallahName %></td>
+        <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
+        <!-- <td><span class="status <% if(couple.collecting === false) { %> process <% } else { %> completed <% } %>"><% if(couple.collecting === false) { %> unverified <% } else { %> verified <% } %></span></td> -->
+        <!-- <td><button type="button" class="button verifyCouple" data-id="<%= couple._id %>">
+          <span class="button__text" ><% if (couple.collecting == false) { %> verify <% } else { %> unverify <% } %></span>
+          <span class="button__icon"><i class="fa-solid  <% if (couple.collecting === false) { %> fa-check <% } else { %> fa-xmark <% } %>"></i>
+          </span>
+      </button></td> -->
+      <td>
+          <input type="checkbox" id="<%= couple._id %>" class="toggle" onclick="verifyEntry(this)" data-id="<%= couple._id %>" <% if(couple.collecting === true) { %> checked <% } %>>
+          <label for="<%= couple._id %>" ></label>
+      </td>
+      <td>
+          <i class="bx bxs-x-circle" onclick="deleteEntry(this)" data-id="<%= couple._id %>"></i>
+      </td>
+      </tr>
+    <% }) %>
