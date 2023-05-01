@@ -201,9 +201,9 @@
             <h3>All couples</h3>
                   <!-- <i class='bx bx-search' ></i>
                   <i class='bx bx-filter' ></i> -->
-                  <form action="/announcements/search" class="searchForm">
+                  <form action="/newAdmin/search" method="GET" class="searchForm">
                       <div class="form-input">
-                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search">
+                        <input type="search" placeholder="Search" pattern="[a-zA-z]+" class="search" id="searchBar" name="query">
                         <button type="button" class="search-btn"><i class='bx bx-search' ></i></button>
                       </div>
                     </form>
@@ -903,7 +903,7 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                           <td>Remove Upload</td>
                         </tr>
                         <% coupleInfo.forEach(couple => { %>
-                          <tr>
+                          <tr class="filterable">
                               <td><%= couple.chossonName %></td>
                               <td><%= couple.kallahName %></td>
                               <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
@@ -2518,6 +2518,45 @@ infoModal.classList.remove("activeInfoModal")
 
 
 </script>
+
+<script>
+    const searchB = document.querySelector('input[name="query"]');
+    const form = document.querySelector('form');
+    const filterableRows = document.querySelectorAll('.filterable');
+  
+    searchB.addEventListener('input', (event) => {
+      const query = '^' + event.target.value;
+      const tbody = document.querySelector('tbody');
+  
+      // Filter the rows
+      filterableRows.forEach(row => {
+        const chossonCell = row.cells[0];
+        const kallahCell = row.cells[1];
+  
+        if (chossonCell.textContent.match(new RegExp(query, 'gi')) || kallahCell.textContent.match(new RegExp(query, 'gi'))) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+    });
+  
+    const inputField = document.getElementById("searchBar");
+  
+    inputField.addEventListener("keypress", (event) => {
+      const key = event.key;
+      const onlyLetters = /^[a-zA-Z]*$/;
+  
+      if (!onlyLetters.test(key)) {
+        event.preventDefault();
+      }
+    });
+  </script>
+  
 
 <script src="../assets/js/imagePopup.js"></script>
   
