@@ -921,6 +921,12 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
     <!-- MAIN -->
   </section>
 
+  <!-- loading modal -->
+  <div id="loading-message" style="display: none;">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Sending newsletter...</div>
+  </div>
+
   <style>
     /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');
@@ -2073,24 +2079,46 @@ console.log(err);
 // send newsletter function
 async function sendNewNewsletter(element) {
   const confirmed = await showConfirmationModal('Are you sure you want to send out a collection email?', [
-{ text: 'Yes', backgroundColor: 'green', color: '#fff' },
-{ text: 'No', backgroundColor: 'red', color: '#fff' }
-]);
-if (confirmed === 0) {
-  try {
-    const newsletterResponse = await fetch('newAdmin/sendNewNewsletter', {
-method: 'post',
-headers: { 'Content-Type': 'application/json' }
-});
-const newsletterData = await newsletterResponse.json();
-location.reload()
+    { text: 'Yes', backgroundColor: 'green', color: '#fff' },
+    { text: 'No', backgroundColor: 'red', color: '#fff' }
+  ]);
+  
+  if (confirmed === 0) {
+    try {
+      const loadingMessage = document.getElementById('loading-message');
+      loadingMessage.style.display = 'block';
+
+      const newsletterResponse = await fetch('newAdmin/sendNewNewsletter', {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const newsletterData = await newsletterResponse.json();
+
+      if (newsletterResponse.status >= 200 && newsletterResponse.status < 300) {
+        loadingMessage.style.display = 'none';
+
+        const sentMessage = await showConfirmationModal('Newsletter sent!', [
+          { text: 'Ok', backgroundColor: 'green', color: '#fff' },
+        ]);
+      } else {
+        loadingMessage.style.display = 'none';
+        const errorMessage = await showConfirmationModal('Error sending newsletter.', [
+          { text: 'Ok', backgroundColor: 'red', color: '#fff' },
+        ]);
+      }
+
+    } catch (err) {
+      console.log(err);
+      const loadingMessage = document.getElementById('loading-message');
+      loadingMessage.style.display = 'none';
+      const errorMessage = await showConfirmationModal('Error sending newsletter.', [
+        { text: 'Ok', backgroundColor: 'red', color: '#fff' },
+      ]);
+    }
   }
-  catch (err) {
-console.log(err);
-}
 }
 
-}
 
 // async function deleteEntry() {
 //   const coupleId = this.getAttribute('data-id');
@@ -2394,6 +2422,45 @@ infoModal.classList.remove("activeInfoModal")
 </script>
 
 <style>
+
+/* loading popup   */
+#loading-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
   /* edit buttons */
   .button {
                     display: flex;
