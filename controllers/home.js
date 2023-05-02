@@ -957,282 +957,668 @@ module.exports = {
           to: req.body.email,
           from: 'aronfriedman98@gmail.com',
           subject: 'Confirm your subscription to Detroit Bridal Shower',
-          html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-      <!--[if !mso]><!-->
-      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-      <!--<![endif]-->
-      <!--[if (gte mso 9)|(IE)]>
-      <xml>
-        <o:OfficeDocumentSettings>
-          <o:AllowPNG/>
-          <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-      </xml>
-      <![endif]-->
-      <!--[if (gte mso 9)|(IE)]>
-  <style type="text/css">
-    body {width: 600px;margin: 0 auto;}
-    table {border-collapse: collapse;}
-    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}
-    img {-ms-interpolation-mode: bicubic;}
-  </style>
-<![endif]-->
-      <style type="text/css">
-    body, p, div {
-      font-family: inherit;
-      font-size: 14px;
-    }
-    body {
-      color: #000000;
-    }
-    body a {
-      color: #1188E6;
-      text-decoration: none;
-    }
-    p { margin: 0; padding: 0; }
-    table.wrapper {
-      width:100% !important;
-      table-layout: fixed;
-      -webkit-font-smoothing: antialiased;
-      -webkit-text-size-adjust: 100%;
-      -moz-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
-    img.max-width {
-      max-width: 100% !important;
-    }
-    .column.of-2 {
-      width: 50%;
-    }
-    .column.of-3 {
-      width: 33.333%;
-    }
-    .column.of-4 {
-      width: 25%;
-    }
-    ul ul ul ul  {
-      list-style-type: disc !important;
-    }
-    ol ol {
-      list-style-type: lower-roman !important;
-    }
-    ol ol ol {
-      list-style-type: lower-latin !important;
-    }
-    ol ol ol ol {
-      list-style-type: decimal !important;
-    }
-    @media screen and (max-width:480px) {
-      .preheader .rightColumnContent,
-      .footer .rightColumnContent {
-        text-align: left !important;
-      }
-      .preheader .rightColumnContent div,
-      .preheader .rightColumnContent span,
-      .footer .rightColumnContent div,
-      .footer .rightColumnContent span {
-        text-align: left !important;
-      }
-      .preheader .rightColumnContent,
-      .preheader .leftColumnContent {
-        font-size: 80% !important;
-        padding: 5px 0;
-      }
-      table.wrapper-mobile {
-        width: 100% !important;
-        table-layout: fixed;
-      }
-      img.max-width {
-        height: auto !important;
-        max-width: 100% !important;
-      }
-      a.bulletproof-button {
-        display: block !important;
-        width: auto !important;
-        font-size: 80%;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-      .columns {
-        width: 100% !important;
-      }
-      .column {
-        display: block !important;
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-      }
-      .social-icon-column {
-        display: inline-block !important;
-      }
-    }
-  </style>
-      <!--user entered Head Start--><link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet"><style>
-body {font-family: 'Muli', sans-serif;}
-</style><!--End Head user entered-->
-    </head>
-    <body>
-      <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
-        <div class="webkit">
-          <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
-            <tr>
-              <td valign="top" bgcolor="#FFFFFF" width="100%">
-                <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0">
-                  <tr>
-                    <td width="100%">
-                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                        <tr>
-                          <td>
-                            <!--[if mso]>
-    <center>
-    <table><tr><td width="600">
-  <![endif]-->
-                                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px;" align="center">
-                                      <tr>
-                                        <td role="modules-container" style="padding:0px 0px 0px 0px; color:#000000; text-align:left;" bgcolor="#FFFFFF" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
-    <tr>
-      <td role="module-content">
-        <p></p>
-      </td>
-    </tr>
-  </table><table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" role="module" data-type="columns" style="padding:30px 20px 30px 20px;" bgcolor="#f6f6f6" data-distribution="1">
-    <tbody>
-      <tr role="module-content">
-        <td height="100%" valign="top"><table width="540" style="width:540px; border-spacing:0; border-collapse:collapse; margin:0px 10px 0px 10px;" cellpadding="0" cellspacing="0" align="left" border="0" bgcolor="" class="column column-0">
-      <tbody>
-        <tr>
-          <table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="72aac1ba-9036-4a77-b9d5-9a60d9b05cba">
-    <tbody>
-      <tr>
-        <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+          html: `<!DOCTYPE html>
+
+          <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+          <head>
+          <title></title>
+          <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+          <meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
+          <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet" type="text/css"/><!--<![endif]-->
+          <style>
+              * {
+                box-sizing: border-box;
+              }
           
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="331cde94-eb45-45dc-8852-b7dbeb9101d7">
-    <tbody>
-      <tr>
-        <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="">
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="d8508015-a2cb-488c-9877-d46adf313282">
-    <tbody>
-      <tr>
-        <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
+              body {
+                margin: 0;
+                padding: 0;
+              }
           
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="27716fe9-ee64-4a64-94f9-a4f28bc172a0">
-    <tbody>
-      <tr>
-        <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="948e3f3f-5214-4721-a90e-625a47b1c957" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-        <td style="padding:50px 30px 18px 30px; line-height:36px; text-align:inherit; background-color:#ffffff;" height="100%" valign="top" bgcolor="#ffffff" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 33px; line-height: 50px; margin-bottom:50px; display:inline-block;">${name}, thank you for your submission.</span></div><div></div></div></td>
-      </tr>
-    </tbody>
-  </table><p style="margin: 20px auto; text-align: center">Please confirm that all the information is correct.</p><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a10dcb57-ad22-4f4d-b765-1d427dfddb4e" data-mc-module-version="2019-10-22">
-    <tbody style="display: flex; flex-direction: column;">
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:10px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff; width: 100%;" >${chossonName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Father:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonFatherTitle} ${chossonFatherName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Mother: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chossonMotherTitle} ${chossonMotherName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Chosson's Hometown:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.chossonOrigin}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:in
-        herit; background-color:#ffffff;width: 100%;" >${kallahName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Father:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahFatherTitle} ${kallahFatherName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Kallah's Mother: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${kallahMotherTitle} ${kallahMotherName}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;;" ><b>Kallah's Hometown:</b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.kallahOrigin}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Phone Number: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.phoneNumber}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Email: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.email}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Address: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.address}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" >-</td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" ></td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Wedding Date: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.weddingDate}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Personal Shopper: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${req.body.personalShopper}</td>
-      </tr>
-      <tr style="border-bottom: solid 1px grey;">
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;" ><b>Detroit Chesed Package: </b></td>
-        <td style="padding:1px 30px 1px 30px; line-height:22px; text-align:inherit; background-color:#ffffff;width: 100%;" >${chesedPackage}</td>
-      </tr>
-      
-      
-    </tbody>
-  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d">
-    <tbody>
-      <tr>
-        <td style="padding:0px 0px 20px 0px;" role="module-content" bgcolor="#ffffff">
-        </td>
-      </tr>
-    </tbody>
-  </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1">
-      <tbody>
+              a[x-apple-data-detectors] {
+                color: inherit !important;
+                text-decoration: inherit !important;
+              }
+          
+              #MessageViewBody a {
+                color: inherit;
+                text-decoration: none;
+              }
+          
+              p {
+                line-height: inherit
+              }
+          
+              .desktop_hide,
+              .desktop_hide table {
+                mso-hide: all;
+                display: none;
+                max-height: 0px;
+                overflow: hidden;
+              }
+          
+              .image_block img+div {
+                display: none;
+              }
+          
+              @media (max-width:670px) {
+                .desktop_hide table.icons-inner {
+                  display: inline-block !important;
+                }
+          
+                .icons-inner {
+                  text-align: center;
+                }
+          
+                .icons-inner td {
+                  margin: 0 auto;
+                }
+          
+                .row-content {
+                  width: 100% !important;
+                }
+          
+                .mobile_hide {
+                  display: none;
+                }
+          
+                .stack .column {
+                  width: 100%;
+                  display: block;
+                }
+          
+                .mobile_hide {
+                  min-height: 0;
+                  max-height: 0;
+                  max-width: 0;
+                  overflow: hidden;
+                  font-size: 0px;
+                }
+          
+                .desktop_hide,
+                .desktop_hide table {
+                  display: table !important;
+                  max-height: none !important;
+                }
+              }
+            </style>
+          </head>
+          <body style="background-color: #fbfbfb; margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+          <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fbfbfb;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%"></td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #175df1;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 15px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-left:10px;padding-right:10px;padding-top:25px;">
+          <div style="font-family: sans-serif">
+          <div class="" style="font-size: 14px; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 16.8px; color: #ffffff; line-height: 1.2;">
+          <p style="margin: 0; font-size: 30px; text-align: center; mso-line-height-alt: 36px;"><strong><span style="font-size:38px;">Thank you for your submission, ${name}!</span></strong></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-left:10px;padding-right:10px;padding-top:10px;">
+          <div style="font-family: sans-serif">
+          <div class="" style="font-size: 14px; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 21px; color: #ffffff; line-height: 1.5;">
+          <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 33px;"><span style="font-size:22px;color:#f9c253;">Please confirm that all the information is correct.</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          <div class="spacer_block block-3" style="height:60px;line-height:60px;font-size:1px;"> </div>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Chosson:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${chossonName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Chosson's Father:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${chossonFatherTitle} ${chossonFatherName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Chosson's Mother:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${chossonMotherTitle} ${chossonMotherName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Chosson's Hometown:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.chossonOrigin}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Kallah:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${kallahName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Kallah's Father:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${kallahFatherTitle} ${kallahFatherName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">kallah's Mother:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${kallahMotherTitle} ${kallahMotherName}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-10" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Kallah's Hometown:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.kallahOrigin}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-11" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Phone Number:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.phoneNumber}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-12" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Email:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.email}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-13" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Address:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.address}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-14" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Wedding Date:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.weddingDate}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-15" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f0f8ff; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Personal Shopper:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${req.body.personalShopper}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-16" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #e8f1f9; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="25%">
+          <table border="0" cellpadding="10" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad">
+          <h1 style="margin: 0; color: #022b85; direction: ltr; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder">Detroit Chesed Package:</span></h1>
+          </td>
+          </tr>
+          </table>
+          </td>
+          <td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="75%">
+          <table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:20px;padding-top:10px;">
+          <div style="font-family: Arial, sans-serif">
+          <div class="" style="font-size: 12px; font-family: 'Cabin', Arial, 'Helvetica Neue', Helvetica, sans-serif; mso-line-height-alt: 18px; color: #393d47; line-height: 1.5;">
+          <p style="margin: 0; font-size: 12px; mso-line-height-alt: 22.5px;"><span style="font-size:15px;">${chesedPackage}</span></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-17" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650"><br><br>
+          <tbody>
         <tr>
           <td align="center" bgcolor="#ffffff" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#ffffff;">
             <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
               <tbody>
                 <tr>
-                <td align="center" bgcolor="#ffbe00" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
-                  <a href="${confirmationURL}" style="background-color:#ffbe00; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:0px; border-width:1px; color:#000000; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Confirm</a>
+                <td align="center" bgcolor="blue" class="inner-td" style="border-radius:6px; font-size:16px; text-align:center; background-color:inherit;">
+                  <a href="${confirmationURL}" style="background-color:blue; border:1px solid #ffbe00; border-color:#ffbe00; border-radius:4px; border-width:1px; color:gold; display:inline-block; font-size:14px; font-weight:normal; letter-spacing:0px; line-height:normal; padding:12px 40px 12px 40px; text-align:center; text-decoration:none; border-style:solid; font-family:inherit;" target="_blank">Confirm</a>
                 </td>
                 </tr>
               </tbody>
@@ -1240,79 +1626,94 @@ body {font-family: 'Muli', sans-serif;}
           </td>
         </tr>
       </tbody>
-    </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="7770fdab-634a-4f62-a277-1c66b2646d8d.1">
-    <tbody>
-      <tr>
-        <td style="padding:0px 0px 50px 0px;" role="module-content" bgcolor="#ffffff">
-        </td>
-      </tr>
-    </tbody>
-  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="a265ebb9-ab9c-43e8-9009-54d6151b1600" data-mc-module-version="2019-10-22">
-    <tbody>
-      <tr>
-      </tr>
-    </tbody>
-  </table><table border="0" cellpadding="0" cellspacing="0" class="module" data-role="module-button" data-type="button" role="module" style="table-layout:fixed;" width="100%" data-muid="d050540f-4672-4f31-80d9-b395dc08abe1.1">
-      <tbody>
-        <tr>
-          <td align="center" bgcolor="#6e6e6e" class="outer-td" style="padding:0px 0px 0px 0px; background-color:#6e6e6e;">
-            <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
-              <tbody>
-                <tr>
-                </td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="c37cc5b7-79f4-4ac8-b825-9645974c984e">
-    <tbody>
-      <tr>
-        
-        
-      </tr>
-    </tbody>
-  </table></td>
-        </tr>
-      </tbody>
-    </table></td>
-      </tr>
-    </tbody>
-      <tbody>
-        <tr>
-          <td align="center" bgcolor="" class="outer-td" style="padding:0px 0px 20px 0px;">
-            <table border="0" cellpadding="0" cellspacing="0" class="wrapper-mobile" style="text-align:center;">
-              <tbody>
-                <tr>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table></td>
-                                      </tr>
-                                    </table>
-                                    <!--[if mso]>
-                                  </td>
-                                </tr>
-                              </table>
-                            </center>
-                            <![endif]-->
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
           </table>
-        </div>
-      </center>
-    </body>
-  </html>`
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-18" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+          <div class="spacer_block block-1" style="height:30px;line-height:30px;font-size:1px;"> </div>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-19" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #175df1;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #175df1; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 20px; padding-top: 15px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+          <table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
+          <tr>
+          <td class="pad">
+          <div style="font-family: sans-serif">
+          <div class="" style="font-size: 14px; font-family: Cabin, Arial, Helvetica Neue, Helvetica, sans-serif; mso-line-height-alt: 25.2px; color: #ffffff; line-height: 1.8;">
+          <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px;">Detroit Bridal Shower</p>
+          <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px;"><a href="http://www.example.com/" rel="noopener" style="text-decoration: underline; color: #ffffff;" target="_blank">www.detroitBridalShower.com</a></p>
+          <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px;">bridalshower@detroitbridalshower.org<a href="http://www.example.com/" rel="noopener" style="text-decoration: none; color: #ffffff;" target="_blank"></a></p>
+          <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px;"><strong>17322 Goldwin Dr. Southfield, MI 48075</strong></p>
+          </div>
+          </div>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-20" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tbody>
+          <tr>
+          <td>
+          <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 650px;" width="650">
+          <tbody>
+          <tr>
+          <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
+          <table border="0" cellpadding="0" cellspacing="0" class="icons_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="pad" style="vertical-align: middle; color: #9d9d9d; font-family: inherit; font-size: 15px; padding-bottom: 5px; padding-top: 5px; text-align: center;">
+          <table cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
+          <tr>
+          <td class="alignment" style="vertical-align: middle; text-align: center;"><!--[if vml]><table align="left" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"><![endif]-->
+          <!--[if !vml]><!-->
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table>
+          </td>
+          </tr>
+          </tbody>
+          </table><!-- End -->
+          </body>
+          </html>
+          `
         }
         
         
