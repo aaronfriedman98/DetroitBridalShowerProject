@@ -891,6 +891,29 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
             <!-- <i class='bx bx-filter' ></i> -->
           </div>
           <ul class="todo-list" data-simplebar>
+
+            
+
+            <% let newCoupleID = ""
+            if(newCouple.length > 0) { 
+            for(let i = 0; i < coupleInfo.length; i++) {
+              if(coupleInfo[i]._id == newCouple[0].tempId) {
+                newCoupleID = coupleInfo[i]._id
+              }
+            } 
+          }%>
+            <% if(newCouple.length > 0) { %>
+              <h4 style="font-weight: 400; margin-bottom: 15px;">New Couple</h4>
+            <li class="completed">
+              <p> <%= newCouple[0].chosson %> &<br> <%= newCouple[0].kallah %></p>
+              <td><i class="bx bx-info-circle coupleInfo" data-id="<%= newCoupleID %>"></i> </td>
+            </li>
+            <% } %>
+            
+
+            <h4 style="font-weight: 400; margin-bottom: 15px;">All Couples</h4>
+
+
             <% for(let i = 0; i < coupleInfo.length; i++) { %>
 
                 <% if(coupleInfo[i].collecting === true) { %>
@@ -1844,7 +1867,7 @@ vacuum : document.querySelector("#task4").checked,
 cholentPot : document.querySelector("#task5").checked,
 
 }
-const request = new Request('/admin/addEntry', {
+const request = new Request('/newAdmin/addEntry', {
 method: 'POST',
 body: JSON.stringify(coupleObject),
 headers: {
@@ -1961,7 +1984,7 @@ const confirmed = await showConfirmationModal('Are you sure you want to delete t
 
 if (confirmed === 0) {
 try {
-const response = await fetch('admin/deleteEntry', {
+const response = await fetch('newAdmin/deleteEntry', {
 method: 'delete',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ id: coupleId })
@@ -2037,7 +2060,7 @@ async function verifyEntry(element) {
 console.log('begin function')
 const coupleId = element.getAttribute('data-id');
 try {
-const response = await fetch('admin/verifyEntry', {
+const response = await fetch('newAdmin/verifyEntry', {
 method: 'put',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ id: coupleId })
@@ -2056,7 +2079,7 @@ const sendNewsletter = await showConfirmationModal('Would you like to send out a
 
 if (sendNewsletter === 0) {
 try {
-const newsletterResponse = await fetch('admin/sendNewsletter', {
+const newsletterResponse = await fetch('newAdmin/sendNewsletter', {
 method: 'post',
 headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ id: coupleId })
@@ -2192,7 +2215,7 @@ const file = fileInput.files[0]
 const formData = new FormData()
 formData.append('file', file)
 formData.append('coupleId', coupleId)
-const response = await fetch('/admin/uploadAnnouncement', {
+const response = await fetch('adminUpload/uploadAnnouncement', {
 method: 'post',
 body: formData
 })
@@ -2260,7 +2283,7 @@ fetchCoupleInfo(coupleId)
 }
 
 async function fetchCoupleInfo(coupleId) {
-const response = await fetch(`/admin/coupleInfo/${coupleId}`, {
+const response = await fetch(`newAdmin/coupleInfo/${coupleId}`, {
 method: 'get',
 })
 if (response.status === 404) {
@@ -2335,7 +2358,7 @@ el.addEventListener("mouseover", async function() {
 console.log('mouseover')
 infoId = this.getAttribute('data-id');
 
-const response = await fetch('admin/fillInfoModal', {
+const response = await fetch('newAdmin/fillInfoModal', {
 method: 'post',
 headers: {'Content-Type': 'application/json'},
 body: JSON.stringify({
