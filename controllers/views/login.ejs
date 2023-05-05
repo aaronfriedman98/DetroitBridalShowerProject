@@ -218,7 +218,7 @@ form .signup-link a:hover{
         if (res.status === 400 || res.status === 401) {
           return display.textContent = `${data.message}. ${data.error ? data.error : ''}`
         }
-        data.role === "admin" ? location.assign('/admin') : location.assign('/')
+        data.role === "admin" ? location.assign('/newAdmin') : location.assign('/')
       } catch (err) {
         console.log(err.message)
       }

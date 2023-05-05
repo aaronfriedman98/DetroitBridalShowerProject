@@ -22,6 +22,7 @@ router.post('/fillInfoModal', adminController.fillInfoModal)
 router.post('/sendNewsletter', adminController.sendNewsletter);
 router.post('/uploadAnnouncement', upload.single('file'), adminController.uploadAnnouncement)
 router.post('/sendNewNewsletter', adminController.sendNewNewsletter)
+router.get('/unsubscribe', adminController.unsubscribe)
 
 // router.post('/getCouples', announcementsController.couplesSearch)
 

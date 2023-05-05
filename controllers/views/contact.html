@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="assets/css/headerFooter.css">
     <link rel="stylesheet" href="assets/css/contact.css">
 
-    <title>Detroit Bridal Shower</title>
+    <title>Contact</title>
 </head>
 
 
@@ -43,15 +43,16 @@
                     <ul>
                         <li><a href="/">HOME</a></li>
                         <li><a href="about">ABOUT</a></li>
-                        <li><a href="contact">CONTACT</a></li>
+                        <li><a href="contact">CONTACT US</a></li>
                         <!-- For Mobile -->
                         <div
                          class="mobileNav">
                          <!-- <li><a href="">BECOME A HOSTESS</a></li> -->
                             <li><a href="/#services">ADD A COUPLE</a></li>
                             <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                            <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                            <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
                             <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
+                            <li><a href="/#copyright"></a>JOIN MAILING LIST</li>
                         </div>
                         <!--  -->
                         <li class="drop drop-down">MORE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
@@ -59,14 +60,21 @@
                                 <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
                                 <li><a href="/#services">ADD A COUPLE</a></li>
                                 <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                                <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
                                 <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
+                                <li style="cursor: pointer;"><a href="/#copyright"></a>JOIN MAILING LIST</li>
                             </ul>
                     </ul>
                     
                 </nav>
                 <i class="fa fa-bars" onclick="showMenu()"></i>
             </section>
+
+            <script>
+                function openPDF() {
+                  window.open('../assets/images/shoppingGuide.pdf', '_blank');
+                }
+                </script>
 
 <!-- <h1 style="color: #648880; font-size: 37px; text-align: center; z-index: 10000;">CONTACT</h1>
         <div class="custom-shape-divider-top-1654779032" style="position: relative;">

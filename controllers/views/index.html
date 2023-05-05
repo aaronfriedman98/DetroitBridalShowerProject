@@ -71,7 +71,7 @@
                             <span class="divider">|</span>
                             <li><a href="about">ABOUT</a></li>
                             <span class="divider">|</span>
-                            <li><a href="contact">CONTACT</a></li>
+                            <li><a href="contact">CONTACT US</a></li>
                             <span class="divider">|</span>
                             <li class="mainNav"><a href="#services" class="link2">ADD COUPLE</a></li>
                             <span class="mainNav divider">|</span>
@@ -80,13 +80,20 @@
                             <li class="drop drop-down"><span class="mainNav">MORE </span><span class="responsiveNav">MORE </span> <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
                                 <ul class="dropDown">
                                     <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
-                                    <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                    <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
                                     <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
-                                    <li><a href="">JOIN MAILING LIST</a></li>
+                                    <li><a href="" onclick="scrollToBottom()" class="link5">JOIN MAILING LIST</a></li>
                                     <li class="responsiveNav"><a href="#services" class="link2">ADD COUPLE</a></li>
                                     <li class="responsiveNav"><a href="announcements">ANNOUNCEMENTS</a></li>
 
                                 </ul>
+
+                                <script>
+                                    document.querySelector('.link5').addEventListener('click', function(){
+                                        window.scrollTo(0, document.body.scrollHeight);
+                                    })
+                                    
+                                </script>
 
                             <style>
                                 .fa-sort-down {
@@ -107,11 +114,11 @@
                             <div class="mobileNav">
                                 <!-- <li><a href="addCouple">ADD A COUPLE</a></li> -->
                                 <!-- <li><a href="announcements">ANNOUNCEMENTS</a></li> -->
-                                <li><a href="shoppingGuide">SHOPPING GUIDE</a></li>
+                                <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
                                 <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
                                 <li><a href="addCouple">ADD A COUPLE</a></li>
-                                    <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                                <li><a href="">JOIN MAILING LIST</a></li>
+                                <li><a href="announcements">ANNOUNCEMENTS</a></li>
+                                <li><a href="#copyright" class="link5">JOIN MAILING LIST</a></li>
                             </div>
                             <!--  -->
                             <!-- <li class="drop"><a>MORE</a></li> -->
@@ -255,7 +262,7 @@
                     <i class="major fa-solid fa-user-group"></i>
                     <h3>Add A Couple</h3>
                     <p>Add a chosson and kallah to the upcoming simchos list</p>
-                    <a id="showForm" class="button1">Form</a>
+                    <a id="showForm" class="button1">Open</a>
                 </li>
                 <li>
                     <!-- <span class="icon solid major style3 fa-bullhorn serviceIcons"></span> -->
@@ -269,9 +276,15 @@
                     <i class="major fa-solid fa-bag-shopping"></i>
                     <h3>Shopping Guide</h3>
                     <p>Enjoy our shopping guide that can make your shopping decisions so much easier</p>
-                    <a href="shoppingGuide" class="button1">Visit</a>
+                    <a href="" onclick="openPDF()" class="button1">Open</a>
                 </li>
             </ul>
+
+            <script>
+                function openPDF() {
+                  window.open('../assets/images/shoppingGuide.pdf', '_blank');
+                }
+                </script>
 
             <form class="formPopup" id="couplesForm">
                 <div id="Form">
@@ -481,10 +494,15 @@
         <a href="#footer" class="link"><i class="fa-solid fa-circle-chevron-down"></i></a>
     </div> -->
 
-
+s
     </div>
 
-    
+    <style>
+        .subscribeEmail::placeholder {
+    color: rgba(255, 255, 255, 0.574);
+    opacity: 1; /* Firefox */
+}
+    </style>
 
     <footer>
 
@@ -497,8 +515,12 @@
             <div class="col-3 col1">
                 <h3>Mailing List <div class="underline"><span></span></div> </h3>
                 <form class="form">
+                    <!-- <i class="far fa-user"></i>
+                    <input type="text" class="subscribeEmailFname" placeholder="First name" name="first_name" >
+                    <i class="far fa-user"></i>
+                    <input type="text" class="subscribeEmailLname" placeholder="Last name" name="last_name" > -->
                     <i class="far fa-envelope"></i>
-                    <input type="email" id="subscribeEmail" placeholder="Enter your email" name="email"  >
+                    <input type="email" id="subscribeEmail" class="subscribeEmail" placeholder="Enter your email" name="email"  >
                     <button type="button" onclick="handleSubmit()"><i class="fas fa-arrow-right" ></i></button>
                 </form>
                 <p style="font-family: 'source sans pro'; font-size: 20px; line-height: 23px;">Add your email to our mailing list if you would like to receive updates and information on detroit engagements.</p>
@@ -537,7 +559,7 @@
             <a><i class="fas fa-phone"></i></a>
             <a><i class="fas fa-envelope"></i></a>
         </div>
-        <hr>
+        <hr id="copyright">
         <p class="copyright" id="footer">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
 
     </footer>
@@ -953,10 +975,14 @@
 
 
         const subscribeEmail = document.querySelector("#subscribeEmail")
+        // const subscribeEmailFname = document.querySelector(".subscribeEmailFname")
+        // const subscribeEmailLname = document.querySelector(".subscribeEmailLname")
 
         function handleSubmit() {
             const emailSubscription = {
-                email: subscribeEmail.value
+                email: subscribeEmail.value,
+                // first_name: subscribeEmailFname.value,
+                // last_name: subscribeEmailLname.value
             }
             const options = {
                 method: 'POST',

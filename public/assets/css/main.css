@@ -1514,6 +1514,14 @@ footer {
     font-size: 18px;
     margin-right: 10px;
 }
+.form {
+    display: flex;
+    align-items: column !important;
+}
+.form div {
+    display: flex;
+    align-items: baseline;
+}
 .form input {
     width: 100%;
     background: transparent;

@@ -213,6 +213,9 @@ html {
 .dropDown li:nth-child(4)::after {
     height: 2px !important;
 }
+.dropDown li:nth-child(5)::after {
+    height: 2px !important;
+}
 
 .headerNav ul li:nth-child(3)::after {
     width: 100%;

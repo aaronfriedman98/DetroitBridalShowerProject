@@ -11,7 +11,7 @@ const upload = multer({dest: __dirname + '/../uploads'});
 const {adminAuth} = require('../middleware/auth')
 
 
-router.get('/', adminAuth, adminController.getAdminPage)
+router.get('/', adminController.getAdminPage)
 router.get('/adminVerification', adminController.adminVerification)
 router.get('/adminUpload', adminController.adminUpload)
 router.get('/searchCouples', adminController.searchCouples)

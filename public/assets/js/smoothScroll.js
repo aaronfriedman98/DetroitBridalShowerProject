@@ -43,6 +43,14 @@ anchor4.addEventListener("click",function(e){
         block: "center"
     })
 })
+let anchor5 = document.querySelector('.link5')
+anchor5.addEventListener("click",function(e){
+    e.preventDefault()
+    document.querySelector(this.getAttribute("href")).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    })
+})
 
 
 

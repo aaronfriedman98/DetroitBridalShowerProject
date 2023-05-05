@@ -169,7 +169,9 @@ a, a:visited, a:hover, a:active {
 .rotate {
     transform: rotate(180deg);
 }
-
+.dropDown {
+  cursor: pointer;
+}
 
 /* FIX NAV HOVER */
 .dropDown li::after {
@@ -185,10 +187,12 @@ a, a:visited, a:hover, a:active {
 .dropDown li:nth-child(3)::after{
     height: 1px !important;
 }
-.dropDown li:nth-child(4)::after {
+.d5ropDown li:nth-child(4)::after {
     height: 2px !important;
 }
-
+.dropDown li:nth-child(5)::after {
+  height: 2px !important;
+}
 /*
 ==========================
      NAV DROP DOWN
