@@ -17,13 +17,12 @@ const sharp = require('sharp');
 sgMail.setApiKey(process.env.API_KEY)
 sgClient.setApiKey(process.env.API_KEY)
 
-
 module.exports = {
     getAdminUploadPage : async (req, res) => {
         try {
-            const couples = await Couples.find()
+            const couples = await Couples.find().sort({ createdAt: -1 });
             const announcements = await Announcements.find()
-            res.render(__dirname + '/views/adminUpload.ejs', {coupleInfo : couples, newAnnouncements : announcements})
+            res.render(__dirname + '/views/adminUpload.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements})
         } catch (err) {
             return res.status(500).send(err)
         }

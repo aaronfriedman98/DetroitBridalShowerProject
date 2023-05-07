@@ -269,12 +269,14 @@
                           <td>Hostesses</td>
                         </tr>
                         <% coupleInfo.forEach(couple => { %>
+                          <% if(couple.verified === true) { %>
                           <tr data-original="<%= couple.imageString %>" class="displayCouples filterable">
                               <td><%= couple.chossonName %></td>
                               <td><%= couple.kallahName %></td>
                               <td><i class="bx bx-info-circle coupleInfo" data-id="<%= couple._id %>"></i> </td>
                               <td><span class="status <% if(couple.announcement === false) { %> process <% } else { %> completed <% } %>"><% if(couple.announcement === false) { %> pending <% } else { %> view <% } %></span></td>
                             </tr>
+                            <% } %>
                           <% }) %>
                     
                     
@@ -289,12 +291,16 @@
                     <i class='bx bx-plus' id="showForm" style="font-size: 20px;"></i>
                     <i class='bx bx-dollar' style="font-size: 20px;"></i>
                     <div class="moneyModal">
-                    <p>Please send payment to Becky Friedman in one of the following ways: <br>
+                    <p>If you would like to participate in one of these bridal showers, please send an email to bridalshower@detroitbridalshower.org.<br>
+                      Payment is accepted through one of the following methods: <br>
                       <li><b>PayPal</b> - beckyfriedman1@gmail.com</li>
                       <li><b>Venmo</b> - @Becky-Friedman-8</li>
                       <li><b>Zelle</b> - beckyfriedman1@gmail.com</li>
                       <li><b>Check</b> - Made out to Detroit Bridal Shower Project. <br>
                         Mailed to 17322 Goldwin Dr, Southfield, MI 48075</li></p>
+                  </div>
+                  <div class="addCoupleModal">
+                    <p>Click to add a newly engaged couple to the bridal shower list</p>
                   </div>
                   </div>
                   
@@ -328,10 +334,20 @@
   position: relative; /* Change to relative */
 }
 
-.moneyModal {
+.bx-dollar, .bx-plus {
+  transition: 200ms;
+}
+
+.bx-dollar:hover, .bx-plus:hover {
+  cursor: pointer;
+  background:rgba(215, 214, 214, 0.865);
+  border-radius: 50%;
+}
+
+.moneyModal  {
   position: absolute;
   top: calc(100% - 40px); /* Move the modal down slightly */
-  left: calc(50% - 400px); /* Move the modal to the left */
+  left: calc(50% - 420px); /* Move the modal to the left */
   width: 400px; /* Set a width for the modal */
   padding: 10px;
   background-color: #fff;
@@ -345,11 +361,28 @@
   display: none;
 }
 
-.moneyModal p {
+.addCoupleModal {
+  position: absolute;
+  top: calc(100% - 40px); /* Move the modal down slightly */
+  left: calc(50% - 440px); /* Move the modal to the left */
+  width: 400px; /* Set a width for the modal */
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 9999;
+  text-align: center; /* Center the text */
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  display: none;
+}
+
+.moneyModal p, .addCoupleModal p {
   margin: 0;
 }
 
-.moneyModal:before {
+.moneyModal:before, .addCoupleModal:before {
   content: "";
     display: block;
     position: absolute;
@@ -363,7 +396,7 @@
     border-left: 10px solid #fff;
 }
   
-.icon-container:hover + .moneyModal {
+.icon-container:hover + .moneyModal, .icon-container:hover + .addCoupleModal {
   display: block;
 }
 
@@ -371,7 +404,9 @@
 
           <script>
             const moneyIcon = document.querySelector('.bx-dollar');
+            const addCoupleIcon = document.querySelector('.bx-plus');
 const moneyModal = document.querySelector('.moneyModal');
+const addCoupleModal = document.querySelector('.addCoupleModal');
 
 moneyIcon.addEventListener('mouseenter', () => {
   moneyModal.style.display = 'block';
@@ -386,6 +421,22 @@ moneyIcon.addEventListener('mouseleave', () => {
   moneyModal.style.opacity = 0;
   setTimeout(() => {
     moneyModal.style.display = 'none';
+  }, 300);
+});
+
+addCoupleIcon.addEventListener('mouseenter', () => {
+  addCoupleModal.style.display = 'block';
+  addCoupleModal.style.opacity = 0;
+  addCoupleModal.style.transition = 'opacity 0.3s ease-in-out';
+  setTimeout(() => {
+    addCoupleModal.style.opacity = 1;
+  }, 10);
+});
+
+addCoupleIcon.addEventListener('mouseleave', () => {
+  addCoupleModal.style.opacity = 0;
+  setTimeout(() => {
+    addCoupleModal.style.display = 'none';
   }, 300);
 });
 

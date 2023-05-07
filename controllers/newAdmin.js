@@ -113,7 +113,9 @@ module.exports = {
                 phoneNumber: req.body.phoneNumber,
                 address: req.body.address,
                 weddingDate: req.body.weddingDate,
-                personalShopper: req.body.personalShopper
+                personalShopper: req.body.personalShopper,
+                collecting: false,
+                verified: false
             }
             )
             await newCouple.save()
@@ -180,6 +182,8 @@ module.exports = {
             await Couples.updateOne({ _id: req.body.id }, { $set: { collecting: newCollectingValue } });
         
             if (newCollectingValue) {
+
+              await Couples.updateOne({ _id: req.body.id }, { $set: { verified: true } });
         
               const newCouple = new NewCouple(
                 {
@@ -225,6 +229,8 @@ module.exports = {
 ,
 sendNewsletter: async (req, res) => {
     try {
+
+      await Couples.updateOne({ _id: req.body.id }, { $set: { verified: true } });
 
         //get List ID function
       async function getListID(listName) {

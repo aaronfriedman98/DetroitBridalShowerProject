@@ -3211,9 +3211,9 @@ ${newCoupleString} <br> <br>
       
       // const dbCouple = await Couples.find({ confNumber: req.query.confNum })
       // console.log(dbCouple)
-      await Couples.update({ confNumber: req.query.confNum }, { $set: { collecting: true } })
+      await Couples.update({ confNumber: req.query.confNum }, { $set: { collecting: true, verified: true } })
       console.log(req.query.confNum)
-      console.log("couple verified")
+      console.log("couple verified and added to collection list")
 
       //send collection email to all sendgrid contacts
       const listID = await getListID('Newsletter Subscribers')
