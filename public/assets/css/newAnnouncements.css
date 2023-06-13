@@ -901,8 +901,10 @@ body {
   color: var(--yellow);
 }
 #content main .box-info li:nth-child(3) .bx {
-  background: var(--light-blue);
-  color: var(--blue);
+  background: var(--light-yellow);
+  color: var(--yellow);
+  /* background: var(--light-blue); */
+  /* color: var(--blue); */
 }
 #content main .box-info li .text h3 {
   font-size: 24px;
@@ -1081,6 +1083,7 @@ table {
 }
 #content main .table-data .order table td {
   padding: 16px 38px;
+  padding: 16px 98px;
 }
 #content main .table-data .order table tr td:first-child {
   /* display: flex; */
@@ -1162,11 +1165,24 @@ padding-right: 25;
         height: 315px !important;
         
       }
+
+      #content main .table-data .order table td {
+        padding: 16px 38px;
+        padding: 16px 68px;
+      }
 }
 @media screen and (max-width: 1000px) {
   #content main .table-data .order table tbody {
       height: 300px !important;
       
+    }
+
+    #content main .table-data .order table td {
+      padding: 16px 38px;
+      padding: 16px 48px;
+    }
+    .contain {
+      padding-bottom: 100px;
     }
 }
     
@@ -1180,6 +1196,10 @@ padding-right: 25;
   }
   #content nav .nav-link {
     display: none;
+  }
+
+  #content main .table-data .order table td {
+    padding: 16px 28px;
   }
 }
 @media screen and (max-width: 576px) {
@@ -1238,7 +1258,7 @@ padding-right: 25;
 
 .contain{
   /* height: fit-content; */
-  width: 90%;
+  width: 80%;
   background: linear-gradient(
       to right bottom,
       rgba(255, 255, 255, .7),

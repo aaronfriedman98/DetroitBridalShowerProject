@@ -646,7 +646,7 @@ console.log('success')
 
                 const count = await Announcements.countDocuments();
                 
-                if (count > 2) {
+                if (count > 3) {
                     await Announcements.findOneAndDelete({}, { sort: { _id: 1 } })
                   }
               
