@@ -32,7 +32,8 @@ const pdfBase64 = Buffer.from(pdfData).toString('base64');
 module.exports = {
     getFinancialAssistancePage : async (req, res) => {
         try {
-            res.sendFile(__dirname + '/views/financialAssistance.html')
+            // res.sendFile(__dirname + '/views/financialAssistance.html')
+            res.render('financialAssistance.ejs')
         } catch (err) {
             if (err) return res.status(500).send(err)
         }

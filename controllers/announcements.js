@@ -10,7 +10,7 @@ module.exports = {
             const announcements = await Announcements.find()
             const newCouple = await NewCouple.find()
             console.log(couples[0].image)
-            res.render(__dirname + '/views/announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
+            res.render( 'announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
         } catch (err) {
             return res.status(500).send(err)
         }
@@ -36,7 +36,7 @@ module.exports = {
             // console.log(query)
             // console.log('Couples: '+couples)
 
-            res.render(__dirname + '/views/coupleTable.ejs', { coupleInfo : couples })
+            res.render('coupleTable.ejs', { coupleInfo : couples })
         } catch (err) {
             console.error(err)
             res.render('error')

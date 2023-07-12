@@ -24,7 +24,7 @@ module.exports = {
     getAdminPage : async (req, res) => {
         try {
             const couples = await Couples.find()
-            res.render(__dirname + '/views/admin.ejs', {coupleInfo : couples})
+            res.render( 'admin.ejs', {coupleInfo : couples})
         } catch (err) {
             return res.status(500).send(err)
         }
@@ -32,7 +32,7 @@ module.exports = {
     adminVerification : async (req, res) => {
         try {
             const couples = await Couples.find()
-            res.render(__dirname + '/views/adminVerification.ejs', {coupleInfo : couples})
+            res.render( 'adminVerification.ejs', {coupleInfo : couples})
         } catch (err) {
             res.status(500).send(err)
         }
@@ -40,7 +40,7 @@ module.exports = {
     adminUpload : async (req, res) => {
         try {
             const couples = await Couples.find()
-            res.render(__dirname + '/views/adminUpload.ejs', {coupleInfo : couples})
+            res.render( 'adminUpload.ejs', {coupleInfo : couples})
         } catch (err) {
             res.status(500).send(err)
         }
@@ -62,7 +62,7 @@ module.exports = {
             // console.log(query)
             // console.log('Couples: '+couples)
 
-            res.render(__dirname + '/views/coupleTableAdmin.ejs', { coupleInfo : couples })
+            res.render( 'coupleTableAdmin.ejs', { coupleInfo : couples })
         } catch (err) {
             console.error(err)
             res.render('error')

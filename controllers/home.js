@@ -153,7 +153,8 @@ module.exports = {
         try {
             // res.render('index.ejs')
             
-            res.sendFile(__dirname + '/views/index.html')
+            // res.sendFile(__dirname + '/views/index.html')
+            res.render('index.ejs')
             
         } catch (err) {
             if (err) return res.status(500).send(err)
@@ -781,10 +782,10 @@ module.exports = {
         } else {
           throw 'Confirmation number does not match';
         }
-        res.render(__dirname + '/views/message', { title: 'Thank you!', message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
+        res.render('message.ejs', { title: 'Thank you!', message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
       } catch (error) {
         console.error(error);
-        res.render(__dirname + '/views/message', { title: 'Thank you!', message: 'Subscription was unsuccessful. Please <a href="/">try again.</a>' });
+        res.render('message.ejs', { title: 'Thank you!', message: 'Subscription was unsuccessful. Please <a href="/">try again.</a>' });
       }
     },
     // unsubscribeEmail : async (req, res) => {
@@ -2269,7 +2270,7 @@ ${newCoupleString} <br> <br>
             if (err) return res.json({
               status : false,
               title : 'Oops!',
-              message: 'There was an error with your submission. Double check your email address and try again.'
+              message: 'There was an error with your submission. Double check your email address or refresh the page and try again.'
             })
             // res.redirect("/")
         }
@@ -3193,14 +3194,14 @@ ${newCoupleString} <br> <br>
           // else {
           //   throw 'Confirmation number does not match';
           // }
-          res.render(__dirname + '/views/message', { message: 'New couple has been confirmed! Once the couple has been verified the collection will begin.', title: 'Thank you!' });
+          res.render('message.ejs', { message: 'New couple has been confirmed! Once the couple has been verified the collection will begin.', title: 'Thank you!' });
         }
         else {
-          res.render(__dirname + '/views/message', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!' })
+          res.render('message.ejs', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!' })
         }
         } catch (error) {
           console.error(error);
-          res.render(__dirname + '/views/message', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!'});
+          res.render('/views/message.ejs', { message: 'Couple submission was unsuccessful. Please <a href="/">try again.</a>', title: 'Oops!'});
         }
     },
     async verifyCouple(req, res) {
@@ -3211,7 +3212,7 @@ ${newCoupleString} <br> <br>
       
       // const dbCouple = await Couples.find({ confNumber: req.query.confNum })
       // console.log(dbCouple)
-      await Couples.update({ confNumber: req.query.confNum }, { $set: { collecting: true, verified: true } })
+      await Couples.updateMany({ confNumber: req.query.confNum }, { $set: { collecting: true, verified: true } })
       console.log(req.query.confNum)
       console.log("couple verified and added to collection list")
 
@@ -4685,7 +4686,7 @@ ${newCoupleString} <br> <br>
 console.log("email created")
 
 const instructionsMsg = {
-to: newCouple.email, // bridal shower email
+to: req.query.email, // bridal shower email
 from: `aronfriedman98@gmail.com`,
 subject: 'Instructions Email',
 html: instructionsEmail
@@ -4701,7 +4702,7 @@ const msg = {
 }
 
 //update announcement page
-const newCouple = new NewCouple(
+const newwCouple = new NewCouple(
   {
     chosson: req.query.chossonName,
     kallah: req.query.kallahName,
@@ -4720,7 +4721,7 @@ const newCouple = new NewCouple(
     tempId: req.query._id
   }
 )
-await newCouple.save()
+await newwCouple.save()
 console.log('saved new couple')
 
 const count = await NewCouple.countDocuments();
@@ -4733,11 +4734,11 @@ await sgMail.send(instructionsMsg)
 await sgMail.send(msg)
 
 await sendNewsletterToList(req, collectionEmail, listID)
-res.render(__dirname + '/views/message', {title: 'Success!', message: 'Collection email has been mailed out!'})
+res.render('message.ejs', {title: 'Success!', message: 'Collection email has been mailed out!'})
 
     }
     catch(err){
-      res.render(__dirname + '/views/message', {title: 'Oops!', message: 'Something went wrong!'})
+      res.render('message.ejs', {title: 'Oops!', message: 'Something went wrong!'})
       
     }
 

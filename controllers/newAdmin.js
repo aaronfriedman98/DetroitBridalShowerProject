@@ -6,12 +6,12 @@ const NewCouple = require('../models/newCouple')
 
 const sgMail = require('@sendgrid/mail')
 const sgClient = require('@sendgrid/client')
-const expressFileUpload = require('express-fileupload')
+// const expressFileUpload = require('express-fileupload')
 
 const fs = require('fs');
 const path = require('path');
 
-const sharp = require('sharp');
+// const sharp = require('sharp');
 
 
 
@@ -47,7 +47,7 @@ module.exports = {
           const couples = await Couples.find().sort({ createdAt: -1 });
             const announcements = await Announcements.find()
             const newCouple = await NewCouple.find()
-            res.render(__dirname + '/views/newAdmin.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements, newCouple : newCouple})
+            res.render('newAdmin.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements, newCouple : newCouple})
         } catch (err) {
             return res.status(500).send(err)
         }
@@ -55,7 +55,7 @@ module.exports = {
     adminVerification : async (req, res) => {
         try {
             const couples = await Couples.find()
-            res.render(__dirname + '/views/adminVerification.ejs', {coupleInfo : couples})
+            res.render( 'adminVerification.ejs', {coupleInfo : couples})
         } catch (err) {
             res.status(500).send(err)
         }
@@ -63,7 +63,7 @@ module.exports = {
     adminUpload : async (req, res) => {
         try {
             const couples = await Couples.find()
-            res.render(__dirname + '/views/adminUpload.ejs', {coupleInfo : couples})
+            res.render( 'adminUpload.ejs', {coupleInfo : couples})
         } catch (err) {
             res.status(500).send(err)
         }
@@ -85,7 +85,7 @@ module.exports = {
             // console.log(query)
             // console.log('Couples: '+couples)
 
-            res.render(__dirname + '/views/newAdminTable.ejs', { coupleInfo : couples })
+            res.render( 'newAdminTable.ejs', { coupleInfo : couples })
         } catch (err) {
             console.error(err)
             res.render('error')

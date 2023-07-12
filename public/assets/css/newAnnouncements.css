@@ -154,7 +154,7 @@ a, a:visited, a:hover, a:active {
 }
 
 .fa {
-    display: none !important;
+    display: none;
 }
 
 .fa-sort-down {
@@ -410,6 +410,8 @@ a, a:visited, a:hover, a:active {
     .fa {
         display: block;
         color: white;
+        color: black;
+        color: #648880;
         margin: 10px;
         font-size: 22px;
         cursor: pointer;

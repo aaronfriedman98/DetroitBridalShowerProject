@@ -1107,58 +1107,123 @@ s
 
         
 
-        async function addCouple() {
-            const coupleObject = {
-            name : document.querySelector("#name").value,
-            phoneNumber : document.querySelector("#phoneNumber").value,
-            email : document.querySelector("#email").value,
-            address : document.querySelector("#address").value,
-            chossonName : document.querySelector("#chossonName").value,
-            chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
-            chossonFatherName : document.querySelector("#chossonFatherName").value,
-            chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
-            chossonMotherName : document.querySelector("#chossonMotherName").value,
-            chossonOrigin : document.querySelector("#chossonOrigin").value,
-            kallahName : document.querySelector("#kallahName").value,
-            kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
-            kallahFatherName : document.querySelector("#kallahFatherName").value,
-            kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
-            kallahMotherName : document.querySelector("#kallahMotherName").value,
-            kallahOrigin : document.querySelector("#kallahOrigin").value,
-            weddingDate : document.querySelector("#weddingDate").value,
-            personalShopper : document.querySelector("#personalShopper").value,
-            toaster : document.querySelector("#task1").checked,
-            urn : document.querySelector("#task2").checked,
-            kitchenTowels : document.querySelector("#task3").checked,
-            vacuum : document.querySelector("#task4").checked,
-            cholentPot : document.querySelector("#task5").checked,
+
+
+
+
+async function addCouple() {
+  const loadingMessage = document.getElementById('loading-message');
+  loadingMessage.style.display = 'block';
+
+  const coupleObject = {
+    name: document.querySelector("#name").value,
+    phoneNumber: document.querySelector("#phoneNumber").value,
+    email: document.querySelector("#email").value,
+    address: document.querySelector("#address").value,
+    chossonName: document.querySelector("#chossonName").value,
+    chossonFatherTitle: document.querySelector("#chossonFatherTitle").value,
+    chossonFatherName: document.querySelector("#chossonFatherName").value,
+    chossonMotherTitle: document.querySelector("#chossonMotherTitle").value,
+    chossonMotherName: document.querySelector("#chossonMotherName").value,
+    chossonOrigin: document.querySelector("#chossonOrigin").value,
+    kallahName: document.querySelector("#kallahName").value,
+    kallahFatherTitle: document.querySelector("#kallahFatherTitle").value,
+    kallahFatherName: document.querySelector("#kallahFatherName").value,
+    kallahMotherTitle: document.querySelector("#kallahMotherTitle").value,
+    kallahMotherName: document.querySelector("#kallahMotherName").value,
+    kallahOrigin: document.querySelector("#kallahOrigin").value,
+    weddingDate: document.querySelector("#weddingDate").value,
+    personalShopper: document.querySelector("#personalShopper").value,
+    toaster: document.querySelector("#task1").checked,
+    urn: document.querySelector("#task2").checked,
+    kitchenTowels: document.querySelector("#task3").checked,
+    vacuum: document.querySelector("#task4").checked,
+    cholentPot: document.querySelector("#task5").checked
+  };
+
+  const request = new Request('/addEntry', {
+    method: 'POST',
+    body: JSON.stringify(coupleObject),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  try {
+    const response = await fetch(request);
+    const data = await response.json();
+
+    if (data.status === true) {
+      fillInModal(data.title, data.message, true);
+      document.querySelector(".formPopup").classList.remove("active");
+      document.querySelector(".overlay").classList.remove("overlayActive");
+      openModal();
+      clearModal();
+    } else {
+      fillInModal(data.title, data.message, false);
+      openModal();
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  loadingMessage.style.display = 'none';
+}
+
+        
+
+        // async function addCouple() {
+        //     const coupleObject = {
+        //     name : document.querySelector("#name").value,
+        //     phoneNumber : document.querySelector("#phoneNumber").value,
+        //     email : document.querySelector("#email").value,
+        //     address : document.querySelector("#address").value,
+        //     chossonName : document.querySelector("#chossonName").value,
+        //     chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
+        //     chossonFatherName : document.querySelector("#chossonFatherName").value,
+        //     chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
+        //     chossonMotherName : document.querySelector("#chossonMotherName").value,
+        //     chossonOrigin : document.querySelector("#chossonOrigin").value,
+        //     kallahName : document.querySelector("#kallahName").value,
+        //     kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
+        //     kallahFatherName : document.querySelector("#kallahFatherName").value,
+        //     kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
+        //     kallahMotherName : document.querySelector("#kallahMotherName").value,
+        //     kallahOrigin : document.querySelector("#kallahOrigin").value,
+        //     weddingDate : document.querySelector("#weddingDate").value,
+        //     personalShopper : document.querySelector("#personalShopper").value,
+        //     toaster : document.querySelector("#task1").checked,
+        //     urn : document.querySelector("#task2").checked,
+        //     kitchenTowels : document.querySelector("#task3").checked,
+        //     vacuum : document.querySelector("#task4").checked,
+        //     cholentPot : document.querySelector("#task5").checked,
             
-        }
-            const request = new Request('/addEntry', {
-                method: 'POST',
-                body: JSON.stringify(coupleObject),
-                headers: {
-                    'Content-Type' : 'application/json'
-                }
-            })
-            const response = await fetch(request)
-            .then( async (res) => {
-                let data = await res.json()
+        // }
+        //     const request = new Request('/addEntry', {
+        //         method: 'POST',
+        //         body: JSON.stringify(coupleObject),
+        //         headers: {
+        //             'Content-Type' : 'application/json'
+        //         }
+        //     })
+        //     const response = await fetch(request)
+        //     .then( async (res) => {
+        //         let data = await res.json()
 
-                if(data.status === true) {
-                    fillInModal(data.title, data.message, true)
-                    document.querySelector(".formPopup").classList.remove("active")
-                    document.querySelector(".overlay").classList.remove("overlayActive")
-                    openModal()
-                    clearModal()
-                }
-                else {
-                    fillInModal(data.title, data.message, false)
-                    openModal()
+        //         if(data.status === true) {
+        //             fillInModal(data.title, data.message, true)
+        //             document.querySelector(".formPopup").classList.remove("active")
+        //             document.querySelector(".overlay").classList.remove("overlayActive")
+        //             openModal()
+        //             clearModal()
+        //         }
+        //         else {
+        //             fillInModal(data.title, data.message, false)
+        //             openModal()
 
-                }
-            })
-        }
+        //         }
+        //     })
+        // }
             
 
 
@@ -1260,6 +1325,50 @@ s
 // }
 
      </script>
+
+<div id="loading-message" style="display:none;">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Processing...</div>
+  </div>
+
+
+<style>
+    #loading-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>
      <script>
 
         //display chesed package choices in input field

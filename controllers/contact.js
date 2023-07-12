@@ -4,7 +4,8 @@ const nodemailer = require("nodemailer")
 module.exports = {
     getContactPage : async (req, res) => {
         try {
-            res.sendFile(__dirname + '/views/contact.html')
+            // res.sendFile(__dirname + '/views/contact.html')
+            res.render('contact.ejs')
         } catch (err) {
             if (err) return res.status(500).send(err)
         }

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/7f87ecbd-f1fb-45be-9e79-d332d5cfac8c/resourceGroups/detroit-bridal-shower/providers/Microsoft.Web/sites/detroit-bridal-shower",
+    "appService.deploySubpath": "."
+}
