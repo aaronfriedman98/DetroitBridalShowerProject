@@ -1861,7 +1861,7 @@ body {
         width: 100%;
     }
      .mainText h1 {
-        font-size: 22px;
+        font-size: 32px !important;
         /* font-weight: 300; */
         text-transform: uppercase;
     } 
