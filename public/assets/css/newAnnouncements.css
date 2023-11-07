@@ -411,7 +411,7 @@ a, a:visited, a:hover, a:active {
         display: block;
         color: white;
         color: black;
-        color: #648880;
+        color: #648880 !important;
         margin: 10px;
         font-size: 22px;
         cursor: pointer;

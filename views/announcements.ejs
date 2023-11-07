@@ -72,7 +72,7 @@
                     <li><a href="contact">CONTACT US</a></li>
                     <!-- For Mobile -->
                     <div class="mobileNav">
-                        <li><a href="addCouple">ADD A COUPLE</a></li>
+                        <li><a href="/#services">ADD A COUPLE</a></li>
                         <li><a href="announcements">ANNOUNCEMENTS</a></li>
                         <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
                         <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
@@ -269,7 +269,7 @@
                           <td>Info</td>
                           <td>Hostesses</td>
                         </tr>
-                        <% coupleInfo.forEach(couple => { %>
+                       <% coupleInfo.forEach(couple => { %>
                           <% if(couple.verified === true) { %>
                           <tr data-original="<%= couple.imageString %>" class="displayCouples filterable">
                               <td><%= couple.chossonName %></td>
@@ -404,42 +404,42 @@
           </style>
 
           <script>
-            const moneyIcon = document.querySelector('.bx-dollar');
-            const addCoupleIcon = document.querySelector('.bx-plus');
-const moneyModal = document.querySelector('.moneyModal');
-const addCoupleModal = document.querySelector('.addCoupleModal');
+//             const moneyIcon = document.querySelector('.bx-dollar');
+//             const addCoupleIcon = document.querySelector('.bx-plus');
+// const moneyModal = document.querySelector('.moneyModal');
+// const addCoupleModal = document.querySelector('.addCoupleModal');
 
-moneyIcon.addEventListener('mouseenter', () => {
-  moneyModal.style.display = 'block';
-  moneyModal.style.opacity = 0;
-  moneyModal.style.transition = 'opacity 0.3s ease-in-out';
-  setTimeout(() => {
-    moneyModal.style.opacity = 1;
-  }, 10);
-});
+// moneyIcon.addEventListener('mouseenter', () => {
+//   moneyModal.style.display = 'block';
+//   moneyModal.style.opacity = 0;
+//   moneyModal.style.transition = 'opacity 0.3s ease-in-out';
+//   setTimeout(() => {
+//     moneyModal.style.opacity = 1;
+//   }, 10);
+// });
 
-moneyIcon.addEventListener('mouseleave', () => {
-  moneyModal.style.opacity = 0;
-  setTimeout(() => {
-    moneyModal.style.display = 'none';
-  }, 300);
-});
+// moneyIcon.addEventListener('mouseleave', () => {
+//   moneyModal.style.opacity = 0;
+//   setTimeout(() => {
+//     moneyModal.style.display = 'none';
+//   }, 300);
+// });
 
-addCoupleIcon.addEventListener('mouseenter', () => {
-  addCoupleModal.style.display = 'block';
-  addCoupleModal.style.opacity = 0;
-  addCoupleModal.style.transition = 'opacity 0.3s ease-in-out';
-  setTimeout(() => {
-    addCoupleModal.style.opacity = 1;
-  }, 10);
-});
+// addCoupleIcon.addEventListener('mouseenter', () => {
+//   addCoupleModal.style.display = 'block';
+//   addCoupleModal.style.opacity = 0;
+//   addCoupleModal.style.transition = 'opacity 0.3s ease-in-out';
+//   setTimeout(() => {
+//     addCoupleModal.style.opacity = 1;
+//   }, 10);
+// });
 
-addCoupleIcon.addEventListener('mouseleave', () => {
-  addCoupleModal.style.opacity = 0;
-  setTimeout(() => {
-    addCoupleModal.style.display = 'none';
-  }, 300);
-});
+// addCoupleIcon.addEventListener('mouseleave', () => {
+//   addCoupleModal.style.opacity = 0;
+//   setTimeout(() => {
+//     addCoupleModal.style.display = 'none';
+//   }, 300);
+// });
 
 
           </script>
@@ -598,6 +598,22 @@ else {
   kallahParentsFill.innerHTML = `${data.kallahFatherName}<br>${data.kallahMotherName}`
 }
 
+if(data.chossonMotherDivorcedName !== "") {
+  chossonParentsFill.innerHTML += `<br> ${data.chossonMotherDivorcedName}`
+}
+if(data.chossonMotherHusbandName !== "") {
+  chossonParentsFill.innerHTML += `<br> ${data.chossonMotherHusbandName}`
+}
+if(data.kallahMotherDivorcedName !== "") {
+  kallahParentsFill.innerHTML += `<br> ${data.kallahMotherDivorcedName}`
+}
+if(data.kallahMotherHusbandName !== "") {
+  kallahParentsFill.innerHTML += `<br> ${data.kallahMotherHusbandName}`
+}
+
+if(weddingDate !== "" || weddingDate !== null || weddingDate !== undefined) {
+  kallahParentsFill.innerHTML += `<br> <br> Wedding Date: ${data.weddingDate}`
+}
 
 // kallahParentsFill.innerHTML = `${kallahFatherFill} & <br>${kallahMotherFill}`
 
@@ -937,118 +953,118 @@ const weddingDate = document.querySelector("#weddingDate")
 const personalShoppers = document.querySelector("#personalShoppers")
 const chesedPackage = document.querySelector("#chesedPackage")
 
-console.log('hi')
+// console.log('hi')
 
-const Form1 = document.querySelector("#Form1")
-const Form2 = document.querySelector("#Form2")
-const Form3 = document.querySelector("#Form3")
-const Form = document.querySelector("#Form")
+// const Form1 = document.querySelector("#Form1")
+// const Form2 = document.querySelector("#Form2")
+// const Form3 = document.querySelector("#Form3")
+// const Form = document.querySelector("#Form")
 
-const Next1 = document.querySelector("#Next1")
-const Next2 = document.querySelector("#Next2")
-const Back1 = document.querySelector("#Back1")
-const Back2 = document.querySelector("#Back2")
-const Next = document.querySelector("#Next")
-const Back = document.querySelector("#Back")
+// const Next1 = document.querySelector("#Next1")
+// const Next2 = document.querySelector("#Next2")
+// const Back1 = document.querySelector("#Back1")
+// const Back2 = document.querySelector("#Back2")
+// const Next = document.querySelector("#Next")
+// const Back = document.querySelector("#Back")
 
-const progress = document.querySelector("#progress")
+// const progress = document.querySelector("#progress")
 
-Next.onclick = function() {
+// Next.onclick = function() {
     
-    if(name.value == "") {
-        showErrorModal("Please enter your name");
-    }
-    else if(phoneNumber.value == "") {
-        showErrorModal("Please enter your phone number");
-    }
-    else if(email.value == "") {
-        showErrorModal("Please enter your email");
-    }
-    else if(address.value == "") {
-        showErrorModal("Please enter your address");
-    }
-    else if(name.value !== "" && email.value !== "" && phoneNumber.value !== "" && address.value !== "") {
-        Form.style.left = "-450px";
-        Form1.style.left = "40px";
-        progress.style.width = "210px";
-    }
-}
+//     if(name.value == "") {
+//         showErrorModal("Please enter your name");
+//     }
+//     else if(phoneNumber.value == "") {
+//         showErrorModal("Please enter your phone number");
+//     }
+//     else if(email.value == "") {
+//         showErrorModal("Please enter your email");
+//     }
+//     else if(address.value == "") {
+//         showErrorModal("Please enter your address");
+//     }
+//     else if(name.value !== "" && email.value !== "" && phoneNumber.value !== "" && address.value !== "") {
+//         Form.style.left = "-450px";
+//         Form1.style.left = "40px";
+//         progress.style.width = "210px";
+//     }
+// }
 
-Next1.onclick = function() {
+// Next1.onclick = function() {
 
-    if(chossonName.value == "") {
-        showErrorModal("Please enter the Chosson's name")
-    }
-    else if(chossonOrigin.value !== "detroit" && chossonOrigin.value !== "other") {
-        showErrorModal("Please enter where the chosson is from")
-    }
+//     if(chossonName.value == "") {
+//         showErrorModal("Please enter the Chosson's name")
+//     }
+//     else if(chossonOrigin.value !== "detroit" && chossonOrigin.value !== "other") {
+//         showErrorModal("Please enter where the chosson is from")
+//     }
 
-    else if(chossonName.value !== "" && chossonOrigin.value !== "") {
+//     else if(chossonName.value !== "" && chossonOrigin.value !== "") {
 
-    Form1.style.left = "-450px";
-    Form2.style.left = "40px";
-    progress.style.width = "325px";
-    }
-}
+//     Form1.style.left = "-450px";
+//     Form2.style.left = "40px";
+//     progress.style.width = "325px";
+//     }
+// }
 
-Back.onclick = function () {
-    Form.style.left = "40px";
-    Form1.style.left = "450px";
-    progress.style.width = "100px";
-}
+// Back.onclick = function () {
+//     Form.style.left = "40px";
+//     Form1.style.left = "450px";
+//     progress.style.width = "100px";
+// }
 
-Back1.onclick = function() {
-    Form1.style.left = "40px";
-    Form2.style.left = "450px";
-    progress.style.width = "210px";
-}
+// Back1.onclick = function() {
+//     Form1.style.left = "40px";
+//     Form2.style.left = "450px";
+//     progress.style.width = "210px";
+// }
 
-Next2.onclick = function() {
+// Next2.onclick = function() {
 
-    if(kallahName.value == "") {
-        showErrorModal("Please enter the Kallah's name")
-    }
-    else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
-        showErrorModal("Please enter where the kallah is from")
-    }
-    else if(kallahName.value !== "" && kallahOrigin.value !== "") {
+//     if(kallahName.value == "") {
+//         showErrorModal("Please enter the Kallah's name")
+//     }
+//     else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
+//         showErrorModal("Please enter where the kallah is from")
+//     }
+//     else if(kallahName.value !== "" && kallahOrigin.value !== "") {
 
-    Form2.style.left = "-450px";
-    Form3.style.left = "40px";
-    progress.style.width = "450px";
-    }
-}
+//     Form2.style.left = "-450px";
+//     Form3.style.left = "40px";
+//     progress.style.width = "450px";
+//     }
+// }
 
-Back2.onclick = function() {
-    Form2.style.left = "40px";
-    Form3.style.left = "450px";
-    progress.style.width = "325px";
-}
-
-
-document.querySelector('.input-selector').addEventListener('click',()=>{
-document.querySelector('.list').classList.toggle('show')
-})
-document.querySelector('.close-btn').addEventListener('click',()=>{
-    document.querySelector('.list').classList.remove('show')
-    })
+// Back2.onclick = function() {
+//     Form2.style.left = "40px";
+//     Form3.style.left = "450px";
+//     progress.style.width = "325px";
+// }
 
 
+// document.querySelector('.input-selector').addEventListener('click',()=>{
+// document.querySelector('.list').classList.toggle('show')
+// })
+// document.querySelector('.close-btn').addEventListener('click',()=>{
+//     document.querySelector('.list').classList.remove('show')
+//     })
 
 
-document.querySelector("#showForm").addEventListener("click", function() {
-    console.log("clicked")
-    document.querySelector(".formPopup").classList.add("active")
-    document.querySelector(".overlay").classList.add("overlayActive")
-})
-document.querySelector(".overlay").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-})
-document.querySelector("#close-btn").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-})
+
+
+// document.querySelector("#showForm").addEventListener("click", function() {
+//     console.log("clicked")
+//     document.querySelector(".formPopup").classList.add("active")
+//     document.querySelector(".overlay").classList.add("overlayActive")
+// })
+// document.querySelector(".overlay").addEventListener("click", function() {
+//     document.querySelector(".formPopup").classList.remove("active")
+//     document.querySelector(".overlay").classList.remove("overlayActive")
+// })
+// document.querySelector("#close-btn").addEventListener("click", function() {
+//     document.querySelector(".formPopup").classList.remove("active")
+//     document.querySelector(".overlay").classList.remove("overlayActive")
+// })
 
 
 

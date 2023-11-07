@@ -7,17 +7,25 @@ const couplesListSchema = new mongoose.Schema({
     chossonFatherTitle: {
         type: String,
     },
-    chossonFather: {
+    chossonFatherName: {
         type: String,
         // required: true
     },
     chossonMotherTitle: {
         type: String,
     },
-    chossonMother: {
+    chossonMotherName: {
         type: String,
         // required: true
     },
+    // chossonMotherField1: {
+    //     type: String,
+    //     // required: true
+    // },
+    // chossonMotherField2: {
+    //     type: String,
+    //     // required: true
+    // },
     chossonOrigin: {
         type: String,
         required: true
@@ -29,14 +37,14 @@ const couplesListSchema = new mongoose.Schema({
     kallahFatherTitle: {
         type: String,
     },
-    kallahFather: {
+    kallahFatherName: {
         type: String,
         // required: true
     },
     kallahMotherTitle: {
         type: String,
     },
-    kallahMother: {
+    kallahMotherName: {
         type: String,
         // required: true
     },
@@ -44,21 +52,49 @@ const couplesListSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    chossonMotherDivorcedTitle: {
+        type: String,
+    },
+    chossonMotherDivorcedName: {
+        type: String,
+    },
+    chossonMotherHusbandTitle: {
+        type: String,
+    },
+    chossonMotherHusbandName: {
+        type: String,
+    },
+    kallahMotherDivorcedTitle: {
+        type: String,
+    },
+    kallahMotherDivorcedName: {
+        type: String,
+    },
+    kallahMotherHusbandTitle: {
+        type: String,
+    },
+    kallahMotherHusbandName: {
+        type: String,
+    },
     name : {
         type: String,
-        required: true
+
+        // required: true
     },
     email : {
         type: String,
-        required: true
+
+        // required: true
     },
     phoneNumber : {
         type: String,
-        required: true
+
+        // required: true
     },
     address : {
         type: String,
-        required: true
+
+        // required: true
     },
     weddingDate : {
         type: String,
@@ -88,7 +124,45 @@ const couplesListSchema = new mongoose.Schema({
     imageString : {
         type: String,
         required: false
-    }
+    },
+    chesedPackage: {
+        type: String,
+        required: false
+    },
+    chossonDeceased: {
+        type: String,
+        required: false
+    },
+    kallahDeceased: {
+        type: String,
+        required: false
+    },
+    
+    //additional parents
+    // addParentChossonFatherTitle: {
+    //     type: String,
+    // },
+    // addParentChossonFatherName: {
+    //     type: String,
+    // },
+    // addParentChossonMotherTitle: {
+    //     type: String,
+    // },
+    // addParentChossonMotherName: {
+    //     type: String,
+    // },
+    // addParentKallahFatherTitle: {
+    //     type: String,
+    // },
+    // addParentKallahFatherName: {
+    //     type: String,
+    // },
+    // addParentKallahMotherTitle: {
+    //     type: String,
+    // },
+    // addParentKallahMotherName: {
+    //     type: String,
+    // },
 
     // address: {
     //     type: String,

@@ -158,15 +158,24 @@
                     </div>
 
                     <div class="mainText fade-in">
-                    <h1 style="font-size: 65px;">What we do</h1>
+                    <h1 style="">What we do</h1>
                     <p style="text-align: justify; text-align: right; margin-top: 20px;">
-                        The Detroit Bridal Shower Project has helped many newly married couples 
+                        <!-- The Detroit Bridal Shower Project has helped many newly married couples 
                         start off their homes and begin their new life together with ease. 
                         Our website creates a platform where the community can view upcoming 
                         engagements and the hostesses of each simcha. Through our website you can add a newly engaged couple to the mailing list as well as 
                         have the option of having a personal shopper take care of the shopping on your behalf.
                         We also provide a shopping guide for those who are interested
-                        in shopping on their own. Thank you to the Detroit community for making all of this possible!
+                        in shopping on their own. Thank you to the Detroit community for making all of this possible! -->
+                        
+                        The Detroit Bridal Shower Project has been a catalyst in helping countless newlyweds embark on 
+                        their journey together, building their homes with joy and support. Our interactive platform connects 
+                        the community with upcoming engagements and showcases the esteemed hostesses behind each simcha. 
+                        By utilizing our website, you can seamlessly add a newly engaged couple to our mailing list, and even 
+                        opt for a personal shopper to take care of the shopping on your behalf. For those who prefer shopping 
+                        independently, we offer a comprehensive shopping guide. Our heartfelt gratitude goes to the Detroit community, 
+                        whose collective efforts make all of this possible!
+                        
                         <!-- The women in our community have been involved in helping our newly-weds
                         for many years. This project has helped new couples 
                         establish their new homes in a very smart and productive way. 
@@ -305,8 +314,10 @@
                 </div>
                 <div id="Form1">
                     <h3>Enter Chosson's Info</h3>
+
                     <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
                     <label class="placeholder placeholder1">Chosson's Full Name:</label>
+
                     <div class=combine>
                         <!-- <input type="" placeholder="Title" class="smallInput"> -->
                         <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
@@ -327,16 +338,69 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                     <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
-                    <label class="placeholder placeholder3">Chosson's Mother (Full Name):</label>
+                    <label class="placeholder placeholder3"><p class="nonDivorcedField">Chosson's Mother (Full Name):</p><p class="divorcedField swapField">Chosson's Father's Wife (Full Name): <span style="font-size: 12px">(optional)</span></p></label>
+                    <!-- <label class="placeholder placeholder3 divorcedField swapField">Chosson's Father's Wife (Full Name):</label> -->
                     </div>
+
+
+                    <!-- divorced edgecase-->
+                    <div class="divorced">
+                        <div class=combine>
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="chossonMotherDivorcedTitle" id="chossonMotherDivorcedTitle">
+                                <option>Title</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Rebbetzin">Rebbetzin</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonMotherDivorcedName" id="chossonMotherDivorcedName">
+                            <label class="placeholder placeholder6">Chosson's Mother (Full Name):</label>
+                        </div>
+                        <div class="combine">
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="chossonMotherHusbandTitle" id="chossonMotherHusbandTitle">
+                                <option>Title</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Rabbi">Rabbi</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherHusbandName" id="chossonMotherHusbandName">
+                        <label class="placeholder placeholder7">Chosson's Mother's Husband (Full Name): <span style="font-size: 9px">(opt.)</span></label>
+                        </div>
+                    </div>
+
+
+
                     <select class="select" name="chossonOrigin" id="chossonOrigin">
                         <option>Where is the chosson from?</option>
                         <option value="detroit">Detroit</option>
                         <option value="other">Other</option>
                     </select>
+
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
 
-                    <div class="btn-box">
+                     <!-- multiple parent option -->
+                     <!-- <span style="position: absolute; right: -37px; top: 162px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Divorced
+                        <i onclick="openParentModal1()" class="fas fa-angle-down addParent" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      <span style="position: absolute; right: -37px; top: 115px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Deceased
+                        <i onclick="openParentModal1()" class="fas fa-comment-alt addParent" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span> -->
+
+                      <span onclick="openDivorcedFields()" class="addParent divorcedButton" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Divorced
+                        <i class="fas fa-angle-down angle1" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      <span class="deseasedButton addParent" onclick="openDeceasedModal()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Deceased
+                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      
+                     <!-- <span><i onclick="openParentModal1()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 125px;"></i></span> -->
+
+                    <div class="btn-box" style="margin-top: 50px">
                         <button type="button" id="Back">Back</button>
                         <button type="button" id="Next1">Next</button>
                     </div>
@@ -367,16 +431,59 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                     <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
-                    <label class="placeholder placeholder3">Kallah's Mother (Full Name):</label>
+                    <label class="placeholder placeholder3"><p class="nonDivorcedField2">Kallah's Mother (Full Name):</p><p class="divorcedField2 swapField">Kallah's Father's Wife (Full Name): <span style="font-size: 12px">(optional)</span></p></label>
                     </div>
+
+
+                    <!-- divorced edgecase-->
+                    <div class="divorced2">
+                        <div class=combine>
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="kallahMotherDivorcedTitle" id="kallahMotherDivorcedTitle">
+                                <option>Title</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Rebbetzin">Rebbetzin</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                            <input type="text" placeholder="Kallah's Father" class="smallInput" name="kallahMotherDivorcedName" id="kallahMotherDivorcedName">
+                            <label class="placeholder placeholder6">Kallah's Mother (Full Name):</label>
+                        </div>
+                        <div class="combine">
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="kallahMotherHusbandTitle" id="kallahMotherHusbandTitle">
+                                <option>Title</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Rabbi">Rabbi</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="kallahMotherHusbandName" id="kallahMotherHusbandName">
+                        <label class="placeholder placeholder7">Kallah's Mother's Husband (Full Name): <span style="font-size: 9px">(opt.)</span></label>
+                        </div>
+                    </div>
+
+
                     <select class="select" name="kallahOrigin" id="kallahOrigin">
                         <option>Where is the kallah from?</option>
                         <option value="detroit">Detroit</option>
                         <option value="other">Other</option>
                     </select>
+
+
+                    <span onclick="openDivorcedFields2()" class="addParent divorcedButton2" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Divorced
+                        <i class="fas fa-angle-down angle2" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      <span class="deseasedButton2 addParent" onclick="openDeceasedModal2()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Deceased
+                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
 
-                    <div class="btn-box">
+                    <!-- multiple parent option -->
+                    <!-- <span><i onclick="openParentModal2()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 172px;"></i></span>
+                    <span><i onclick="openParentModal2()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 125px;"></i></span> -->
+
+                    <div class="btn-box" style="margin-top: 50px">
                         <button type="button" id="Back1">back</button>
                         <button type="button" id="Next2">Next</button>
                     </div>
@@ -476,6 +583,10 @@
             </form>
 
 
+            <!-- option to add multiple parents -->
+
+
+
             <!-- <div class="modal_wrapper">
                 <div class="shadow"></div>
                 <div class="success_wrap">
@@ -494,8 +605,185 @@
         <a href="#footer" class="link"><i class="fa-solid fa-circle-chevron-down"></i></a>
     </div> -->
 
-s
+
     </div>
+
+    <!-- chossons parents modal -->
+    <!-- <div id="myModal" class="myModal1">
+        <div class="modal modall">
+            <span class="close" onclick="closeParentModal1()">&times;</span>
+            <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p>
+            <div class="combine">
+              
+                <select class="selectTitle" name="addParentChossonFatherTitle" id="addParentChossonFatherTitle">
+                    <option>Mr.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Rebbetzin">Rebbetzin</option>
+                    <option value="Dr.">Dr.</option>
+                </select>
+            <input type="text" class="smallInput" name="addParentChossonFatherName" id="addParentChossonFatherName" placeholder="Chosson's Father (Full Name):">
+            
+            </div>
+            <div class="combine">
+                
+                <select class="selectTitle" name="addParentChossonMotherTitle" id="addParentChossonMotherTitle">
+                    <option>Mrs.</option>
+                    <option value="Mrs.">Mrs.</option>
+                    <option value="Rebbetzin">Rebbetzin</option>
+                    <option value="Dr.">Dr.</option>
+                </select>
+            <input type="text" placeholder="Chosson's Mother (Full Name):" class="smallInput" name="addParentChossonMotherName" id="addParentChossonMotherName">
+            </div>
+        
+            <button onclick="submitParentModal1()">Submit</button>
+        </div>
+    </div> -->
+
+    <!-- kallahs parents modal -->
+    <div id="myModal" class="myModal1">
+        <div class="modal modall">
+            <span class="close" onclick="closeDeceasedModal()">&times;</span>
+            <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
+            <p>If a parent of the chosson has passed away, please specify:</p>
+            <textarea name="deceased" id="deceased" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+
+            <!-- <input type="text" placeholder="Input Field 1"> -->
+            <!-- <input type="text" placeholder="Input Field 2"> -->
+            <button class="submitComment" onclick="submitDeceasedModal()">Submit</button>
+        </div>
+    </div>
+
+    <div id="myModal" class="myModal2">
+        <div class="modal modall">
+            <span class="close" onclick="closeDeceasedModal2()">&times;</span>
+            <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
+            <p>If a parent of the kallah has passed away, please specify:</p>
+            <textarea name="deceased2" id="deceased2" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+
+            <!-- <input type="text" placeholder="Input Field 1"> -->
+            <!-- <input type="text" placeholder="Input Field 2"> -->
+            <button class="submitComment" onclick="submitDeceasedModal2()">Submit</button>
+        </div>
+    </div>
+
+    <style>
+        .myModal {
+            z-index: 123456789;
+        }
+        .addParent{
+            /* transition:cubic-bezier(1, 0, 0, 1) 200ms; */
+        }
+        .addParent:hover {
+            cursor: pointer !important;
+            color: rgba(61, 58, 58, 0.756) !important;
+        }
+        .addParent:hover .fa-angle-down, .addParent:hover .fa-comment-alt {
+            color: rgba(61, 58, 58, 0.756) !important;
+        }
+
+
+        /* Styles for the modal content */
+        .myModal1 {
+            display: none;
+        }
+        .myModal2 {
+            display: none;
+        }
+        .modal {
+            background: #fffffffc !important;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            /* padding: 20px; */
+            text-align: center;
+            height: 175px !important;
+            width: 300px !important;
+
+            /* position: absolute; */
+            top: 44% !important;
+            left: 20% !important;
+            transform: translateX(100%) !important;
+        }
+        @media screen and (max-width: 980px) {
+            .modal {
+                left: -60% !important;
+                right: 80% !important;
+                top: 30% !important;
+            }
+            
+        }
+
+        /* Styles for the paragraph */
+        .modal p {
+            font-size: 16px;
+            color: rgba(0, 0, 0, 0.598);
+            line-height: normal;
+        }
+
+        /* Styles for input fields */
+        .modal input {
+            /* display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px; */
+            /* width: 100%; */
+            padding: 10px 5px;
+            margin: 5px 0;
+            border: 0;
+            border-bottom: 1px solid #999;
+            outline: none;
+            background: transparent;
+        }
+        .modall input::placeholder {
+    color: #999; /* Adjust the color to your preference */
+}
+
+        /* Close button style */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        #myModal button {
+    background: #4c4d4f;
+    color: #fff; /* Text color */
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 5px; /* Adjust the margin as needed */
+}
+#myModal button:hover {
+    background: #666; /* Darken the button on hover */
+}
+
+
+
+
+.divorced {
+    display: none;
+}
+.divorced2 {
+    display: none;
+}
+.rotate180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s; /* Add a transition for a smooth animation */
+}
+
+/* change placeholders when divorced button is clicked */
+.swapField {
+    display: none;
+}
+
+
+
+    </style>
 
     <style>
         .subscribeEmail::placeholder {
@@ -503,6 +791,10 @@ s
     opacity: 1; /* Firefox */
 }
     </style>
+
+    <script>
+        
+    </script>
 
     <footer>
 
@@ -1132,13 +1424,32 @@ async function addCouple() {
     kallahMotherTitle: document.querySelector("#kallahMotherTitle").value,
     kallahMotherName: document.querySelector("#kallahMotherName").value,
     kallahOrigin: document.querySelector("#kallahOrigin").value,
+    chossonMotherDivorcedTitle: document.querySelector("#chossonMotherDivorcedTitle").value,
+    chossonMotherDivorcedName: document.querySelector("#chossonMotherDivorcedName").value,
+    chossonMotherHusbandTitle: document.querySelector("#chossonMotherHusbandTitle").value,
+    chossonMotherHusbandName: document.querySelector("#chossonMotherHusbandName").value,
+    kallahMotherDivorcedTitle: document.querySelector("#kallahMotherDivorcedTitle").value,
+    kallahMotherDivorcedName: document.querySelector("#kallahMotherDivorcedName").value,
+    kallahMotherHusbandTitle: document.querySelector("#kallahMotherHusbandTitle").value,
+    kallahMotherHusbandName: document.querySelector("#kallahMotherHusbandName").value,
     weddingDate: document.querySelector("#weddingDate").value,
     personalShopper: document.querySelector("#personalShopper").value,
     toaster: document.querySelector("#task1").checked,
     urn: document.querySelector("#task2").checked,
     kitchenTowels: document.querySelector("#task3").checked,
     vacuum: document.querySelector("#task4").checked,
-    cholentPot: document.querySelector("#task5").checked
+    cholentPot: document.querySelector("#task5").checked,
+    chossonDeceased: document.querySelector("#deceased").value,
+    kallahDeceased: document.querySelector("#deceased2").value,
+    // addParentChossonFatherTitle: document.querySelector("#addParentChossonFatherTitle").value,
+    // addParentChossonFatherName: document.querySelector("#addParentChossonFatherName").value,
+    // addParentChossonMotherTitle: document.querySelector("#addParentChossonMotherTitle").value,
+    // addParentChossonMotherName: document.querySelector("#addParentChossonMotherName").value,
+    // addParentKallahFatherTitle: document.querySelector("#addParentKallahFatherTitle").value,
+    // addParentKallahFatherName: document.querySelector("#addParentKallahFatherName").value,
+    // addParentKallahMotherTitle: document.querySelector("#addParentKallahMotherTitle").value,
+    // addParentKallahMotherName: document.querySelector("#addParentKallahMotherName").value
+
   };
 
   const request = new Request('/addEntry', {
@@ -1156,6 +1467,8 @@ async function addCouple() {
     if (data.status === true) {
       fillInModal(data.title, data.message, true);
       document.querySelector(".formPopup").classList.remove("active");
+    //   closeParentModal1();
+    //   closeParentModal2();
       document.querySelector(".overlay").classList.remove("overlayActive");
       openModal();
       clearModal();

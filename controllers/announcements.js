@@ -7,9 +7,11 @@ module.exports = {
     getAnnouncementsPage : async (req, res) => {
         try {
             const couples = await Couples.find()
+            console.log(couples)
             const announcements = await Announcements.find()
             const newCouple = await NewCouple.find()
             console.log(couples[0].image)
+            // console.log('Data retrieved:', couples)
             res.render( 'announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
         } catch (err) {
             return res.status(500).send(err)
@@ -51,30 +53,65 @@ module.exports = {
             let kallahFather
             let kallahMother
 
-            if (couple.chossonFather === "") {
+            //additional parents
+            let chossonMotherDivorcedName
+            let chossonMotherHusband
+            let kallahMotherDivorcedName
+            let kallahMotherHusband
+
+            let weddingDate = couple.weddingDate
+            
+            if (couple.chossonFatherName === "") {
                 chossonFather = "-"
             }
             else {
-                chossonFather = couple.chossonFatherTitle + ' ' + couple.chossonFather
+                chossonFather = couple.chossonFatherTitle + ' ' + couple.chossonFatherName
             }
-            if (couple.chossonMother === "") {
+            if (couple.chossonMotherName === "") {
                 chossonMother = "-"
             }
             else {
-                chossonMother = couple.chossonMotherTitle + ' ' + couple.chossonMother
+                chossonMother = couple.chossonMotherTitle + ' ' + couple.chossonMotherName
             }
-            if (couple.kallahFather === "") {
+            if (couple.kallahFatherName === "") {
                 kallahFather = "-"
             }
             else {
-                kallahFather = couple.kallahFatherTitle + ' ' + couple.kallahFather
+                kallahFather = couple.kallahFatherTitle + ' ' + couple.kallahFatherName
             }
-            if (couple.kallahMother === "") {
+            if (couple.kallahMotherName === "") {
                 kallahMother = "-"
             }
             else {
-                kallahMother = couple.kallahMotherTitle + ' ' + couple.kallahMother
+                kallahMother = couple.kallahMotherTitle + ' ' + couple.kallahMotherName
             }
+
+            //additional parents
+            if (couple.chossonMotherDivorcedName === "") {
+                chossonMotherDivorcedName = ""
+            }
+            else {
+                chossonMotherDivorcedName = couple.chossonMotherDivorcedTitle + ' ' + couple.chossonMotherDivorcedName
+            }
+            if (couple.chossonMotherHusbandName === "") {
+                chossonMotherHusband = ""
+            }
+            else {
+                chossonMotherHusband = couple.chossonMotherHusbandTitle + ' ' + couple.chossonMotherHusbandName
+            }
+            if (couple.kallahMotherDivorcedName === "") {
+                kallahMotherDivorcedName = ""
+            }
+            else {
+                kallahMotherDivorcedName = couple.kallahMotherDivorcedTitle + ' ' + couple.kallahMotherDivorcedName
+            }
+            if (couple.kallahMotherHusbandName === "") {
+                kallahMotherHusband = ""
+            }
+            else {
+                kallahMotherHusband = couple.kallahMotherHusbandTitle + ' ' + couple.kallahMotherHusbandName
+            }
+
             // console.log(couple)
             // if (!couple) {
             //     return res.status(404).json({ error: "Couple not found" })
@@ -86,6 +123,11 @@ module.exports = {
                 chossonMotherName: chossonMother,
                 kallahFatherName: kallahFather,
                 kallahMotherName: kallahMother,
+                chossonMotherDivorcedName: chossonMotherDivorcedName,
+                chossonMotherHusbandName: chossonMotherHusband,
+                kallahMotherDivorcedName: kallahMotherDivorcedName,
+                kallahMotherHusbandName: kallahMotherHusband,
+                weddingDate: weddingDate
     
             })
         } catch (err) {

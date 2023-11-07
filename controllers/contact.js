@@ -24,7 +24,7 @@ module.exports = {
             
                 const info = await transporter.sendMail({
                     from: 'Detroit Bridal Shower <lyftscooter@outlook.com>',
-                    to: 'afriedman@woodmontcollege.edu',
+                    to: 'aronfriedman98@gmail.com',
                     subject: 'Detroit Bridal Shower Inquiry',
                     html: ` <h2>Message:</h2>
                             <p>

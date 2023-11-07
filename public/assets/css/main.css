@@ -681,10 +681,22 @@ input:focus + .placeholder03, input:not(:placeholder-shown) + .placeholder03 {
 }
 input:focus + .placeholder3, input:not(:placeholder-shown) + .placeholder3 {
     top: 154px !important;
+    left: 74px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+/* input:focus + .divorcedField, input:not(:placeholder-shown) + .divorcedField {
+    top: 154px !important;
     left: 75px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
+input:focus + .divorcedField {
+    top: 154px !important;
+    left: 75px;
+    color: #84aa6d;
+    transform: scale(.8);
+} */
 
 .placeholder04 {
     top: 220px;
@@ -703,7 +715,7 @@ input:focus + .placeholder04, input:not(:placeholder-shown) + .placeholder04 {
 }
 input:focus + .placeholder4, input:not(:placeholder-shown) + .placeholder4 {
     top: 108px !important;
-    left: 189px;
+    left: 186px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
@@ -714,7 +726,27 @@ input:focus + .placeholder4, input:not(:placeholder-shown) + .placeholder4 {
 }
 input:focus + .placeholder5, input:not(:placeholder-shown) + .placeholder5 {
     top: 202px !important;
-    left: -15px;
+    left: -17px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+.placeholder6 {
+    top: 224px !important;
+    left: 88px;
+}
+input:focus + .placeholder6, input:not(:placeholder-shown) + .placeholder6 {
+    top: 202px !important;
+    left: 77px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+.placeholder7 {
+    top: 270px !important;
+    left: 88px;
+}
+input:focus + .placeholder7, input:not(:placeholder-shown) + .placeholder7 {
+    top: 250px !important;
+    left: 74px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
@@ -1687,7 +1719,7 @@ body {
         margin-top: 20px;
         font-size: 22px;
         right: 20px;
-        color: #648880;
+        color: #648880 !important;
         
     }
     .mobileNav li::after {
@@ -1712,7 +1744,8 @@ body {
         width: 100%;
     }
      .mainText h1 {
-        font-size: 57px !important;
+        /* font-size: 57px; */
+        font-size: 65px !important;
         margin-top: 30;
         margin-bottom: 20px !important
         /* font-weight: 300; */

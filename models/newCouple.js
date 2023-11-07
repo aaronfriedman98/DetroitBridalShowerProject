@@ -46,7 +46,7 @@ const newCoupleSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        // required: true
     },
     phoneNumber: {
         type: String,

@@ -20,7 +20,7 @@ sgClient.setApiKey(process.env.API_KEY)
 module.exports = {
     getAdminUploadPage : async (req, res) => {
         try {
-            const couples = await Couples.find().sort({ createdAt: -1 });
+            const couples = await Couples.find()//.sort({ createdAt: -1 });
             const announcements = await Announcements.find()
             res.render( 'adminUpload.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements})
         } catch (err) {

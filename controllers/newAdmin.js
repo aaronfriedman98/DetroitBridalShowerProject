@@ -44,7 +44,7 @@ async function deleteContactFromList(listID, contact) {
 module.exports = {
     getAdminPage : async (req, res) => {
         try {
-          const couples = await Couples.find().sort({ createdAt: -1 });
+          const couples = await Couples.find()//.sort({ createdAt: -1 });
             const announcements = await Announcements.find()
             const newCouple = await NewCouple.find()
             res.render('newAdmin.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements, newCouple : newCouple})
@@ -153,7 +153,7 @@ module.exports = {
             return res.json({
                 status : false,
                 title : 'Error',
-                message: 'There was an error submitting your information. Please try again.'
+                message: 'There was an newsletter your information. Please try again.'
             })
         }
     },
@@ -780,8 +780,8 @@ const collectionEmail = `<!DOCTYPE html>
 <td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
 <div style="font-family: 'Times New Roman', serif">
 <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you would like to add a newly engaged couple to this bridal shower list, please visit our website <u>here.</u></p>
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">You can also view all of the past hostesses on our website on the <u>announcements</u> page.</p>
+<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you would like to add a newly engaged couple to this bridal shower list, please visit our website <u><a href="https://detroit-bridal-shower.azurewebsites.net/">here</a>.</u></p>
+<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">You can also view all of the past hostesses on our website on the <u><a href="https://detroit-bridal-shower.azurewebsites.net/announcements">announcements</a></u> page.</p>
 </div>
 </div>
 </td>
@@ -1711,20 +1711,20 @@ const instructionsEmail = `<!DOCTYPE html>
 </body>
 </html>`
 
-console.log("email created")
+console.log("email created1")
 
 const instructionsMsg = {
 to: newCouple.email, // bridal shower email
-from: `aronfriedman98@gmail.com`,
+from: `bridalshower@detroitbridalshower.org`,
 subject: 'Instructions Email',
 html: instructionsEmail
 }
 
-console.log("email created")
+console.log("email created2")
 
 const msg = {
 to: newCouple.email, // bridal shower email
-from: `aronfriedman98@gmail.com`,
+from: `bridalshower@detroitbridalshower.org`,
 subject: 'Personal Collection Email',
 html: personalCollectionEmail
 }
@@ -3247,18 +3247,20 @@ if(count > 0) {
 
 instructionsMsg = {
 to: newCouple.email, // bridal shower email
-from: `aronfriedman98@gmail.com`,
+from: `bridalshower@detroitbridalshower.org`,
 subject: 'Instructions Email',
 html: instructionsEmail
 }
 
 msg = {
 to: newCouple.email, // bridal shower email
-from: `aronfriedman98@gmail.com`,
+from: `bridalshower@detroitbridalshower.org`,
 subject: 'Personal Collection Email',
 html: personalCollectionEmail
 }
 }
+
+console.log("almost there")
 
 
 
@@ -3428,7 +3430,7 @@ async function sendNewsletterToList(req, htmlNewsletter, listID) {
     console.log("step 6: " + unsubscribeURL)
     const msg = {
       to: subscriber.email, // Change to your recipient
-      from: "aronfriedman98@gmail.com", // Change to your verified sender
+      from: "bridalshower@detroitbridalshower.org", // Change to your verified sender
       subject: 'newsletter',
       html: htmlNewsletter + `<a href="${unsubscribeURL}">Unsubscribe</a>`
     }
