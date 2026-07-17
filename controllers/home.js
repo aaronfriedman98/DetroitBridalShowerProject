@@ -1,13 +1,16 @@
-const Email = require('../models/emailList')
+// const Email = require('../models/emailList')
 const Couples = require('../models/couplesList')
 const Announcements = require('../models/newAnnouncements')
 const NewCouple = require('../models/newCouple')
 const mailMod = require("../mailMod")
 const nodemailer = require("nodemailer")
+const Emails = require('../models/emailList')
+const TestEmails = require('../models/testEmails')
 
 const sgMail = require('@sendgrid/mail')
 const sgClient = require('@sendgrid/client')
 const expressFileUpload = require('express-fileupload')
+// const { unsubscribe } = require('./newAdmin')
 
 sgMail.setApiKey(process.env.API_KEY)
 sgClient.setApiKey(process.env.API_KEY)
@@ -161,6 +164,31 @@ module.exports = {
         } catch (err) {
             if (err) return res.status(500).send(err)
         }
+    },
+    unsubscribe : async (req, res) => {
+        try {
+            res.render('unsubscribe.ejs')
+        } catch (err) {
+            if (err) return res.status(500).send(err)
+        }
+    },
+    removeEmailFromList : async (req, res) => {
+      try {
+        //search the emailDB for the inputed email
+        const email = req.body.email
+        console.log(email)
+        // const count = await Emails.countDocuments({})
+        // console.log(count)
+        const result = await Emails.findOneAndDelete({ email: email });
+
+    if (result) {
+      return res.render('message.ejs', {title: '', message: 'You have been unsubscribed from the mailing list.'})
+    } else {
+      return res.render('message.ejs', {title: 'Oops!', message: 'We could not find your email in our mailing list.'})
+    }
+      } catch (err) {
+        if (err) return res.status(500).send(err)
+      }
     },
     addEmail : async (req, res) => {
 
@@ -469,8 +497,13 @@ module.exports = {
                               </html>
                     `
           }
-          await addContact(req.body.email, confNum)
+          // await addContact(req.body.email, confNum)
           await sgMail.send(msg)
+
+         
+          
+
+
           // res.render('message', {message: 'Thank you for signing up for our newsletter! Please complete the process by confirming the subscription in your email inbox.'})
         
           
@@ -776,14 +809,20 @@ module.exports = {
     confirmEmail : async (req, res) => {
 
       try {
-        const contact = await getContactByEmail(req.query.email);
-        if(contact == null) throw `Contact not found.`;
-        if (contact.custom_fields.conf_num ==  req.query.conf_num) {
-          const listID = await getListID('Newsletter Subscribers');
-          await addContactToList(req.query.email, listID);
-        } else {
-          throw 'Confirmation number does not match';
-        }
+        // const contact = await getContactByEmail(req.query.email);
+        // if(contact == null) throw `Contact not found.`;
+        // if (contact.custom_fields.conf_num ==  req.query.conf_num) {
+        //   const listID = await getListID('Newsletter Subscribers');
+        //   await addContactToList(req.query.email, listID);
+        // } else {
+        //   throw 'Confirmation number does not match';
+        // }
+        const newEmail = new Emails(
+          {
+              email: req.query.email
+          }
+        )
+            await newEmail.save()
         res.render('message.ejs', { title: 'Thank you!', message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
       } catch (error) {
         console.error(error);
@@ -903,10 +942,11 @@ module.exports = {
     
         // console.log(req.body)
         
-        console.log(req.body.kallahMotherName) // show lowercase mother name
-        console.log(toUpper(req.body.kallahMotherName)) // uppercase mother name
+        // console.log(req.body.kallahMotherName) // show lowercase mother name
+        // console.log(toUpper(req.body.kallahMotherName)) // uppercase mother name
+
         kallahMotherName = req.body.kallahMotherName // 
-        console.log(toUpper(kallahMotherName)) // uppercase mother name
+        // console.log(toUpper(kallahMotherName)) // uppercase mother name
 
 
 
@@ -1014,13 +1054,13 @@ console.log("after uppercasing, before params")
 
           //additional parents
           chossonMotherDivorcedTitle: req.body.chossonMotherDivorcedTitle,
-          chossonMotherDivorcedName: req.body.chossonMotherDivorcedName,
+          chossonMotherDivorcedName: toUpper(req.body.chossonMotherDivorcedName),
           chossonMotherHusbandTitle: req.body.chossonMotherHusbandTitle,
-          chossonMotherHusbandName: req.body.chossonMotherHusbandName,
+          chossonMotherHusbandName: toUpper(req.body.chossonMotherHusbandName),
           kallahMotherDivorcedTitle: req.body.kallahMotherDivorcedTitle,
-          kallahMotherDivorcedName: req.body.kallahMotherDivorcedName,
+          kallahMotherDivorcedName: toUpper(req.body.kallahMotherDivorcedName),
           kallahMotherHusbandTitle: req.body.kallahMotherHusbandTitle,
-          kallahMotherHusbandName: req.body.kallahMotherHusbandName,
+          kallahMotherHusbandName: toUpper(req.body.kallahMotherHusbandName),
 
           //chesed package
           toaster: req.body.toaster,
@@ -1037,10 +1077,10 @@ console.log("after uppercasing, before params")
           confNum: confNum
         })
         console.log(params)
-        const confirmationURL = req.protocol + '://' + req.get('host') + '/confirmEntry?' + params
+        // const confirmationURL = req.protocol + '://' + req.get('host') + '/confirmEntry?' + params
         // console.log("after confirmationURL")
 
-        // const confirmationURL = process.env.AZURE_URL + '/confirmEntry?' + params
+        const confirmationURL = process.env.AZURE_URL + '/confirmEntry?' + params
 
 
         
@@ -2066,6 +2106,17 @@ console.log("after uppercasing, before params")
         
         
         await sgMail.send(msg)
+
+        const text = {
+          to: '2485147963@vtext.com',
+          from: 'bridalshower@detroitbridalshower.org',
+          subject: 'New Couple Submission',
+          html: `${req.body.name} has submitted a new couple.`
+        }
+
+        await sgMail.send(text)
+
+
         console.log('email sent')
 
         //save to database
@@ -2091,26 +2142,27 @@ console.log("after uppercasing, before params")
               // weddingDate: req.body.weddingDate,
               // personalShopper: req.body.personalShopper,
 
+              //just update the req.body's to the trimmed vars
               chossonName: chossonName,
               chossonFatherTitle: req.body.chossonFatherTitle,
-              chossonFatherName: req.body.chossonFatherName,
+              chossonFatherName: chossonFatherName,
               chossonMotherTitle: req.body.chossonMotherTitle,
-              chossonMotherName: req.body.chossonMotherName,
+              chossonMotherName: chossonMotherName,
               chossonOrigin: req.body.chossonOrigin,
               kallahName: kallahName,
               kallahFatherTitle: req.body.kallahFatherTitle,
-              kallahFatherName: req.body.kallahFatherName,
+              kallahFatherName: kallahFatherName,
               kallahMotherTitle: req.body.kallahMotherTitle,
-              kallahMotherName: req.body.kallahMotherName,
+              kallahMotherName: kallahMotherName,
               kallahOrigin: req.body.kallahOrigin,
               chossonMotherDivorcedTitle: req.body.chossonMotherDivorcedTitle,
-              chossonMotherDivorcedName: req.body.chossonMotherDivorcedName,
+              chossonMotherDivorcedName: chossonMotherDivorcedName,
               kallahMotherDivorcedTitle: req.body.kallahMotherDivorcedTitle,
-              kallahMotherDivorcedName: req.body.kallahMotherDivorcedName,
+              kallahMotherDivorcedName: kallahMotherDivorcedName,
               chossonMotherHusbandTitle: req.body.chossonMotherHusbandTitle,
-              chossonMotherHusbandName: req.body.chossonMotherHusbandName,
+              chossonMotherHusbandName: chossonMotherHusbandName,
               kallahMotherHusbandTitle: req.body.kallahMotherHusbandTitle,
-              kallahMotherHusbandName: req.body.kallahMotherHusbandName,
+              kallahMotherHusbandName: kallahMotherHusbandName,
 
               name: name,
               email: req.body.email,
@@ -2779,6 +2831,317 @@ console.log("after uppercasing, before params")
           //remove last 2 chars of string (comma and space)
           chesedPackage = chesedPackage.slice(0, -2)
 
+          //send email to chesed package lady
+          if(req.query.toaster === 'true' || req.query.urn === 'true' || req.query.kitchenTowels === 'true' || req.query.vacuum === 'true' || req.query.cholentPot === 'true') {
+
+
+            
+            const recipients = ['bridalshower@detroitbridalshower.org', 'shoshny@hotmail.com'];
+
+            recipients.forEach((recipient) => {
+              const chessedPackageMsg = {
+                to: recipient,
+                from: 'bridalshower@detroitbridalshower.org',
+                subject: 'Chessed Package Request',
+                html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+                <html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+                    <head>
+                      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+                      <!--[if !mso]><!-->
+                      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+                      <!--<![endif]-->
+                      <!--[if (gte mso 9)|(IE)]>
+                      <xml>
+                        <o:OfficeDocumentSettings>
+                          <o:AllowPNG/>
+                          <o:PixelsPerInch>96</o:PixelsPerInch>
+                        </o:OfficeDocumentSettings>
+                      </xml>
+                      <![endif]-->
+                      <!--[if (gte mso 9)|(IE)]>
+                  <style type="text/css">
+                    body {width: 600px;margin: 0 auto;}
+                    table {border-collapse: collapse;}
+                    table, td {mso-table-lspace: 0pt;mso-table-rspace: 0pt;}
+                    img {-ms-interpolation-mode: bicubic;}
+                  </style>
+                <![endif]-->
+                      <style type="text/css">
+                    body, p, div {
+                      font-family: inherit;
+                      font-size: 14px;
+                    }
+                    body {
+                      color: #000000;
+                    }
+                    body a {
+                      color: #1188E6;
+                      text-decoration: none;
+                    }
+                    p { margin: 0; padding: 0; }
+                    table.wrapper {
+                      width:100% !important;
+                      table-layout: fixed;
+                      -webkit-font-smoothing: antialiased;
+                      -webkit-text-size-adjust: 100%;
+                      -moz-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                    }
+                    img.max-width {
+                      max-width: 100% !important;
+                    }
+                    .column.of-2 {
+                      width: 50%;
+                    }
+                    .column.of-3 {
+                      width: 33.333%;
+                    }
+                    .column.of-4 {
+                      width: 25%;
+                    }
+                    ul ul ul ul  {
+                      list-style-type: disc !important;
+                    }
+                    ol ol {
+                      list-style-type: lower-roman !important;
+                    }
+                    ol ol ol {
+                      list-style-type: lower-latin !important;
+                    }
+                    ol ol ol ol {
+                      list-style-type: decimal !important;
+                    }
+                    @media screen and (max-width:480px) {
+                      .preheader .rightColumnContent,
+                      .footer .rightColumnContent {
+                        text-align: left !important;
+                      }
+                      .preheader .rightColumnContent div,
+                      .preheader .rightColumnContent span,
+                      .footer .rightColumnContent div,
+                      .footer .rightColumnContent span {
+                        text-align: left !important;
+                      }
+                      .preheader .rightColumnContent,
+                      .preheader .leftColumnContent {
+                        font-size: 80% !important;
+                        padding: 5px 0;
+                      }
+                      table.wrapper-mobile {
+                        width: 100% !important;
+                        table-layout: fixed;
+                      }
+                      img.max-width {
+                        height: auto !important;
+                        max-width: 100% !important;
+                      }
+                      a.bulletproof-button {
+                        display: block !important;
+                        width: auto !important;
+                        font-size: 80%;
+                        padding-left: 0 !important;
+                        padding-right: 0 !important;
+                      }
+                      .columns {
+                        width: 100% !important;
+                      }
+                      .column {
+                        display: block !important;
+                        width: 100% !important;
+                        padding-left: 0 !important;
+                        padding-right: 0 !important;
+                        margin-left: 0 !important;
+                        margin-right: 0 !important;
+                      }
+                      .social-icon-column {
+                        display: inline-block !important;
+                      }
+                    }
+                  </style>
+                      <!--user entered Head Start--><link href="https://fonts.googleapis.com/css?family=Lato:300&display=swap" rel="stylesheet"><style>
+                body {font-family: 'Lato', sans-serif;}
+                </style><!--End Head user entered-->
+                    </head>
+                    <body>
+                      <center class="wrapper" data-link-color="#1188E6" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#f3f3f3;">
+                        <div class="webkit">
+                          <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#f3f3f3">
+                            <tr>
+                              <td valign="top" bgcolor="#f3f3f3" width="100%">
+                                <table width="100%" role="content-container" class="outer" align="center" cellpadding="0" cellspacing="0" border="0">
+                                  <tr>
+                                    <td width="100%">
+                                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                          <td>
+                                            <!--[if mso]>
+                    <center>
+                    <table><tr><td width="600">
+                  <![endif]-->
+                                                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px;" align="center">
+                                                      <tr>
+                                                        <td role="modules-container" style="padding:0px 0px 0px 0px; color:#000000; text-align:left;" bgcolor="#FFFFFF" width="100%" align="left"><table class="module preheader preheader-hide" role="module" data-type="preheader" border="0" cellpadding="0" cellspacing="0" width="100%" style="display: none !important; mso-hide: all; visibility: hidden; opacity: 0; color: transparent; height: 0; width: 0;">
+                    <tr>
+                      <td role="module-content">
+                        <p></p>
+                      </td>
+                    </tr>
+                  </table><table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" role="module" data-type="columns" style="padding:30px 0px 30px 0px;" bgcolor="#f2eefb" data-distribution="1">
+                    <tbody>
+                      <tr role="module-content">
+                        <td height="100%" valign="top"><table width="600" style="width:600px; border-spacing:0; border-collapse:collapse; margin:0px 0px 0px 0px;" cellpadding="0" cellspacing="0" align="left" border="0" bgcolor="" class="column column-0">
+                      <tbody>
+                        <tr>
+                          <td style="padding:0px;margin:0px;border-spacing:0;"><table class="wrapper" role="module" data-type="image" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="79178f70-3054-4e9f-9b29-edfe3988719e">
+                    <tbody>
+                      <tr>
+                        <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center"><a href="https://i.imgur.com/ssGV6SR.jpg"><img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="300" alt="" data-proportionally-constrained="true" data-responsive="false" src="https://i.imgur.com/ssGV6SR.jpg" height=""></a></td>
+                      </tr>
+                    </tbody>
+                  </table></td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="ef0f9e06-1b02-4b22-b5e8-dc8f6bb9b3b1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:50px 20px 10px 20px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="font-size: 28px; font-family: inherit">Chessed Package Request</span></div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="ef0f9e06-1b02-4b22-b5e8-dc8f6bb9b3b1.1.1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:20px 20px 10px 20px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center">This email is to update you on a recent Chessed Package Request. Below, you will find the contact information of the requester and their list of requested items.&nbsp;</div>
+                <div style="font-family: inherit; text-align: center"><br></div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="8395333d-62e9-4e61-957d-72d0eefc1a4f">
+                    <tbody>
+                      <tr>
+                        <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="f612db9d-7563-4153-b3d5-8a0015929def" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:18px 30px 18px 40px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-size: 28px">Contact Information</span></div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="divider" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="86c0feb7-e890-4382-bb8e-b1910742ba10">
+                    <tbody>
+                      <tr>
+                        <td style="padding:0px 30px 0px 40px;" role="module-content" height="100%" valign="top" bgcolor="">
+                          <table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" height="1px" style="line-height:1px; font-size:1px;">
+                            <tbody>
+                              <tr>
+                                <td style="padding:0px 0px 1px 0px;" bgcolor="#000000"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="ef0f9e06-1b02-4b22-b5e8-dc8f6bb9b3b1.1.1.1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:30px 20px 30px 40px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit;"><span style="font-weight:bold;">Name:</span>&nbsp; ${req.query.name}</div>
+                <div style="font-family: inherit; text-align: inherit"><span style="font-weight:bold;">Email</span>:&nbsp;${req.query.email}</div>
+                <div style="font-family: inherit; text-align: inherit"><span style="font-weight:bold;">Phone Number</span>:&nbsp;${req.query.phoneNumber}</div>
+                <div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="f612db9d-7563-4153-b3d5-8a0015929def.1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:18px 30px 18px 40px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit"><span style="font-size: 28px">Request Items</span></div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="divider" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="86c0feb7-e890-4382-bb8e-b1910742ba10.1.1">
+                    <tbody>
+                      <tr>
+                        <td style="padding:0px 30px 0px 40px;" role="module-content" height="100%" valign="top" bgcolor="">
+                          <table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" height="1px" style="line-height:1px; font-size:1px;">
+                            <tbody>
+                              <tr>
+                                <td style="padding:0px 0px 1px 0px;" bgcolor="#000000"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="ef0f9e06-1b02-4b22-b5e8-dc8f6bb9b3b1.1.1.1.1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:30px 20px 30px 40px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: inherit">${chesedPackage}</div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="f612db9d-7563-4153-b3d5-8a0015929def.1.1" data-mc-module-version="2019-10-22">
+                    <tbody>
+                      <tr>
+                        <td style="padding:18px 30px 18px 40px; line-height:22px; text-align:inherit;" height="100%" valign="top" bgcolor="" role="module-content"><div><div style="font-family: inherit; text-align: center">We appreciate your dedicated work with the Chessed Package!</div><div></div></div></td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="divider" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="86c0feb7-e890-4382-bb8e-b1910742ba10.1">
+                    <tbody>
+                      <tr>
+                        <td style="padding:0px 30px 0px 40px;" role="module-content" height="100%" valign="top" bgcolor="">
+                          <table border="0" cellpadding="0" cellspacing="0" align="center" width="100%" height="1px" style="line-height:1px; font-size:1px;">
+                            <tbody>
+                              <tr>
+                                <td style="padding:0px 0px 1px 0px;" bgcolor="#000000"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table><table class="module" role="module" data-type="spacer" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="0a0f7040-0a2f-4749-8f52-03f4bfb4f161">
+                    <tbody>
+                      <tr>
+                        <td style="padding:0px 0px 30px 0px;" role="module-content" bgcolor="">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table></td>
+                                                      </tr>
+                                                    </table>
+                                                    <!--[if mso]>
+                                                  </td>
+                                                </tr>
+                                              </table>
+                                            </center>
+                                            <![endif]-->
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </center>
+                    </body>
+                  </html>`,
+              };
+
+              sgMail.send(chessedPackageMsg)
+               
+            });
+          }
+
+
+
+
+          
+
+
           
 
           const params = new URLSearchParams({
@@ -2848,11 +3211,11 @@ console.log("after uppercasing, before params")
           })
           console.log('params: ' + params)
 
-          let verificationURL = req.protocol + '://' + req.get('host') + '/verifyCouple?' + params
-          let adminURL = req.protocol + '://' + req.get('host') + '/admin'
+          // let verificationURL = req.protocol + '://' + req.get('host') + '/verifyCouple?' + params
+          // let adminURL = req.protocol + '://' + req.get('host') + '/admin'
 
-          // let verificationURL = process.env.AZURE_URL + '/verifyCouple?' + params
-          // let adminURL = process.env.AZURE_URL + '/login'
+          let verificationURL = process.env.AZURE_URL + '/verifyCouple?' + params
+          let adminURL = process.env.AZURE_URL + '/login'
 
           
                         //deal with regular parents variables
@@ -3016,7 +3379,8 @@ console.log("after uppercasing, before params")
             console.log("urls")
             const msg = {
               // to: 'aronfriedman98@gmail.com', // bridal shower email
-              to: 'aronfriedman98@gmail.com',
+              // to: 'aronfriedman98@gmail.com',
+              to: 'bridalshower@detroitbridalshower.org',
               // from: `${req.query.email}`,
               from: 'bridalshower@detroitbridalshower.org',
               subject: 'New Couple Submission',
@@ -3892,9 +4256,9 @@ console.log("after uppercasing, before params")
       console.log("couple verified and added to collection list")
 
       //send collection email to all sendgrid contacts
-      const listID = await getListID('Newsletter Subscribers')
+      // const listID = await getListID('Newsletter Subscribers')
 
-      console.log("listID: " + listID)
+      // console.log("listID: " + listID)
 
       const databaseCouples = await Couples.find().sort({_id: -1})
 
@@ -4023,14 +4387,32 @@ console.log("after uppercasing, before params")
         kallahMotherFNameNew = kallahMotherFNameNew.join(" ");
 
         //stepFathers last name
+        let chossonStepDadFNameNew = ""
         let stepdadlastname = ""
         if(req.query.chossonMotherHusbandName !== "") {
-          stepdadlastname = req.query.chossonMotherHusbandName.split(" ").pop()
+          chossonStepDadFNameNew = req.query.chossonMotherHusbandName.split(" ")
+          stepdadlastname = chossonStepDadFNameNew.pop()
+          chossonStepDadFNameNew = chossonStepDadFNameNew.join(" ")
+        }
+        let chossonDivorcedMotherFNameNew = ""
+        if(req.query.chossonMotherDivorcedName !== "") {
+          chossonDivorcedMotherFNameNew = req.query.chossonMotherDivorcedName.split(" ")
+          chossonDivorcedMotherFNameNew.pop()
+          chossonDivorcedMotherFNameNew = chossonDivorcedMotherFNameNew.join(" ")
         }
         //kallah
+        let kallahStepDadFNameNew = ""
         let stepdadlastnameKallah = ""
         if(req.query.kallahMotherHusbandName !== "") {
-          stepdadlastnameKallah = req.query.kallahMotherHusbandName.split(" ").pop()
+          kallahStepDadFNameNew = req.query.kallahMotherHusbandName.split(" ")
+          stepdadlastnameKallah = kallahStepDadFNameNew.pop()
+          kallahStepDadFNameNew = kallahStepDadFNameNew.join(" ")
+        }
+        let kallahDivorcedMotherFNameNew = ""
+        if(req.query.kallahMotherDivorcedName !== "") {
+          kallahDivorcedMotherFNameNew = req.query.kallahMotherDivorcedName.split(" ")
+          kallahDivorcedMotherFNameNew.pop()
+          kallahDivorcedMotherFNameNew = kallahDivorcedMotherFNameNew.join(" ")
         }
         
         
@@ -4047,10 +4429,10 @@ console.log("after uppercasing, before params")
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} & ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} & ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} & ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} & ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> <br>`
             }
           }
           else if(isDivorcedChossonSide === false && isDivorcedKallahSide) {
@@ -4061,10 +4443,10 @@ console.log("after uppercasing, before params")
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             else if(kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
           }
           else if(isDivorcedChossonSide && isDivorcedKallahSide) {
@@ -4075,44 +4457,44 @@ console.log("after uppercasing, before params")
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "" && kallahMotherField1 === "" && kallahMotherHusband === "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField2} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband === "" && kallahMotherField1 !== "" && kallahMotherHusband === "") {
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband === "" && kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "" && kallahMotherField1 === "" && kallahMotherHusband === "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField2} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband === "" && kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "" && kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             //more variations FIX LAST NAMES FOR ALL GROUPED COUPLES
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "" && kallahMotherField1 !== "" && kallahMotherHusband === "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname}<br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${kallahMotherField2}<br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname}<br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} and ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${kallahMotherField2}<br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "" && kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname}<br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} and ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah}<br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} and ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname}<br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} and ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah}<br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "" && kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah}<br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah}<br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband === "" && kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah}<br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${chossonFather} <br> son of ${chossonMotherField2} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah}<br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "" && kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} & ${req.query.chossonMotherDivorcedName} ${stepdadlastname}<br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah}<br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong><br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} & ${chossonDivorcedMotherFNameNew} ${stepdadlastname}<br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah}<br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "" && kallahMotherField1 !== "" && kallahMotherHusband === "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} and ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${kallahMotherField2} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} and ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> and daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband === "" && kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband === "" && kallahMotherField1 !== "" && kallahMotherHusband === "") {
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong> <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} ${chossonMotherFNameNew} ${chossonLastName}<br> son of ${chossonMotherField2} <br> and daughter of ${kallahFather} <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} ${kallahMotherFNameNew} ${kallahLastName}<br> daughter of ${kallahMotherField2} <br> <br>`
@@ -4132,10 +4514,10 @@ console.log("after uppercasing, before params")
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${chossonMotherField2} <br> <br>`
             }
             else if(chossonMotherField1 === "" && chossonMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} & ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> son of ${chossonFather} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} & ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> <br>`
             }
             else if(chossonMotherField1 !== "" && chossonMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${req.query.chossonMotherHusbandName} & ${req.query.chossonMotherDivorcedName} ${stepdadlastname} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> son of ${req.query.chossonFatherTitle} & ${req.query.chossonMotherTitle} ${chossonFatherFNameNew} & ${chossonMotherFNameNew} ${chossonLastName} <br> son of ${req.query.chossonMotherHusbandTitle} & ${req.query.chossonMotherDivorcedTitle} ${chossonStepDadFNameNew} & ${chossonDivorcedMotherFNameNew} ${stepdadlastname} <br> <br>`
             }
         }
       }
@@ -4152,10 +4534,10 @@ console.log("after uppercasing, before params")
               newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${kallahMotherField2} <br> <br>`
             }
             else if(kallahMotherField1 === "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> daughter of ${kallahFather} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
             else if(kallahMotherField1 !== "" && kallahMotherHusband !== "") {
-              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${req.query.kallahMotherHusbandName} & ${req.query.kallahMotherDivorcedName} ${stepdadlastnameKallah} <br> <br>`
+              newCoupleString += `<strong>${req.query.chossonName}</strong> is engaged to <strong>${req.query.kallahName}</strong>  <br> daughter of ${req.query.kallahFatherTitle} & ${req.query.kallahMotherTitle} ${kallahFatherFNameNew} & ${kallahMotherFNameNew} ${kallahLastName} <br> daughter of ${req.query.kallahMotherHusbandTitle} & ${req.query.kallahMotherDivorcedTitle} ${kallahStepDadFNameNew} & ${kallahDivorcedMotherFNameNew} ${stepdadlastnameKallah} <br> <br>`
             }
           }
         }
@@ -4318,148 +4700,166 @@ console.log("after uppercasing, before params")
             kallahMotherFName = kallahMotherFName.join(" ");
             
             //stepFathers last name
-            let stepdadlastnameOld = ""
-            if(databaseCouples[i].chossonMotherHusbandName !== "") {
-              stepdadlastnameOld = databaseCouples[i].chossonMotherHusbandName.split(" ").pop();
-            }
-            //kallah
-            let stepdadlastnameOldKallah = ""
-            if(databaseCouples[i].kallahMotherHusbandName !== "") {
-              stepdadlastnameOldKallah = databaseCouples[i].kallahMotherHusbandName.split(" ").pop()
-            }
+    let chossonStepDadFNameOld = ""
+    let stepdadlastnameOld = ""
+    if(databaseCouples[i].chossonMotherHusbandName !== "") {
+      chossonStepDadFNameOld = databaseCouples[i].chossonMotherHusbandName.split(" ")
+      stepdadlastnameOld = chossonStepDadFNameOld.pop()
+      chossonStepDadFNameOld = chossonStepDadFNameOld.join(" ")
+    }
+    let chossonDivorcedMotherFNameOld = ""
+    if(databaseCouples[i].chossonMotherDivorcedName !== "") {
+      chossonDivorcedMotherFNameOld = databaseCouples[i].chossonMotherDivorcedName.split(" ")
+      chossonDivorcedMotherFNameOld.pop()
+      chossonDivorcedMotherFNameOld = chossonDivorcedMotherFNameOld.join(" ")
+    }
+    //kallah
+    let kallahStepDadFNameOld = ""
+    let stepdadlastnameOldKallah = ""
+    if(databaseCouples[i].kallahMotherHusbandName !== "") {
+      kallahStepDadFNameOld = databaseCouples[i].kallahMotherHusbandName.split(" ")
+      stepdadlastnameOldKallah = kallahStepDadFNameOld.pop()
+      kallahStepDadFNameOld = kallahStepDadFNameOld.join(" ")
+    }
+    let kallahDivorcedMotherFNameOld = ""
+    if(databaseCouples[i].kallahMotherDivorcedName !== "") {
+      kallahDivorcedMotherFNameOld = databaseCouples[i].kallahMotherDivorcedName.split(" ")
+      kallahDivorcedMotherFNameOld.pop()
+      kallahDivorcedMotherFNameOld = kallahDivorcedMotherFNameOld.join(" ")
+    }
 
-            if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
-              if(isDivorcedChossonSide1 === false && isDivorcedKallahSide1 === false) {
-                couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-              }
-              else if(isDivorcedChossonSide1 && isDivorcedKallahSide1 === false) {
-                if(chossonMotherField11 === "" && chossonMotherHusband1 === "") { 
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-                }
-              }
-              else if(isDivorcedChossonSide1 === false && isDivorcedKallahSide1) {
-                if(kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & {chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(kallahMotherField11 !== "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(kallahMotherField11 !== "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFNameNew} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-              }
-              else if(isDivorcedChossonSide1 && isDivorcedKallahSide1) {
-                if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                //more variations
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") { //fix last names for all grouped couples
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of  ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-              }
-            }
-            else if(databaseCouples[i].chossonOrigin === 'detroit') {
-              if(isDivorcedChossonSide1 === false) {
-                couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${chossonMotherFName} ${chossonLastNameOld} <br> <br>`
-              }
-              else if(isDivorcedChossonSide1) {
-                if(chossonMotherField11 === "" && chossonMotherHusband1 === "") { 
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> <br>`
-                }
-                else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> <br>`
-                }
-                else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "")
-                {
-                  couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${databaseCouples[i].chossonMotherHusbandName} & ${databaseCouples[i].chossonMotherDivorcedName} ${stepdadlastnameOld} <br> <br>`
-                }
-              }
-            }
-            else {
-              if(isDivorcedKallahSide1 === false) {
-                couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
-              }
-              else if(isDivorcedKallahSide1) {
-                if(kallahMotherField11 === "" && kallahMotherHusband1 === "") {
-                couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(kallahMotherField11 !== "" && kallahMotherHusband1 === "") {
-                  couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
-                }
-                else if(kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${stepdadlastnameOldKallah} <br> <br>`
-                }
-                else if(kallahMotherField11 !== "" && kallahMotherHusband1 !== "") {
-                  couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${databaseCouples[i].kallahMotherHusbandName} & ${databaseCouples[i].kallahMotherDivorcedName} ${kallahLastNameOldKallah} <br> <br>`
-                }
-              }
-            }
+    if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
+      if(isDivorcedChossonSide1 === false && isDivorcedKallahSide1 === false) {
+        couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+      }
+      else if(isDivorcedChossonSide1 && isDivorcedKallahSide1 === false) {
+        if(chossonMotherField11 === "" && chossonMotherHusband1 === "") { 
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+        }
+      }
+      else if(isDivorcedChossonSide1 === false && isDivorcedKallahSide1) {
+        if(kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+        couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & {chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(kallahMotherField11 !== "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(kallahMotherField11 !== "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFNameNew} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+      }
+      else if(isDivorcedChossonSide1 && isDivorcedKallahSide1) {
+        if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${kallahFather} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 === "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        //more variations
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") { //fix last names for all grouped couples
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of  ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "" && kallahMotherField11 !== "" && kallahMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong><br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+      }
+    }
+    else if(databaseCouples[i].chossonOrigin === 'detroit') {
+      if(isDivorcedChossonSide1 === false) {
+        couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${chossonMotherFName} ${chossonLastNameOld} <br> <br>`
+      }
+      else if(isDivorcedChossonSide1) {
+        if(chossonMotherField11 === "" && chossonMotherHusband1 === "") { 
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${chossonFather1} <br> son of ${chossonMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${chossonMotherField21} <br> <br>`
+        }
+        else if(chossonMotherField11 === "" && chossonMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${chossonFather1} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> <br>`
+        }
+        else if(chossonMotherField11 !== "" && chossonMotherHusband1 !== "")
+        {
+          couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} & ${chossonMotherFName} ${chossonLastNameOld} <br> son of ${databaseCouples[i].chossonMotherHusbandTitle} & ${databaseCouples[i].chossonMotherDivorcedTitle} ${chossonStepDadFNameOld} & ${chossonDivorcedMotherFNameOld} ${stepdadlastnameOld} <br> <br>`
+        }
+      }
+    }
+    else {
+      if(isDivorcedKallahSide1 === false) {
+        couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> <br>`
+      }
+      else if(isDivorcedKallahSide1) {
+        if(kallahMotherField11 === "" && kallahMotherHusband1 === "") {
+        couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${kallahFather1} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(kallahMotherField11 !== "" && kallahMotherHusband1 === "") {
+          couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${kallahMotherField21} <br> <br>`
+        }
+        else if(kallahMotherField11 === "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${kallahFather1} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+        else if(kallahMotherField11 !== "" && kallahMotherHusband1 !== "") {
+          couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} & ${kallahMotherFName} ${kallahLastNameOld} <br> daughter of ${databaseCouples[i].kallahMotherHusbandTitle} & ${databaseCouples[i].kallahMotherDivorcedTitle} ${kallahStepDadFNameOld} & ${kallahDivorcedMotherFNameOld} ${stepdadlastnameOldKallah} <br> <br>`
+        }
+      }
+    }
           }
         }
         
@@ -4480,6 +4880,10 @@ console.log("after uppercasing, before params")
         //   }
         // }
         console.log("couplesString: " + couplesString)
+
+        //unsubscribe code
+
+        const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
 
       const collectionEmail = `<!DOCTYPE html>
 
@@ -4577,16 +4981,16 @@ console.log("after uppercasing, before params")
         </style>
       </head>
       <div align="center" class="alignment" style="line-height:10px"><img src="https://i.imgur.com/ssGV6SR.jpg" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" width="340"/></div>
-      <body style="margin: 0; background-color: #fff9f6; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-      <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <body style="margin: 0; background-color: white; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+      <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -4618,7 +5022,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -4645,7 +5049,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -4750,7 +5154,7 @@ console.log("after uppercasing, before params")
       <table border="0" cellpadding="0" cellspacing="0" class="heading_block block-11" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
       <tr>
       <td class="pad" style="padding-bottom:30px;text-align:center;width:100%;">
-      <h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 20px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${couplesString}</h1>
+      <h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 23px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${couplesString}</h1>
       </td>
       </tr>
       </table>
@@ -4796,7 +5200,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -4866,7 +5270,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -4938,7 +5342,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -5026,11 +5430,11 @@ console.log("after uppercasing, before params")
       </tr>
       </tbody>
       </table>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -5070,7 +5474,7 @@ console.log("after uppercasing, before params")
       <tr>
       <td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
       <div style="font-family: 'Times New Roman', serif">
-      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #fff9f6; line-height: 1.2;">
+      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: white; line-height: 1.2;">
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Copyright &copy; 2023 Detroit Bridal Shower. All rights reserved.</span></p>
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"> </p>
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Our mailing address is:</span></p>
@@ -5086,7 +5490,7 @@ console.log("after uppercasing, before params")
       <tr>
       <td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
       <div style="font-family: 'Times New Roman', serif">
-      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: #fff9f6; line-height: 1.5;">
+      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
       </div>
       </div>
       </td>
@@ -5096,8 +5500,8 @@ console.log("after uppercasing, before params")
       <tr>
       <td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
       <div style="font-family: 'Times New Roman', serif">
-      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: #fff9f6; line-height: 1.5;">
-      <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:16px;">To stop receiving emails from us, click <a href="http://www.example.com" rel="noopener" style="text-decoration: underline; color: #fff9f6;" target="_blank">here.</a></span></p>
+      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
+      <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:16px;">To stop receiving emails from us, click <a href="${unsubscribeURL}" rel="noopener" style="text-decoration: underline; color: white;" target="_blank">here.</a></span></p>
       </div>
       </div>
       </td>
@@ -5242,8 +5646,8 @@ console.log("after uppercasing, before params")
           }
         </style>
       </head>
-      <body style="margin: 0; background-color: #fff9f6; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-      <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <body style="margin: 0; background-color: white; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
+      <table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
@@ -5251,7 +5655,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -5281,11 +5685,11 @@ console.log("after uppercasing, before params")
       </tr>
       </tbody>
       </table>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -5317,7 +5721,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -5397,7 +5801,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -5467,7 +5871,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -5539,7 +5943,7 @@ console.log("after uppercasing, before params")
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
@@ -5604,11 +6008,11 @@ console.log("after uppercasing, before params")
       </tr>
       </tbody>
       </table>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6;" width="100%">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
       <tbody>
       <tr>
       <td>
-      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #fff9f6; color: #000000; width: 680px;" width="680">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
       <tbody>
       <tr>
       <td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
@@ -5648,7 +6052,7 @@ console.log("after uppercasing, before params")
       <tr>
       <td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
       <div style="font-family: 'Times New Roman', serif">
-      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #fff9f6; line-height: 1.2;">
+      <div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: white; line-height: 1.2;">
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Copyright  2023 Detroit Bridal Shower. All rights reserved.</span></p>
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"> </p>
       <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Our mailing address is:</span></p>
@@ -5948,7 +6352,67 @@ await sgMail.send(instructionsMsg)
 console.log("instructions email sent")
 await sgMail.send(msg)
 
-await sendNewsletterToList(req, collectionEmail, listID)
+// await sendNewsletterToList(req, collectionEmail, listID)
+
+// const emails = await Emails.find({})
+// console.log(emails.length)
+
+// const recipients = emails.map((email) => email.email);
+// console.log(recipients)
+
+            
+//               const newsletter = {
+//                 to: recipients,
+//                 from: 'bridalshower@detroitbridalshower.org',
+//                 subject: 'Newsletter',
+//                 html: collectionEmail
+//               };
+
+//               sgMail.sendMultiple(newsletter);
+
+const emails = await Emails.find({});
+console.log(emails.length);
+
+const recipients = emails.map((email) => email.email);
+console.log(recipients);
+
+const batchSize = 1000;
+
+// Split recipients into batches
+const batches = [];
+while (recipients.length > 0) {
+  batches.push(recipients.splice(0, batchSize));
+}
+
+// Function to send emails for a batch
+const sendEmailBatch = async (batch) => {
+  const newsletter = {
+    to: batch,
+    from: 'bridalshower@detroitbridalshower.org',
+    subject: 'Newsletter',
+    html: collectionEmail,
+  };
+
+  try {
+    await sgMail.sendMultiple(newsletter);
+    console.log(`Successfully sent ${batch.length} emails.`);
+  } catch (error) {
+    console.error(`Error sending emails: ${error.message}`);
+    // You may want to add additional error handling or retry logic here
+  }
+};
+
+// Send emails in batches
+for (const batch of batches) {
+  await sendEmailBatch(batch);
+}
+
+console.log('All emails sent successfully.');
+
+
+
+
+
 res.render('message.ejs', {title: 'Success!', message: 'Collection email has been mailed out!'})
 
     }

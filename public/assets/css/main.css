@@ -730,7 +730,7 @@ input:focus + .placeholder5, input:not(:placeholder-shown) + .placeholder5 {
     color: #84aa6d !important;
     transform: scale(.8);
 }
-.placeholder6 {
+/* .placeholder6 {
     top: 224px !important;
     left: 88px;
 }
@@ -749,7 +749,7 @@ input:focus + .placeholder7, input:not(:placeholder-shown) + .placeholder7 {
     left: 74px;
     color: #84aa6d !important;
     transform: scale(.8);
-}
+} */
 
 input::placeholder {
     color: transparent;

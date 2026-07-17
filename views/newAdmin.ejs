@@ -24,7 +24,7 @@
     <a href="#" class="brand" style="margin-top: 30px;">
       <!-- <i class='bx bxs-smile'></i> -->
       <img src="../assets/images/bridalshowerpic.jpg" style="height: 50px; width: 35px; margin: 20px;">
-      <span class="text" style="color: #648880">Detroit Bridal Shower Project</span>
+      <span class="text" style="color: #648880">Detroit Bridal Shower Project!!!!!</span>
     </a>
     <ul class="side-menu top">
       <li class="active">
@@ -181,27 +181,281 @@
                     <i class='bx bx-plus' id="showForm" style="font-size: 20px;"></i>
                 </div>
 
+                <!-- deceased info modals -->
+<div id="myModal" class="myModal1" style="z-index: 12345678987654321234567898765432345678987654345678987654356787654345678987654;">
+  <div class="modals modall">
+      <span class="closed" onclick="closeDeceasedModal()">&times;</span>
+      <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
+      <p>If a parent of the chosson has passed away, please specify:</p>
+      <textarea name="deceased" id="deceased" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+
+      <!-- <input type="text" placeholder="Input Field 1"> -->
+      <!-- <input type="text" placeholder="Input Field 2"> -->
+      <button class="submitComment" onclick="submitDeceasedModal()">Submit</button>
+  </div>
+</div>
+
+<div id="myModal" class="myModal2" style="z-index: 12345678987654321234567898765432345678987654345678987654356787654345678987654;">
+  <div class="modals modall">
+      <span class="closed" onclick="closeDeceasedModal2()">&times;</span>
+      <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
+      <p>If a parent of the kallah has passed away, please specify:</p>
+      <textarea name="deceased2" id="deceased2" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+
+      <!-- <input type="text" placeholder="Input Field 1"> -->
+      <!-- <input type="text" placeholder="Input Field 2"> -->
+      <button class="submitComment" onclick="submitDeceasedModal2()">Submit</button>
+  </div>
+</div>
+
+
+<script>
+  //form validaiton for couple submission variables
+const name = document.querySelector("#name")
+const email = document.querySelector("#email")
+const phoneNumber = document.querySelector("#phoneNumber")
+const address = document.querySelector("#address")
+const chossonName = document.querySelector("#chossonName")
+// dont validate these:
+// const chossonFatherTitle = document.querySelector("#chossonFatherTitle")
+// const chossonFather = document.querySelector("#chossonFather")
+// const chossonMotherTitle = document.querySelector("#chossonMotherTitle")
+// const chossonMother = document.querySelector("#chossonMother")
+const chossonOrigin = document.querySelector("#chossonOrigin")
+const kallahName = document.querySelector("#kallahName")
+// dont validate these:
+// const kallahFatherTitle = document.querySelector("#kallahFatherTitle")
+// const kallahFather = document.querySelector("#kallahFather")
+// const kallahMotherTitle = document.querySelector("#kallahMotherTitle")
+// const kallahMother = document.querySelector("#kallahMother")
+const kallahOrigin = document.querySelector("#kallahOrigin")
+const weddingDate = document.querySelector("#weddingDate")
+const personalShoppers = document.querySelector("#personalShoppers")
+const chesedPackage = document.querySelector("#chesedPackage")
+
+
+
+const Form1 = document.querySelector("#Form1")
+const Form2 = document.querySelector("#Form2")
+const Form3 = document.querySelector("#Form3")
+const Form = document.querySelector("#Form")
+
+const Next1 = document.querySelector("#Next1")
+const Next2 = document.querySelector("#Next2")
+const Back1 = document.querySelector("#Back1")
+const Back2 = document.querySelector("#Back2")
+const Next = document.querySelector("#Next")
+const Back = document.querySelector("#Back")
+
+const progress = document.querySelector("#progress")
+
+Next.onclick = function() {
+    
+    // if(name.value == "") {
+    //     showErrorModal("Please enter your name");
+    // }
+    // else if(phoneNumber.value == "") {
+    //     showErrorModal("Please enter your phone number");
+    // }
+    // else if(email.value == "") {
+    //     showErrorModal("Please enter your email");
+    // }
+    // else if(address.value == "") {
+    //     showErrorModal("Please enter your address");
+    // }
+    // else if(name.value !== "" && email.value !== "" && phoneNumber.value !== "" && address.value !== "") {
+        if(divorced) {
+            formPopup.style.height = "550px"; // Adjust the height accordingly
+            divorcedButton.style.top = "355px"; // Adjust the top position accordingly
+            deseasedButton.style.top = "355px"; // Adjust the top position accordingly
+        }
+        Form.style.left = "-450px";
+        Form1.style.left = "40px";
+        progress.style.width = "210px";
+    // }
+}
+
+Next1.onclick = function() {
+
+    // if(chossonName.value == "") {
+    //     showErrorModal("Please enter the Chosson's name")
+    // }
+    // else if(chossonOrigin.value !== "detroit" && chossonOrigin.value !== "other") {
+    //     showErrorModal("Please enter where the chosson is from")
+    // }
+
+    // else if(chossonName.value !== "" && chossonOrigin.value !== "") {
+
+    if(divorced2 === false) {
+        formPopup.style.height = "450px"; // Adjustd the height accordingly
+        divorcedButton.style.top = "260px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "260px"; // Adjust the top position accordingly
+    }
+    else {
+        formPopup.style.height = "550px"; // Adjust the height accordingly
+        divorcedButton.style.top = "355px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "355px"; // Adjust the top position accordingly
+    }
+
+    Form1.style.left = "-450px";
+    Form2.style.left = "40px";
+    progress.style.width = "325px";
+    // }
+}
+
+Back.onclick = function () {
+
+    formPopup.style.height = "450px"; // Adjustd the height accordingly
+    
+
+    Form.style.left = "40px";
+    Form1.style.left = "450px";
+    progress.style.width = "100px";
+}
+
+Back1.onclick = function() {
+
+    if(divorced) {
+        formPopup.style.height = "550px"; // Adjust the height accordingly
+        divorcedButton.style.top = "355px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "355px"; // Adjust the top position accordingly
+    }
+    else {
+        formPopup.style.height = "450px"; // Adjustd the height accordingly
+        divorcedButton.style.top = "260px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "260px"; // Adjust the top position accordingly
+    }
+
+    Form1.style.left = "40px";
+    Form2.style.left = "450px";
+    progress.style.width = "210px";
+}
+
+Next2.onclick = function() {
+
+    // if(kallahName.value == "") {
+    //     showErrorModal("Please enter the Kallah's name")
+    // }
+    // else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
+    //     showErrorModal("Please enter where the kallah is from")
+    // }
+    // else if(kallahName.value !== "" && kallahOrigin.value !== "") {
+
+    formPopup.style.height = "450px"; // Adjustd the height accordingly
+    divorcedButton.style.top = "260px"; // Adjust the top position accordingly
+    deseasedButton.style.top = "260px"; // Adjust the top position accordingly
+
+
+    Form2.style.left = "-450px";
+    Form3.style.left = "40px";
+    progress.style.width = "450px";
+    // }
+}
+
+Back2.onclick = function() {
+
+    if(divorced2) {
+        formPopup.style.height = "550px"; // Adjust the height accordingly
+        divorcedButton.style.top = "355px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "355px"; // Adjust the top position accordingly
+    }
+    else {
+        formPopup.style.height = "450px"; // Adjustd the height accordingly
+        divorcedButton.style.top = "260px"; // Adjust the top position accordingly
+        deseasedButton.style.top = "260px"; // Adjust the top position accordingly
+    }
+
+    Form2.style.left = "40px";
+    Form3.style.left = "450px";
+    progress.style.width = "325px";
+}
+
+
+document.querySelector('.input-selector').addEventListener('click',()=>{
+document.querySelector('.list').classList.toggle('show')
+})
+document.querySelector('.close-btn').addEventListener('click',()=>{
+    document.querySelector('.list').classList.remove('show')
+    })
+    
+
+
+
+
+document.querySelector("#showForm").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.add("active")
+    // document.querySelector(".overlay").classList.add("overlayActive")
+})
+
+document.querySelector("#close-btn").addEventListener("click", function() {
+    document.querySelector(".formPopup").classList.remove("active")
+    // document.querySelector(".overlay").classList.remove("overlayActive")
+})
+
+
+
+
+// // Function to display error modal
+// function showErrorModal(message) {
+//     const errorModal = document.createElement("div");
+//     errorModal.classList.add("error-modal");
+  
+//     const errorIcon = document.createElement("div");
+//     errorIcon.innerHTML = '<i class="fas fa-circle-xmark"></i>';
+//     errorIcon.classList.add("error-icon");
+  
+//     const errorMessage = document.createElement("div");
+//     errorMessage.textContent = message;
+//     errorMessage.classList.add("error-description");
+  
+//     const dismissButton = document.createElement("button");
+//     dismissButton.textContent = "Dismiss";
+//     dismissButton.classList.add("dismiss-button");
+  
+//     errorModal.appendChild(errorIcon);
+//     errorModal.appendChild(errorMessage);
+//     errorModal.appendChild(dismissButton);
+  
+//     document.body.appendChild(errorModal);
+  
+//     // Show modal
+//     setTimeout(() => {
+//       errorModal.classList.add("active");
+//     }, 100);
+  
+//     // Hide modal
+//     dismissButton.addEventListener("click", () => {
+//       errorModal.classList.remove("active");
+  
+//       setTimeout(() => {
+//         document.body.removeChild(errorModal);
+//       }, 300);
+//     });
+//   }
+  
+  
+</script>
+
 
 
                 
                 <!-- style popup form and success/error modal-->
                        <!-- couple info modal -->
+                       <!-- FOR SOME REASON, IT IS DISPLAYING THE MODAL FROM  adminPopupForm.ejs -->
 <div id="InfoModal" class="infoModal">
     <div class="info-modal-content">
       <p>
         <ul>
-            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li><br>
-            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li><br>
-            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li><br>
-            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li><br>
-            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br>
-            <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="chossonParentsFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="kallahParentsFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
         </ul>
       </p>
     </div>
@@ -478,6 +732,28 @@ input:focus + .placeholder4, input:not(:placeholder-shown) + .placeholder4 {
 input:focus + .placeholder5, input:not(:placeholder-shown) + .placeholder5 {
     top: 202px !important;
     left: -15px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+
+
+.placeholder6 {
+    top: 224px !important;
+    left: 88px;
+}
+input:focus + .placeholder6, input:not(:placeholder-shown) + .placeholder6 {
+    top: 202px !important;
+    left: 77px;
+    color: #84aa6d !important;
+    transform: scale(.8);
+}
+.placeholder7 {
+    top: 270px !important;
+    left: 88px;
+}
+input:focus + .placeholder7, input:not(:placeholder-shown) + .placeholder7 {
+    top: 250px !important;
+    left: 74px;
     color: #84aa6d !important;
     transform: scale(.8);
 }
@@ -875,6 +1151,8 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
                         </tr>
 
                         <%- include('newAdminTable.ejs') -%>
+
+                        
                         
 
                           
@@ -1865,6 +2143,14 @@ kallahFatherName : document.querySelector("#kallahFatherName").value,
 kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
 kallahMotherName : document.querySelector("#kallahMotherName").value,
 kallahOrigin : document.querySelector("#kallahOrigin").value,
+chossonMotherDivorcedTitle: document.querySelector("#chossonMotherDivorcedTitle").value,
+    chossonMotherDivorcedName: document.querySelector("#chossonMotherDivorcedName").value,
+    chossonMotherHusbandTitle: document.querySelector("#chossonMotherHusbandTitle").value,
+    chossonMotherHusbandName: document.querySelector("#chossonMotherHusbandName").value,
+    kallahMotherDivorcedTitle: document.querySelector("#kallahMotherDivorcedTitle").value,
+    kallahMotherDivorcedName: document.querySelector("#kallahMotherDivorcedName").value,
+    kallahMotherHusbandTitle: document.querySelector("#kallahMotherHusbandTitle").value,
+    kallahMotherHusbandName: document.querySelector("#kallahMotherHusbandName").value,
 weddingDate : document.querySelector("#weddingDate").value,
 personalShopper : document.querySelector("#personalShopper").value,
 toaster : document.querySelector("#task1").checked,
@@ -2362,10 +2648,8 @@ const nameFill = document.querySelector(".nameFill")
 const phoneNumberFill = document.querySelector(".phoneNumberFill")
 const emailFill = document.querySelector(".emailFill")
 const addressFill = document.querySelector(".addressFill")
-const chossonFatherFill = document.querySelector(".chossonFatherFill")
-const chossonMotherFill = document.querySelector(".chossonMotherFill")
-const kallahFatherFill = document.querySelector(".kallahFatherFill")
-const kallahMotherFill = document.querySelector(".kallahMotherFill")
+const chossonParentsFill = document.querySelector(".chossonFatherFill")
+const kallahParentsFill = document.querySelector(".kallahFatherFill")
 const chossonHometownFill = document.querySelector(".chossonHometownFill")
 const kallahHometownFill = document.querySelector(".kallahHometownFill")
 const weddingDateFill = document.querySelector(".weddingDateFill")
@@ -2397,38 +2681,137 @@ id: infoId
 
 const data = await response.json();
 console.log(data.fatherName);
-nameFill.innerHTML = data.name;
-phoneNumberFill.innerHTML = data.phoneNumber;
-emailFill.innerHTML = data.email;
-addressFill.innerHTML = data.address;
-if(data.chossonFatherName === 'Title ') {
-chossonFatherFill.innerHTML = '-'
+// nameFill.innerHTML = data.name;
+// phoneNumberFill.innerHTML = data.phoneNumber;
+// emailFill.innerHTML = data.email;
+// addressFill.innerHTML = data.address;
+
+
+
+
+
+// if(data.chossonFatherName === 'Title ') {
+// chossonFatherFill.innerHTML = '-'
+// }
+// else {
+// chossonFatherFill.innerHTML = data.chossonFatherName;
+// }
+// if(data.chossonMotherName === 'Title ') {
+// chossonMotherFill.innerHTML = '-'
+// }
+// else {
+// chossonMotherFill.innerHTML = data.chossonMotherName;
+// }
+// if(data.kallahFatherName === 'Title ') {
+// kallahFatherFill.innerHTML = '-'
+// }
+// else {
+// kallahFatherFill.innerHTML = data.kallahFatherName;
+// }
+// if(data.kallahMotherName === 'Title ') {
+// kallahMotherFill.innerHTML = '-'
+// }
+// else {
+// kallahMotherFill.innerHTML = data.kallahMotherName;
+// }
+
+if(data.name !== "") {
+  nameFill.innerHTML = `<strong>Name:</strong> ${data.name} <br> <br>`
 }
-else {
-chossonFatherFill.innerHTML = data.chossonFatherName;
+if(data.phoneNumber !== "") {
+  phoneNumberFill.innerHTML = `<strong>Phone Number:</strong> ${data.phoneNumber} <br><br>`
 }
-if(data.chossonMotherName === 'Title ') {
-chossonMotherFill.innerHTML = '-'
+if(data.email !== "") {
+  emailFill.innerHTML = `<strong>Email</strong>: ${data.email} <br><br>`
 }
-else {
-chossonMotherFill.innerHTML = data.chossonMotherName;
+if(data.address !== "") {
+  addressFill.innerHTML = `<strong>Address:</strong> ${data.address} <br><br>`
 }
-if(data.kallahFatherName === 'Title ') {
-kallahFatherFill.innerHTML = '-'
+
+
+if(data.chossonFatherName !== "Title -") {
+  chossonParentsFill.innerHTML = `<strong>Chosson's Father:</strong> ${data.chossonFatherName} <br> `
 }
-else {
-kallahFatherFill.innerHTML = data.kallahFatherName;
+if(data.chossonMotherName !== "Title -" && data.chossonMotherDivorcedName === "Title ") {
+  chossonParentsFill.innerHTML += `<strong>Chosson's Mother:</strong> ${data.chossonMotherName} <br>`
 }
-if(data.kallahMotherName === 'Title ') {
-kallahMotherFill.innerHTML = '-'
+else if(data.chossonMotherName !== "Title -" && data.chossonMotherDivorcedName !== "Title ") {
+  chossonParentsFill.innerHTML += `<strong>Chosson's Mother:</strong> ${data.chossonMotherDivorcedName} <br> <strong>Chosson's Step Mother:</strong> ${data.chossonMotherName} <br>`
 }
-else {
-kallahMotherFill.innerHTML = data.kallahMotherName;
+else if(data.chossonMotherName === "Title -" && data.chossonMotherDivorcedName !== "Title ") {
+  chossonParentsFill.innerHTML += `<strong>Chosson's Mother:</strong> ${data.chossonMotherDivorcedName} <br>`
 }
-chossonHometownFill.innerHTML = data.chossonOrigin;
-kallahHometownFill.innerHTML = data.kallahOrigin;
-weddingDateFill.innerHTML = data.weddingDate;
-personalShopperFill.innerHTML = data.personalShopper;
+if(data.chossonMotherHusbandName !== "Title ") {
+  chossonParentsFill.innerHTML += `<strong>Chosson's Step Father:</strong> ${data.chossonMotherHusbandName} <br>`
+}
+// chossonParentsFill.innerHTML += `<br>`
+
+if(data.kallahFatherName !== "Title -") {
+  kallahParentsFill.innerHTML = `<strong>Kallah's Father:</strong> ${data.kallahFatherName} <br> `
+}
+if(data.kallahMotherName !== "Title -" && data.kallahMotherDivorcedName === "Title ") {
+  kallahParentsFill.innerHTML += `<strong>Kallah's Mother:</strong> ${data.kallahMotherName} <br>`
+}
+else if(data.kallahMotherName !== "Title -" && data.kallahMotherDivorcedName !== "Title ") {
+  kallahParentsFill.innerHTML += `<strong>Kallah's Mother:</strong> ${data.kallahMotherDivorcedName} <br> <strong>Kallah's Step Mother:</strong> ${data.kallahMotherName} <br>`
+}
+else if(data.kallahMotherName === "Title -" && data.kallahMotherDivorcedName !== "Title ") {
+  kallahParentsFill.innerHTML += `<strong>Kallah's Mother:</strong> ${data.kallahMotherDivorcedName} <br>`
+}
+if(data.kallahMotherHusbandName !== "Title ") {
+  kallahParentsFill.innerHTML += `<strong>Kallah's Step Father:</strong> ${data.kallahMotherHusbandName} <br>`
+}
+kallahParentsFill.innerHTML += `<br>`
+// else {
+//   chossonParentsFill.innerHTML += `Chosson's Mother: ${data.chossonMotherDivorcedName} <br> <br>`
+// }
+
+
+
+// if(data.chossonFatherName !== '' && data.chossonMotherName !== '') {
+//   chossonParentsFill.innerHTML = `${data.chossonFatherName} & <br>${data.chossonMotherName}`
+// }
+// else {
+//   chossonParentsFill.innerHTML = `${data.chossonFatherName}<br>${data.chossonMotherName}`
+// }
+
+// if(data.kallahFatherName !== '-' && data.kallahMotherName !== '-') {
+//   kallahParentsFill.innerHTML = `${data.kallahFatherName} & <br>${data.kallahMotherName}`
+// }
+// else {
+//   kallahParentsFill.innerHTML = `${data.kallahFatherName}<br>${data.kallahMotherName}`
+// }
+
+// if(data.chossonMotherDivorcedName !== "") {
+//   chossonParentsFill.innerHTML += `<br> ${data.chossonMotherDivorcedName}`
+// }
+// if(data.chossonMotherHusbandName !== "") {
+//   chossonParentsFill.innerHTML += `<br> ${data.chossonMotherHusbandName}`
+// }
+// if(data.kallahMotherDivorcedName !== "") {
+//   kallahParentsFill.innerHTML += `<br> ${data.kallahMotherDivorcedName}`
+// }
+// if(data.kallahMotherHusbandName !== "") {
+//   kallahParentsFill.innerHTML += `<br> ${data.kallahMotherHusbandName}`
+// }
+
+if(data.weddingDate !== "" || data.weddingDate !== null || data.weddingDate !== undefined) {
+  weddingDateFill.innerHTML = `<strong>Wedding Date:</strong> ${data.weddingDate} <br><br>`
+}
+if(chossonHometownFill !== "") {
+  chossonHometownFill.innerHTML = `<strong>Chosson Hometown:</strong> ${data.chossonOrigin} <br><br>`
+}
+if(kallahHometownFill !== "") {
+  kallahHometownFill.innerHTML = `<strong>Kallah Hometown:</strong> ${data.kallahOrigin} <br><br>`
+}
+if(data.personalShopper !== "") {
+  personalShopperFill.innerHTML = `<strong>Personal Shopper:</strong> ${data.personalShopper} <br><br>`
+}
+
+// chossonHometownFill.innerHTML = data.chossonOrigin;
+// kallahHometownFill.innerHTML = data.kallahOrigin;
+
+// personalShopperFill.innerHTML = data.personalShopper;
 
 
 isHovering = true;
@@ -2470,6 +2853,181 @@ infoModal.classList.remove("activeInfoModal")
 })
 })
 
+
+</script>
+
+<script>
+  // JavaScript functions to open and close the parent modals
+  function openDeceasedModal() {
+    console.log("open")
+    let parentModal1 = document.querySelector(".myModal1");
+    console.log("assigned var")
+    parentModal1.style.display = "block";
+    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
+}
+
+//deceased modal functions
+function closeDeceasedModal() {
+    document.querySelector(".myModal1").style.display = "none";
+    document.querySelector("#deceased").value = ""
+}
+
+function submitDeceasedModal() {
+    document.querySelector(".myModal1").style.display = "none";
+}
+
+function openDeceasedModal2() {
+    console.log("open")
+    let parentModal2 = document.querySelector(".myModal2");
+    parentModal2.style.display = "block";
+    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
+}
+
+//deceased modal functions
+function closeDeceasedModal2() {
+    document.querySelector(".myModal2").style.display = "none";
+    document.querySelector("#deceased2").value = ""
+}
+
+function submitDeceasedModal2() {
+    document.querySelector(".myModal2").style.display = "none";
+}
+
+//divorced fields functions
+// function openDivorcedFields() {
+//     document.querySelector(".divorced").style.display = "block";
+//     document.querySelector(".formPopup").style.height = "550px"; //moved up 100px
+//     document.querySelector(".divorcedButton").style.top = "355px"; //moved up 200px
+//     document.querySelector(".deseasedButton").style.top = "355px"; //moved up 200px
+// }
+let divorced = false
+let divorced2 = false
+
+const divorcedElements = document.querySelectorAll(".divorced");
+const formPopup = document.querySelector(".formPopup");
+const divorcedButton = document.querySelector(".divorcedButton");
+const deseasedButton = document.querySelector(".deseasedButton");
+
+
+
+function openDivorcedFields() {
+
+
+//swap divorced fields
+const divorcedField = document.querySelector(".divorcedField");
+const nonDivorcedField = document.querySelector(".nonDivorcedField");
+divorcedField.classList.toggle("swapField");
+nonDivorcedField.classList.toggle("swapField");
+
+// Rotate the arrow
+const arrow = document.querySelector(".angle1");
+arrow.classList.toggle("rotate180");
+
+// Check if the elements are currently displayed (visible)
+const isDisplayed = divorcedElements[0].style.display === "block";
+
+if (isDisplayed) {
+// Elements are currently displayed, so hide them
+
+divorced = false
+
+for (const element of divorcedElements) {
+    element.style.display = "none";
+}
+formPopup.style.height = "450px"; // Adjustd the height accordingly
+divorcedButton.style.top = "260px"; // Adjust the top position accordingly
+deseasedButton.style.top = "260px"; // Adjust the top position accordingly
+} else {
+// Elements are currently hidden, so show them
+
+divorced = true
+
+for (const element of divorcedElements) {
+    element.style.display = "block";
+}
+formPopup.style.height = "550px"; // Adjust the height accordingly
+divorcedButton.style.top = "355px"; // Adjust the top position accordingly
+deseasedButton.style.top = "355px"; // Adjust the top position accordingly
+}
+}
+
+
+const divorcedButton2 = document.querySelector(".divorcedButton2");
+const deseasedButton2 = document.querySelector(".deseasedButton2");
+
+const divorcedElements2 = document.querySelectorAll(".divorced2");
+
+function openDivorcedFields2() {
+
+
+    //swap divorced fields
+    const divorcedField2 = document.querySelector(".divorcedField2");
+    const nonDivorcedField2 = document.querySelector(".nonDivorcedField2");
+    divorcedField2.classList.toggle("swapField");
+    nonDivorcedField2.classList.toggle("swapField");
+    
+    // Rotate the arrow
+    const arrow2 = document.querySelector(".angle2");
+    arrow2.classList.toggle("rotate180");
+    
+    // Check if the elements are currently displayed (visible)
+    const isDisplayed = divorcedElements2[0].style.display === "block";
+    
+    if (isDisplayed) {
+    // Elements are currently displayed, so hide them
+    
+    divorced2 = false
+    
+    for (const element of divorcedElements2) {
+        element.style.display = "none";
+    }
+    formPopup.style.height = "450px"; // Adjustd the height accordingly
+    divorcedButton2.style.top = "260px"; // Adjust the top position accordingly
+    deseasedButton2.style.top = "260px"; // Adjust the top position accordingly
+    } else {
+    // Elements are currently hidden, so show them
+    
+    divorced2 = true
+    
+    for (const element of divorcedElements2) {
+        element.style.display = "block";
+    }
+    formPopup.style.height = "550px"; // Adjust the height accordingly
+    divorcedButton2.style.top = "355px"; // Adjust the top position accordingly
+    deseasedButton2.style.top = "355px"; // Adjust the top position accordingly
+    }
+    }
+
+
+function closeParentModal1() {
+    document.querySelector(".myModal1").style.display = "none";
+    document.querySelector("#addParentChossonFatherTitle").value = "Title"
+    document.querySelector("#addParentChossonFatherName").value = ""
+    document.querySelector("#addParentChossonMotherTitle").value = "Title"
+    document.querySelector("#addParentChossonMotherName").value = ""
+
+}
+function submitParentModal1() {
+    document.querySelector(".myModal1").style.display = "none";
+}
+
+function openParentModal2() {
+    console.log("open")
+    let parentModal2 = document.querySelector(".myModal2");
+    parentModal2.style.display = "block";
+    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
+}
+
+function closeParentModal2() {
+    document.querySelector(".myModal2").style.display = "none";
+    document.querySelector("#addParentKallahFatherTitle").value = "Title"
+    document.querySelector("#addParentKallahFatherName").value = ""
+    document.querySelector("#addParentKallahMotherTitle").value = "Title"
+    document.querySelector("#addParentKallahMotherName").value = ""
+}
+function closeParentModal2() {
+    document.querySelector(".myModal2").style.display = "none";
+}
 
 </script>
 

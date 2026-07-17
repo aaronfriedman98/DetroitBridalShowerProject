@@ -588,15 +588,21 @@ if(data.chossonFatherName !== '-' && data.chossonMotherName !== '-') {
   chossonParentsFill.innerHTML = `${data.chossonFatherName} & <br>${data.chossonMotherName}`
 }
 else {
-  chossonParentsFill.innerHTML = `${data.chossonFatherName}<br>${data.chossonMotherName}`
+  chossonParentsFill.innerHTML = "-"
 }
+// else {
+//   chossonParentsFill.innerHTML = `${data.chossonFatherName}<br>${data.chossonMotherName}`
+// }
 
 if(data.kallahFatherName !== '-' && data.kallahMotherName !== '-') {
   kallahParentsFill.innerHTML = `${data.kallahFatherName} & <br>${data.kallahMotherName}`
 }
 else {
-  kallahParentsFill.innerHTML = `${data.kallahFatherName}<br>${data.kallahMotherName}`
+  kallahParentsFill.innerHTML = "-"
 }
+// else {
+//   kallahParentsFill.innerHTML = `${data.kallahFatherName}<br>${data.kallahMotherName}`
+// }
 
 if(data.chossonMotherDivorcedName !== "") {
   chossonParentsFill.innerHTML += `<br> ${data.chossonMotherDivorcedName}`
@@ -611,7 +617,7 @@ if(data.kallahMotherHusbandName !== "") {
   kallahParentsFill.innerHTML += `<br> ${data.kallahMotherHusbandName}`
 }
 
-if(weddingDate !== "" || weddingDate !== null || weddingDate !== undefined) {
+if(data.weddingDate !== "" || data.weddingDate !== null || data.weddingDate !== undefined) {
   kallahParentsFill.innerHTML += `<br> <br> Wedding Date: ${data.weddingDate}`
 }
 

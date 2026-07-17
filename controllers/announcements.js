@@ -4,19 +4,36 @@ const NewCouple = require('../models/newCouple')
 
 
 module.exports = {
-    getAnnouncementsPage : async (req, res) => {
+    // getAnnouncementsPage : async (req, res) => {
+    //     try {
+    //         const couples = await Couples.find()
+    //         console.log(couples)
+    //         const announcements = await Announcements.find()
+    //         const newCouple = await NewCouple.find()
+    //         console.log(couples[0].image)
+    //         // console.log('Data retrieved:', couples)
+    //         res.render( 'announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
+    //     } catch (err) {
+    //         return res.status(500).send(err)
+    //     }
+    // },
+    getAnnouncementsPage: async (req, res) => {
         try {
-            const couples = await Couples.find()
-            console.log(couples)
-            const announcements = await Announcements.find()
-            const newCouple = await NewCouple.find()
-            console.log(couples[0].image)
-            // console.log('Data retrieved:', couples)
-            res.render( 'announcements.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
+          const couples = await Couples.find();
+          
+          // Sort the couples array alphabetically based on chossonName
+          couples.sort((a, b) => {
+            return a.chossonName.localeCompare(b.chossonName);
+          });
+          
+          const announcements = await Announcements.find();
+          const newCouple = await NewCouple.find();
+          
+          res.render('announcements.ejs', { coupleInfo: couples, newAnnouncements: announcements, newCouple: newCouple });
         } catch (err) {
-            return res.status(500).send(err)
+          return res.status(500).send(err);
         }
-    },
+      },      
     // couplesSearch : async (req, res) => {
     //     let payload = req.body.payload.trim()
     //     console.log(payload)
@@ -61,25 +78,25 @@ module.exports = {
 
             let weddingDate = couple.weddingDate
             
-            if (couple.chossonFatherName === "") {
+            if (couple.chossonFatherName === "" || couple.chossonFatherName === "-") {
                 chossonFather = "-"
             }
             else {
                 chossonFather = couple.chossonFatherTitle + ' ' + couple.chossonFatherName
             }
-            if (couple.chossonMotherName === "") {
+            if (couple.chossonMotherName === "" || couple.chossonMotherName === "-") {
                 chossonMother = "-"
             }
             else {
                 chossonMother = couple.chossonMotherTitle + ' ' + couple.chossonMotherName
             }
-            if (couple.kallahFatherName === "") {
+            if (couple.kallahFatherName === "" || couple.kallahFatherName === "-") {
                 kallahFather = "-"
             }
             else {
                 kallahFather = couple.kallahFatherTitle + ' ' + couple.kallahFatherName
             }
-            if (couple.kallahMotherName === "") {
+            if (couple.kallahMotherName === "" || couple.kallahMotherName === "-") {
                 kallahMother = "-"
             }
             else {

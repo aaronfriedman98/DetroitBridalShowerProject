@@ -46,7 +46,7 @@ module.exports = {
 
                 const msg = {
                     to: req.body.email,
-                    from: 'aronfriedman98@gmail.com',
+                    from: 'bridalshower@detroitbridalshower.org',
                     subject: 'Wedding Resources',
                     html: ` <h2></h2>`,
                     attachments: [{

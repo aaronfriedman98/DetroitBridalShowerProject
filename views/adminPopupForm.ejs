@@ -19,8 +19,10 @@
                 </div>
                 <div id="Form1">
                     <h3>Enter Chosson's Info</h3>
+
                     <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
                     <label class="placeholder placeholder1">Chosson's Full Name:</label>
+
                     <div class=combine>
                         <!-- <input type="" placeholder="Title" class="smallInput"> -->
                         <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
@@ -30,7 +32,7 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                         <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
-                        <label class="placeholder placeholder2">Chosson's Father:</label>
+                        <label class="placeholder placeholder2">Chosson's Father: (Full Name):</label>
                     </div>
                     <div class="combine">
                         <!-- <input type="" placeholder="Title" class="smallInput"> -->
@@ -41,16 +43,56 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                     <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
-                    <label class="placeholder placeholder3">Chosson's Mother:</label>
+                    <label class="placeholder placeholder3"><p class="nonDivorcedField">Chosson's Mother (Full Name):</p><p class="divorcedField swapField">Chosson's Step Mother (Full Name): <span style="font-size: 12px">(optional)</span></p></label>
                     </div>
+
+                    <!-- divorced edgecase-->
+                    <div class="divorced">
+                        <div class=combine>
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="chossonMotherDivorcedTitle" id="chossonMotherDivorcedTitle">
+                                <option>Title</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Rebbetzin">Rebbetzin</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonMotherDivorcedName" id="chossonMotherDivorcedName">
+                            <label class="placeholder placeholder6">Chosson's Mother (Full Name):</label>
+                        </div>
+                        <div class="combine">
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="chossonMotherHusbandTitle" id="chossonMotherHusbandTitle">
+                                <option>Title</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Rabbi">Rabbi</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherHusbandName" id="chossonMotherHusbandName">
+                        <label class="placeholder placeholder7">Chosson's Step Father (Full Name): <span style="font-size: 9px">(opt.)</span></label>
+                        </div>
+                    </div>
+
+
                     <select class="select" name="chossonOrigin" id="chossonOrigin">
                         <option>Where is the chosson from?</option>
                         <option value="detroit">Detroit</option>
                         <option value="other">Other</option>
                     </select>
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
+
+
+                    <span onclick="openDivorcedFields()" class="addParent divorcedButton" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Divorced
+                        <i class="fas fa-angle-down angle1" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      <span class="deseasedButton addParent" onclick="openDeceasedModal()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Deceased
+                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+
+
             
-                    <div class="btn-box">
+                    <div class="btn-box" style="margin-top: 50px">
                         <button type="button" id="Back">Back</button>
                         <button type="button" id="Next1">Next</button>
                     </div>
@@ -70,7 +112,7 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                         <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
-                        <label class="placeholder placeholder2">Kallah's Father:</label>
+                        <label class="placeholder placeholder2">Kallah's Father (Full Name):</label>
                     </div>
                     <div class="combine">
                         <!-- <input type="" placeholder="Title" class="smallInput"> -->
@@ -81,8 +123,39 @@
                             <option value="Dr.">Dr.</option>
                         </select>
                     <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
-                    <label class="placeholder placeholder3">Kallah's Mother:</label>
+                    <label class="placeholder placeholder3"><p class="nonDivorcedField2">Kallah's Mother (Full Name):</p><p class="divorcedField2 swapField">Kallah's Step Mother (Full Name): <span style="font-size: 12px">(optional)</span></p></label>
                     </div>
+
+
+                    <!-- divorced edgecase-->
+                    <div class="divorced2">
+                        <div class=combine>
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="kallahMotherDivorcedTitle" id="kallahMotherDivorcedTitle">
+                                <option>Title</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Rebbetzin">Rebbetzin</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                            <input type="text" placeholder="Kallah's Father" class="smallInput" name="kallahMotherDivorcedName" id="kallahMotherDivorcedName">
+                            <label class="placeholder placeholder6">Kallah's Mother (Full Name):</label>
+                        </div>
+                        <div class="combine">
+                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
+                            <select class="selectTitle" name="kallahMotherHusbandTitle" id="kallahMotherHusbandTitle">
+                                <option>Title</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Rabbi">Rabbi</option>
+                                <option value="Dr.">Dr.</option>
+                            </select>
+                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="kallahMotherHusbandName" id="kallahMotherHusbandName">
+                        <label class="placeholder placeholder7">Kallah's Step Father (Full Name): <span style="font-size: 9px">(opt.)</span></label>
+                        </div>
+                    </div>
+
+
+
+
                     <select class="select" name="kallahOrigin" id="kallahOrigin">
                         <option>Where is the kallah from?</option>
                         <option value="detroit">Detroit</option>
@@ -90,7 +163,20 @@
                     </select>
                     <!-- <input type="" placeholder="Where is the Chosson From?"> -->
             
-                    <div class="btn-box">
+
+                    <span onclick="openDivorcedFields2()" class="addParent divorcedButton2" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Divorced
+                        <i class="fas fa-angle-down angle2" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+                      <span class="deseasedButton2 addParent" onclick="openDeceasedModal2()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
+                        Deceased
+                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
+                      </span>
+
+
+
+
+                    <div class="btn-box" style="margin-top: 50px">
                         <button type="button" id="Back1">back</button>
                         <button type="button" id="Next2">Next</button>
                     </div>
@@ -189,6 +275,148 @@
             
             </form>
 
+
+
+            <!-- deceased modal -->
+
+
+
+<style>
+    .myModal {
+        z-index: 123456789;
+    }
+    .addParent{
+        /* transition:cubic-bezier(1, 0, 0, 1) 200ms; */
+    }
+    .addParent:hover {
+        cursor: pointer !important;
+        color: rgba(61, 58, 58, 0.756) !important;
+    }
+    .addParent:hover .fa-angle-down, .addParent:hover .fa-comment-alt {
+        color: rgba(61, 58, 58, 0.756) !important;
+    }
+
+
+    /* Styles for the modal content */
+    .myModal1 {
+        display: none;
+    }
+    .myModal2 {
+        display: none;
+    }
+    .modals {
+        position: fixed;
+        z-index: 1234567892222222222222222222222222222222222222222222222;
+        background: #fffffffc !important;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        /* padding: 20px; */
+        text-align: center;
+        height: 175px !important;
+        width: 300px !important;
+
+        /* position: absolute; */
+        top: 44% !important;
+        left: 20% !important;
+        transform: translateX(100%) !important;
+    }
+    @media screen and (max-width: 980px) {
+        .modal {
+            left: -60% !important;
+            right: 80% !important;
+            top: 30% !important;
+        }
+        
+    }
+
+    /* Styles for the paragraph */
+    .modal p {
+        font-size: 16px;
+        color: rgba(0, 0, 0, 0.598);
+        line-height: normal;
+    }
+
+    /* Styles for input fields */
+    .modal input {
+        /* display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px; */
+        /* width: 100%; */
+        padding: 10px 5px;
+        margin: 5px 0;
+        border: 0;
+        border-bottom: 1px solid #999;
+        outline: none;
+        background: transparent;
+    }
+    .modall input::placeholder {
+color: #999; /* Adjust the color to your preference */
+}
+
+    /* Close button style */
+    .closed {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+
+    #myModal button {
+background: #4c4d4f;
+color: #fff; /* Text color */
+padding: 5px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 12px;
+margin-top: 5px; /* Adjust the margin as needed */
+}
+#myModal button:hover {
+background: #666; /* Darken the button on hover */
+}
+
+
+
+
+.divorced {
+display: none;
+}
+.divorced2 {
+display: none;
+}
+.rotate180 {
+transform: rotate(180deg);
+transition: transform 0.3s; /* Add a transition for a smooth animation */
+}
+
+/* change placeholders when divorced button is clicked */
+.swapField {
+display: none;
+}
+
+
+
+</style>
+
+
+
+<style>
+    .subscribeEmail::placeholder {
+color: rgba(255, 255, 255, 0.574);
+opacity: 1; /* Firefox */
+}
+</style>
+
+
+
+
+
+
+
             
             <!-- success/error popup modal -->
 <div class="popupModal center successPopup">
@@ -215,18 +443,18 @@
     <div class="info-modal-content">
       <p>
         <ul>
-            <li style="font-weight: 500">Name: <div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li><br>
-            <li style="font-weight: 500">Phone Number: <div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li><br>
-            <li style="font-weight: 500">Email: <div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li><br>
-            <li style="font-weight: 500">Address: <div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Father: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Mother: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li><br>
-            <li style="font-weight: 500">Chosson's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li><br>
-            <li style="font-weight: 500">Kallah's Hometown: <div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li><br>
-            <li style="font-weight: 500">Wedding Date: <div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li><br>
-            <li style="font-weight: 500">Personal Shopper: <div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);" class="nameFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);" class="phoneNumberFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="emailFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="addressFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="chossonFatherFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="chossonMotherFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="kallahFatherFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="kallahMotherFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="chossonHometownFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="kallahHometownFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="weddingDateFill"></div></li>
+            <li style="font-weight: 500"><div style="color: rgba(104, 103, 103, 0.865);"  class="personalShopperFill"></div></li>
         </ul>
       </p>
     </div>

@@ -11,14 +11,14 @@ const newCoupleSchema = new mongoose.Schema({
     chossonFatherTitle: {
         type: String,
     },
-    chossonFather: {
+    chossonFatherName: {
         type: String,
         // required: true
     },
     chossonMotherTitle: {
         type: String,
     },
-    chossonMother: {
+    chossonMotherName: {
         type: String,
         // required: true
     },
@@ -29,20 +29,44 @@ const newCoupleSchema = new mongoose.Schema({
     kallahFatherTitle: {
         type: String,
     },
-    kallahFather: {
+    kallahFatherName: {
         type: String,
         // required: true
     },
     kallahMotherTitle: {
         type: String,
     },
-    kallahMother: {
+    kallahMotherName: {
         type: String,
         // required: true
     },
     kallahOrigin: {
         type: String,
         required: true
+    },
+    chossonMotherDivorcedTitle: {
+        type: String,
+    },
+    chossonMotherDivorcedName: {
+        type: String,
+    },
+    chossonMotherHusbandTitle: {
+        type: String,
+    },
+    chossonMotherHusbandName: {
+        type: String,
+    },
+    kallahMotherDivorcedTitle: {
+        type: String,
+    },
+    kallahMotherDivorcedName: {
+        type: String,
+    },
+    kallahMotherHusbandTitle: {
+        type: String,
+    },
+    kallahMotherHusbandName: {
+        type: String,
     },
     email: {
         type: String,

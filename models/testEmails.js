@@ -14,4 +14,4 @@ const emailSchema = new mongoose.Schema({
     // }
 })
 
-module.exports = mongoose.model('emails', emailSchema, 'emailDB')
+module.exports = mongoose.model('testEmails', emailSchema, 'couplesDB')
