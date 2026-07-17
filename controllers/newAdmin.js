@@ -44,10 +44,10 @@ async function deleteContactFromList(listID, contact) {
 module.exports = {
     getAdminPage : async (req, res) => {
         try {
-          const couples = await Couples.find().sort({ createdAt: -1 });
+          const couples = await Couples.find().sort({ _id: -1 });
             const announcements = await Announcements.find()
             const newCouple = await NewCouple.find()
-            res.render('newAdmin.ejs', {coupleInfo : couples.reverse(), newAnnouncements : announcements, newCouple : newCouple})
+            res.render('newAdmin.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
         } catch (err) {
             return res.status(500).send(err)
         }
