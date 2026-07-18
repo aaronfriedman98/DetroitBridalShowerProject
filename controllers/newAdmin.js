@@ -40,16 +40,87 @@ async function deleteContactFromList(listID, contact) {
   await sgClient.request(request);
  }
 
+// Build the "X is engaged to Y, son of..., daughter of..." html line for the
+// collection emails. Parent names are optional on the add-couple form, so
+// every field is guarded — a missing parent just drops that line instead of
+// crashing the whole send (this is what broke the Send Email button).
+function coupleAnnouncementHTML(couple) {
+  // Couples docs use chossonName/kallahName; NewCouple docs use chosson/kallah
+  const c = Object.assign({}, couple.toObject ? couple.toObject() : couple)
+  c.chossonName = c.chossonName || c.chosson
+  c.kallahName = c.kallahName || c.kallah
+
+  const fatherFirstNames = (name) => (name || '').split(' ').slice(0, -1).join(' ')
+
+  const sonLine = (c.chossonFather || c.chossonMother)
+    ? `son of ${[c.chossonFatherTitle, c.chossonMotherTitle ? '& ' + c.chossonMotherTitle : '', c.chossonFather ? fatherFirstNames(c.chossonFather) : ''].filter(Boolean).join(' ')}${c.chossonMother ? ' and ' + c.chossonMother : ''} <br>`
+    : ''
+  const daughterLine = (c.kallahFather || c.kallahMother)
+    ? `daughter of ${[c.kallahFatherTitle, c.kallahMotherTitle ? '& ' + c.kallahMotherTitle : '', c.kallahFather ? fatherFirstNames(c.kallahFather) : ''].filter(Boolean).join(' ')}${c.kallahMother ? ' and ' + c.kallahMother : ''} <br>`
+    : ''
+
+  if (c.chossonOrigin === 'detroit' && c.kallahOrigin === 'detroit') {
+    return `<strong>${c.chossonName}</strong> is engaged to <strong>${c.kallahName}</strong> <br> ${sonLine}${daughterLine ? 'and ' + daughterLine : ''} <br>`
+  } else if (c.chossonOrigin === 'detroit') {
+    return `<strong>${c.chossonName}</strong> is engaged to ${c.kallahName} <br> ${sonLine} <br>`
+  } else {
+    return `<strong>${c.kallahName}</strong> is engaged to ${c.chossonName} <br> ${daughterLine} <br>`
+  }
+}
+
 
 module.exports = {
     getAdminPage : async (req, res) => {
         try {
-          const couples = await Couples.find().sort({ _id: -1 });
-            const announcements = await Announcements.find()
+            // exclude embedded announcement images — they add megabytes to the page
+            const couples = await Couples.find().select('-image -imageString').sort({ _id: -1 })
             const newCouple = await NewCouple.find()
-            res.render('newAdmin.ejs', {coupleInfo : couples, newAnnouncements : announcements, newCouple : newCouple})
+            res.render('newAdmin.ejs', {coupleInfo : couples, newCouple : newCouple})
         } catch (err) {
+            console.error(err)
             return res.status(500).send(err)
+        }
+    },
+    getData : async (req, res) => {
+        try {
+            const couples = await Couples.find().select('-image -imageString').sort({ _id: -1 })
+            const newCouple = await NewCouple.find()
+            res.json({ couples, newCouple })
+        } catch (err) {
+            console.error(err)
+            return res.status(500).json({ error: 'Could not load data' })
+        }
+    },
+    updateEntry : async (req, res) => {
+        try {
+            const editableFields = [
+                'chossonName', 'chossonFatherTitle', 'chossonFather', 'chossonMotherTitle', 'chossonMother', 'chossonOrigin',
+                'kallahName', 'kallahFatherTitle', 'kallahFather', 'kallahMotherTitle', 'kallahMother', 'kallahOrigin',
+                'name', 'email', 'phoneNumber', 'address', 'weddingDate', 'personalShopper'
+            ]
+            const updates = {}
+            for (const field of editableFields) {
+                if (req.body[field] !== undefined) updates[field] = req.body[field]
+            }
+            const couple = await Couples.findByIdAndUpdate(req.body.id, { $set: updates }, { new: true, select: '-image -imageString' })
+            if (!couple) return res.status(404).json({ status: false, message: 'Couple not found' })
+
+            // keep the pending new-couple record in sync if it mirrors this couple
+            await NewCouple.updateOne({ tempId: String(couple._id) }, { $set: {
+                chosson: couple.chossonName, kallah: couple.kallahName,
+                chossonFatherTitle: couple.chossonFatherTitle, chossonFather: couple.chossonFather,
+                chossonMotherTitle: couple.chossonMotherTitle, chossonMother: couple.chossonMother,
+                chossonOrigin: couple.chossonOrigin,
+                kallahFatherTitle: couple.kallahFatherTitle, kallahFather: couple.kallahFather,
+                kallahMotherTitle: couple.kallahMotherTitle, kallahMother: couple.kallahMother,
+                kallahOrigin: couple.kallahOrigin,
+                email: couple.email, phoneNumber: couple.phoneNumber
+            }})
+
+            return res.json({ status: true, couple })
+        } catch (err) {
+            console.error(err)
+            return res.status(500).json({ status: false, message: 'Error updating couple' })
         }
     },
     adminVerification : async (req, res) => {
@@ -160,7 +231,8 @@ module.exports = {
     deleteEntry : async (req, res) => {
             try{
                 await Couples.deleteOne({_id: req.body.id})
-                await NewCouple.deleteOne()
+                // only remove the pending new-couple record if it belongs to this couple
+                await NewCouple.deleteOne({ tempId: String(req.body.id) })
                 console.log(req.body.id)
                 return res.json('success')
             } catch (err) {
@@ -216,13 +288,14 @@ module.exports = {
             return res.json('verified');
             } else {
               const newCouple = await NewCouple.findOne();
-              if(couple.chossonName === newCouple.chosson && couple.kallahName === newCouple.kallah) {
+              if(newCouple && couple.chossonName === newCouple.chosson && couple.kallahName === newCouple.kallah) {
                 // console.log(couple.chossonName + " " + newCouple.chosson)
                 await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
               }
                 return res.json('unverified');
                 }
           } catch (err) {
+            console.error(err)
             return res.json('error');
           }
         }
@@ -253,21 +326,8 @@ sendNewsletter: async (req, res) => {
       const databaseCouples = await Couples.find().sort({_id: -1})
 
 
-//new couple 
-let newCoupleString = ""
-
-let chossonFatherFNameNew = newCouple.chossonFather.split(" ").slice(0, -1).join(" ")
-let kallahFatherFNameNew = newCouple.kallahFather.split(" ").slice(0, -1).join(" ")
-
-if(newCouple.chossonOrigin === 'detroit' && newCouple.kallahOrigin === 'detroit') {
-    newCoupleString += `<strong>${newCouple.chossonName}</strong> is engaged to <strong>${newCouple.kallahName}</strong> <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> and daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
-}
-else if(newCouple.chossonOrigin === 'detroit') {
-    newCoupleString += `<strong>${newCouple.chossonName}</strong> is engaged to ${newCouple.kallahName} <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> <br>`
-}
-else {
-    newCoupleString += `<strong>${newCouple.kallahName}</strong> is engaged to ${newCouple.chossonName} <br> daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
-}
+//new couple
+let newCoupleString = coupleAnnouncementHTML(newCouple)
 
 console.log("new couple string: " + newCoupleString)
 
@@ -278,20 +338,7 @@ let couplesString = ""
 for(let i = 0; i < databaseCouples.length; i++) {
 
   if (databaseCouples[i].collecting === true && !databaseCouples[i]._id.equals(newCouple._id)) {
-
-
-    let chossonFatherFName = databaseCouples[i].chossonFather.split(" ").slice(0, -1).join(" ")
-    let kallahFatherFName = databaseCouples[i].kallahFather.split(" ").slice(0, -1).join(" ")
-
-    if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
-        couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
-      }
-    else if(databaseCouples[i].chossonOrigin === 'detroit') {
-        couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> <br>`
-      }
-    else {
-        couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
-      }
+    couplesString += coupleAnnouncementHTML(databaseCouples[i])
   }
 }
 
@@ -1738,10 +1785,11 @@ console.log('success')
       
       return res.json('success');
     } catch (err) {
+      console.error(err)
       return res.json('error');
     }
   }
-,  
+,
 sendNewNewsletter: async (req, res) => {
   try {
 
@@ -1773,21 +1821,8 @@ sendNewNewsletter: async (req, res) => {
     
 
 
-      //new couple 
-
-
-      let chossonFatherFNameNew = newCouple.chossonFather.split(" ").slice(0, -1).join(" ")
-      let kallahFatherFNameNew = newCouple.kallahFather.split(" ").slice(0, -1).join(" ")
-
-      if(newCouple.chossonOrigin === 'detroit' && newCouple.kallahOrigin === 'detroit') {
-        newCoupleString += `<strong>${newCouple.chosson}</strong> is engaged to <strong>${newCouple.kallah}</strong> <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> and daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
-      }
-      else if(newCouple.chossonOrigin === 'detroit') {
-        newCoupleString += `<strong>${newCouple.chosson}</strong> is engaged to ${newCouple.kallah} <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> <br>`
-      }
-      else {
-        newCoupleString += `<strong>${newCouple.kallah}</strong> is engaged to ${newCouple.chosson} <br> daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
-      }
+      //new couple
+      newCoupleString = coupleAnnouncementHTML(newCouple)
 
       console.log("new couple string: " + newCoupleString)
 
@@ -1802,20 +1837,7 @@ let couplesString = ""
 for(let i = 0; i < databaseCouples.length; i++) {
 
 if (databaseCouples[i].collecting === true && !databaseCouples[i]._id.equals(newCouple.tempId)) {
-
-
-  let chossonFatherFName = databaseCouples[i].chossonFather.split(" ").slice(0, -1).join(" ")
-  let kallahFatherFName = databaseCouples[i].kallahFather.split(" ").slice(0, -1).join(" ")
-
-  if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
-      couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
-    }
-  else if(databaseCouples[i].chossonOrigin === 'detroit') {
-      couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to ${databaseCouples[i].kallahName} <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> <br>`
-    }
-  else {
-      couplesString += `<strong>${databaseCouples[i].kallahName}</strong> is engaged to ${databaseCouples[i].chossonName} <br> daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
-    }
+  couplesString += coupleAnnouncementHTML(databaseCouples[i])
 }
 }
 
@@ -3272,6 +3294,7 @@ console.log('success')
     
     return res.json('success');
   } catch (err) {
+    console.error(err)
     return res.json('error');
   }
 },

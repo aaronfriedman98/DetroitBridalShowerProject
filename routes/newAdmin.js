@@ -12,19 +12,21 @@ const {adminAuth} = require('../middleware/auth')
 
 
 router.get('/', adminAuth, adminController.getAdminPage)
-router.get('/adminVerification', adminController.adminVerification)
-router.get('/adminUpload', adminController.adminUpload)
-router.get('/search', adminController.searchCouples)
-router.post('/addEntry', adminController.addEntry)
-router.delete('/deleteEntry', adminController.deleteEntry)
-router.put('/verifyEntry', adminController.verifyEntry)
-router.post('/fillInfoModal', adminController.fillInfoModal)
-router.post('/sendNewsletter', adminController.sendNewsletter);
-router.post('/uploadAnnouncement', upload.single('file'), adminController.uploadAnnouncement)
-router.post('/sendNewNewsletter', adminController.sendNewNewsletter)
-router.get('/unsubscribe', adminController.unsubscribe)
+router.get('/data', adminAuth, adminController.getData)
+router.get('/adminVerification', adminAuth, adminController.adminVerification)
+router.get('/adminUpload', adminAuth, adminController.adminUpload)
+router.get('/search', adminAuth, adminController.searchCouples)
+router.post('/addEntry', adminAuth, adminController.addEntry)
+router.put('/updateEntry', adminAuth, adminController.updateEntry)
+router.delete('/deleteEntry', adminAuth, adminController.deleteEntry)
+router.put('/verifyEntry', adminAuth, adminController.verifyEntry)
+router.post('/fillInfoModal', adminAuth, adminController.fillInfoModal)
+router.post('/sendNewsletter', adminAuth, adminController.sendNewsletter);
+router.post('/uploadAnnouncement', adminAuth, upload.single('file'), adminController.uploadAnnouncement)
+router.post('/sendNewNewsletter', adminAuth, adminController.sendNewNewsletter)
 
-// router.post('/getCouples', announcementsController.couplesSearch)
+// public: linked from newsletter emails
+router.get('/unsubscribe', adminController.unsubscribe)
 
 
 module.exports = router
