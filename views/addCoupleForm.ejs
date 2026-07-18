@@ -4,6 +4,9 @@
 
 
 <form class="formPopup" id="couplesForm">
+    <!-- honeypot: humans never see or fill this; bots auto-fill it -->
+    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"
+           style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;" aria-hidden="true">
     <div id="Form">
         <h3>Personal Info</h3>
         <input type="text" name="chossonName" placeholder="Name" id="name"  >
@@ -559,7 +562,10 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
 
 <script>
 
-    
+    // recorded at page load; the server rejects submissions that arrive
+    // without it or faster than a human could possibly fill the form
+    window.__formLoadedAt = String(Date.now())
+
     async function addCouple() {
             const coupleObject = {
             name : document.querySelector("#name").value,
@@ -585,7 +591,8 @@ input[type='date']:not(:focus):in-range::-webkit-datetime-edit-year-field,
             kitchenTowels : document.querySelector("#task3").checked,
             vacuum : document.querySelector("#task4").checked,
             cholentPot : document.querySelector("#task5").checked,
-            
+            website : (document.querySelector("#website") || { value: '' }).value,
+            formToken : window.__formLoadedAt || ''
         }
             const request = new Request('/addEntry', {
                 method: 'POST',
@@ -1132,7 +1139,8 @@ justify-content: space-evenly;
             kitchenTowels : document.querySelector("#task3").checked,
             vacuum : document.querySelector("#task4").checked,
             cholentPot : document.querySelector("#task5").checked,
-            
+            website : (document.querySelector("#website") || { value: '' }).value,
+            formToken : window.__formLoadedAt || ''
         }
             const request = new Request('/addEntry', {
                 method: 'POST',
