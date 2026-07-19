@@ -21,9 +21,11 @@
   .brand h1 { font-family:var(--serif); font-weight:600; font-size:21px; letter-spacing:.12em; text-transform:uppercase; line-height:1.35; }
   .brand span { display:block; font-weight:300; font-size:10.5px; letter-spacing:.38em; text-transform:uppercase; color:#cdbf9d; margin-top:6px; }
   .nav { margin-top:26px; display:flex; flex-direction:column; gap:4px; }
-  .nav a { color:#d8d7cf; text-decoration:none; font-size:14.5px; padding:11px 14px; border-radius:10px; letter-spacing:.04em; }
+  .nav a { display:flex; align-items:center; gap:12px; color:#d8d7cf; text-decoration:none; font-size:14.5px; padding:11px 14px; border-radius:10px; letter-spacing:.04em; }
+  .nav a svg { width:17px; height:17px; flex:none; opacity:.8; }
   .nav a:hover { background:rgba(255,255,255,.07); color:#fff; }
   .nav a.active { background:rgba(179,146,90,.18); color:#ecd9b4; }
+  .nav a.active svg { opacity:1; }
   .main { margin-left:232px; padding:26px 36px 60px; }
   h2 { font-family:var(--serif); font-weight:600; font-size:34px; color:var(--sage-darker); margin-bottom:4px; }
   .subtitle { color:var(--ink-soft); font-weight:300; font-size:14px; margin-bottom:22px; }
@@ -76,10 +78,18 @@
     <h1>Detroit<br>Bridal Shower</h1><span>Admin</span>
   </div>
   <nav class="nav">
-    <a href="/newAdmin">Dashboard</a>
-    <a href="/newAdmin/contributions" class="active">Contributions</a>
-    <a href="/adminUpload">Announcements</a>
-    <a href="/" target="_blank">View Website</a>
+    <a href="/newAdmin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <a href="/newAdmin/contributions" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7s-2-4-5-4-3 4 0 4h5zM12 7s2-4 5-4 3 4 0 4h-5z"/></svg>
+      Contributions
+    </a>
+    <a href="/" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
+      View Website
+    </a>
   </nav>
 </aside>
 <main class="main">
