@@ -24,6 +24,7 @@ router.post('/fillInfoModal', adminAuth, adminController.fillInfoModal)
 router.post('/sendNewsletter', adminAuth, adminController.sendNewsletter);
 router.post('/uploadAnnouncement', adminAuth, upload.single('file'), adminController.uploadAnnouncement)
 router.post('/sendNewNewsletter', adminAuth, adminController.sendNewNewsletter)
+router.get('/previewEmail', adminAuth, (req, res) => { req.preview = true; return adminController.sendNewNewsletter(req, res) })
 
 // public: linked from newsletter emails
 router.get('/unsubscribe', adminController.unsubscribe)

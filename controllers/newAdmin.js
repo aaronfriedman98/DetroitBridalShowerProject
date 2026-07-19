@@ -1805,7 +1805,7 @@ sendNewNewsletter: async (req, res) => {
     }
 
 
-      const listID = await getListID('Newsletter Subscribers')
+      const listID = req.preview ? null : await getListID('Newsletter Subscribers')
 
     console.log("listID: " + listID)
 
@@ -2514,6 +2514,12 @@ const collectionEmail = `
 </body>
 </html>
 `
+
+// preview mode: return the collection email html instead of sending anything
+if (req.preview) {
+  res.set('Content-Type', 'text/html')
+  return res.send(collectionEmail)
+}
 
 const personalCollectionEmail = `<!DOCTYPE html>
 
