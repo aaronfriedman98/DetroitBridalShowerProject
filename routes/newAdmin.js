@@ -31,6 +31,8 @@ router.get('/contributions', adminAuth, give.adminContributionsPage)
 router.get('/contributionsData', adminAuth, give.getContributionsData)
 router.post('/addContribution', adminAuth, give.addContribution)
 router.put('/verifyContribution', adminAuth, give.verifyContribution)
+router.post('/verifyGroup', adminAuth, give.verifyGroup)
+router.get('/exportContributions', adminAuth, give.exportContributions)
 router.delete('/deleteContribution', adminAuth, give.deleteContribution)
 
 router.post('/sendTestEmail', adminAuth, (req, res) => {

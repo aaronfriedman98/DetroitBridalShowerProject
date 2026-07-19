@@ -5,6 +5,34 @@ sgMail.setApiKey(process.env.API_KEY)
 
 const MOM_EMAIL = 'bridalshower@detroitbridalshower.org'
 
+// thank-you email sent (optionally) when mom verifies a gift
+async function sendThankYou(to, name, coupleNamesList) {
+  const couples = coupleNamesList.map(n =>
+    `<div style="font-family: Georgia, serif; font-size:19px; color:#494e46; line-height:1.8;"><strong>${n}</strong></div>`).join('')
+  const html = `
+  <div style="background:#f4f1ea; padding:30px 12px; font-family: Arial, sans-serif;">
+    <div style="max-width:520px; margin:0 auto; background:#fff; border:1px solid #e7e2d8; border-radius:14px; padding:34px 32px; text-align:center;">
+      <img src="${(process.env.AZURE_URL || '').replace(/['"]/g, '')}/assets/images/bridalshowerpic.jpg" width="90" alt="Detroit Bridal Shower" style="display:block; margin:0 auto;">
+      <div style="font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#494e46; margin-top:14px;">Detroit Bridal Shower</div>
+      <h2 style="font-family: Georgia, serif; font-style:italic; font-weight:normal; color:#b3925a; font-size:34px; margin:16px 0 6px;">Thank You!</h2>
+      <div style="font-family: Georgia, serif; font-size:18px; color:#2e2e29; line-height:1.6; margin-top:8px;">
+        ${name ? name + ', your' : 'Your'} gift toward the bridal shower${coupleNamesList.length > 1 ? 's' : ''} of
+      </div>
+      <div style="margin:14px 0;">${couples}</div>
+      <div style="font-family: Georgia, serif; font-size:18px; color:#2e2e29; line-height:1.6;">
+        has been received. May we share in many more simchas together!
+      </div>
+      <div style="width:54px; height:1px; background:#d9c9a6; margin:22px auto;"></div>
+      <div style="font-family: Georgia, serif; font-style:italic; font-size:20px; color:#494e46;">Becky Friedman</div>
+    </div>
+  </div>`
+  try {
+    await sgMail.send({ to, from: MOM_EMAIL, subject: 'Thank you for your gift 💛', html })
+  } catch (e) {
+    console.error('thank-you email failed:', e.message)
+  }
+}
+
 // simple per-IP rate limit: max 5 pledge submissions per hour
 const pledgeLog = new Map()
 function pledgeRateLimited(req) {
@@ -180,12 +208,65 @@ module.exports = {
     try {
       const c = await Contribution.findById(req.body.id)
       if (!c) return res.status(404).json({ status: false })
+      const amt = parseFloat(req.body.amount)
+      if (isFinite(amt) && amt > 0) c.amount = Math.round(amt * 100) / 100
       c.verified = !c.verified
       await c.save()
+      if (c.verified && req.body.sendThanks && c.contributorEmail) {
+        await sendThankYou(c.contributorEmail, c.contributorName, [c.coupleNames])
+      }
       res.json({ status: true, verified: c.verified })
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: false })
+    }
+  },
+
+  // verify a whole pledge submission at once; one combined thank-you email
+  verifyGroup: async (req, res) => {
+    try {
+      const ids = Array.isArray(req.body.ids) ? req.body.ids : []
+      const amounts = req.body.amounts || {}
+      const couplesVerified = []
+      let email = '', name = ''
+      for (const id of ids) {
+        const c = await Contribution.findById(id)
+        if (!c) continue
+        const amt = parseFloat(amounts[id])
+        if (isFinite(amt) && amt > 0) c.amount = Math.round(amt * 100) / 100
+        c.verified = true
+        await c.save()
+        couplesVerified.push(c.coupleNames)
+        email = c.contributorEmail || email
+        name = c.contributorName || name
+      }
+      if (req.body.sendThanks && email && couplesVerified.length) {
+        await sendThankYou(email, name, couplesVerified)
+      }
+      res.json({ status: true, count: couplesVerified.length })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false })
+    }
+  },
+
+  // CSV export of all contributions
+  exportContributions: async (req, res) => {
+    try {
+      const all = await Contribution.find().sort({ _id: -1 })
+      const csvCell = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'
+      const lines = ['Date,Contributor,Email,Phone,Couple,Amount,Status,Source']
+      for (const c of all) {
+        const date = new Date(parseInt(String(c._id).substring(0, 8), 16) * 1000).toLocaleDateString('en-US')
+        lines.push([date, c.contributorName, c.contributorEmail, c.contributorPhone, c.coupleNames,
+          (c.amount || 0).toFixed(2), c.verified ? 'Verified' : 'Pending', c.source].map(csvCell).join(','))
+      }
+      res.set('Content-Type', 'text/csv')
+      res.set('Content-Disposition', 'attachment; filename="contributions.csv"')
+      res.send('﻿' + lines.join('\r\n'))
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Export failed')
     }
   },
 

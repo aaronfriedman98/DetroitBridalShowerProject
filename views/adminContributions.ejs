@@ -91,9 +91,12 @@
       <div class="card">
         <div class="card-head">
           <h3>All Contributions</h3>
-          <select id="coupleFilter" style="padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-size:13px; outline:none;" onchange="renderAll()">
-            <option value="">All couples</option>
-          </select>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="coupleFilter" style="padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-size:13px; outline:none;" onchange="renderAll()">
+              <option value="">All couples</option>
+            </select>
+            <a class="btn btn-ghost" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
+          </div>
         </div>
         <div class="scroll"><table>
           <thead><tr><th>Contributor</th><th>Couple</th><th>Amount</th><th>Status</th><th></th></tr></thead>
@@ -110,6 +113,11 @@
         <div class="field"><label>Amount ($)</label><input type="number" id="mAmount" value="65" min="1"></div>
         <div style="margin-top:16px;"><button class="btn btn-gold" onclick="addManual()">Add Contributor</button></div>
       </div>
+      <div class="card-head" style="border-top:1px solid var(--line);"><h3>Per-Couple Totals</h3><span class="count">private — never shown publicly</span></div>
+      <div class="scroll" style="max-height:340px;"><table>
+        <thead><tr><th>Couple</th><th>Received</th><th>Pending</th></tr></thead>
+        <tbody id="totalsBody"></tbody>
+      </table></div>
     </div>
   </div>
 </main>
@@ -137,23 +145,45 @@ function renderPending() {
   $('pendingCount').textContent = pending.length + ' awaiting verification';
   const groups = new Map();
   pending.forEach(c => { const k = c.groupId || c._id; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(c); });
-  $('pendingWrap').innerHTML = groups.size ? [...groups.values()].map(g => {
+  $('pendingWrap').innerHTML = groups.size ? [...groups.values()].map((g, gi) => {
     const total = g.reduce((s,c) => s + (c.amount||0), 0);
     const contact = [g[0].contributorEmail, g[0].contributorPhone].filter(Boolean).join(' · ');
-    return `<div class="pledge">
+    const hasEmail = !!g[0].contributorEmail;
+    return `<div class="pledge" data-group="${gi}">
       <div class="pledge-head">
         <b>${esc(g[0].contributorName)}</b>
         <span class="meta">${esc(contact)} &middot; ${when(g[0]._id)} &middot; pledged $${total.toFixed(2)}</span>
-        <button class="btn btn-ok" onclick="verifyGroup('${g.map(c=>c._id).join(',')}')">✓ Verify All</button>
+        ${hasEmail ? `<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); cursor:pointer;">
+          <input type="checkbox" class="thanks-chk" checked style="accent-color:var(--gold);"> Send thank-you email</label>` : ''}
+        <button class="btn btn-ok" onclick="verifyGroup(this, '${g.map(c=>c._id).join(',')}')">✓ Verify All</button>
       </div>
-      ${g.map(c => `<div class="pledge-row">
+      ${g.map(c => `<div class="pledge-row" data-id="${c._id}">
         <span class="c">${esc(c.coupleNames)}</span>
-        <span class="a">$${(c.amount||0).toFixed(2)}</span>
-        <button class="mini" title="Verify" onclick="verifyOne('${c._id}')">✓</button>
+        <span class="a" style="display:flex; align-items:center; gap:3px;">$
+          <input type="number" class="amt-in" value="${(c.amount||0).toFixed(2)}" min="0" step="0.01" title="Adjust to the amount actually received"
+                 style="width:78px; padding:5px 7px; border:1px solid var(--line); border-radius:8px; font-size:13px; text-align:right; outline:none;">
+        </span>
+        <button class="mini" title="Verify" onclick="verifyOne(this, '${c._id}')">✓</button>
         <button class="mini danger" title="Delete" onclick="delOne('${c._id}')">✕</button>
       </div>`).join('')}
     </div>`;
   }).join('') : '<div class="empty">No pending pledges — all caught up! 🎉</div>';
+  renderTotals();
+}
+
+function renderTotals() {
+  const map = new Map();
+  contributions.forEach(c => {
+    if (!map.has(c.coupleId)) map.set(c.coupleId, { names: c.coupleNames, verified: 0, pending: 0 });
+    const t = map.get(c.coupleId);
+    if (c.verified) t.verified += c.amount || 0; else t.pending += c.amount || 0;
+  });
+  const rows = [...map.values()].sort((a,b) => (b.verified+b.pending) - (a.verified+a.pending));
+  $('totalsBody').innerHTML = rows.length ? rows.map(t => `<tr>
+    <td>${esc(t.names)}</td>
+    <td style="color:var(--ok); font-weight:500; white-space:nowrap;">$${t.verified.toFixed(2)}</td>
+    <td style="color:var(--gold); white-space:nowrap;">${t.pending ? '$'+t.pending.toFixed(2) : '—'}</td>
+  </tr>`).join('') : '<tr><td colspan="3" class="empty">No contributions yet.</td></tr>';
 }
 
 function renderAll() {
@@ -165,23 +195,36 @@ function renderAll() {
     <td style="color:var(--gold); font-weight:500;">$${(c.amount||0).toFixed(2)}</td>
     <td><span class="chip ${c.verified?'ok':'pending'}">${c.verified?'Verified':'Pending'}</span></td>
     <td style="text-align:right; white-space:nowrap;">
-      <button class="mini" title="${c.verified?'Un-verify':'Verify'}" onclick="verifyOne('${c._id}')">${c.verified?'↺':'✓'}</button>
+      <button class="mini" title="${c.verified?'Un-verify':'Verify'}" onclick="verifyOne(null, '${c._id}')">${c.verified?'↺':'✓'}</button>
       <button class="mini danger" title="Delete" onclick="delOne('${c._id}')">✕</button>
     </td></tr>`).join('') : '<tr><td colspan="5" class="empty">Nothing here yet.</td></tr>';
 }
 
-async function verifyOne(id) {
-  const res = await fetch('/newAdmin/verifyContribution', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+async function verifyOne(el, id) {
+  const body = { id };
+  if (el) {
+    const row = el.closest('.pledge-row');
+    const amt = row && row.querySelector('.amt-in');
+    if (amt) body.amount = amt.value;
+    const chk = el.closest('.pledge') && el.closest('.pledge').querySelector('.thanks-chk');
+    body.sendThanks = !!(chk && chk.checked);
+  }
+  const res = await fetch('/newAdmin/verifyContribution', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const d = await res.json();
-  if (d.status) { toast(d.verified ? 'Verified — now shown publicly.' : 'Moved back to pending.'); await load(); }
+  if (d.status) { toast(d.verified ? 'Verified — now shown publicly.' + (body.sendThanks ? ' Thank-you email sent.' : '') : 'Moved back to pending.'); await load(); }
   else toast('Could not update.', true);
 }
-async function verifyGroup(ids) {
-  for (const id of ids.split(',')) {
-    await fetch('/newAdmin/verifyContribution', { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
-  }
-  toast('Pledge verified — names now shown publicly.');
-  await load();
+async function verifyGroup(btn, ids) {
+  const pledge = btn.closest('.pledge');
+  const chk = pledge.querySelector('.thanks-chk');
+  const amounts = {};
+  pledge.querySelectorAll('.pledge-row').forEach(r => { amounts[r.dataset.id] = r.querySelector('.amt-in').value; });
+  btn.disabled = true;
+  const res = await fetch('/newAdmin/verifyGroup', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ ids: ids.split(','), amounts, sendThanks: !!(chk && chk.checked) }) });
+  const d = await res.json();
+  if (d.status) { toast('Pledge verified — names now shown publicly.' + ((chk && chk.checked) ? ' Thank-you email sent.' : '')); await load(); }
+  else { toast('Could not verify.', true); btn.disabled = false; }
 }
 async function delOne(id) {
   if (!confirm('Delete this contribution? This cannot be undone.')) return;
