@@ -18,6 +18,9 @@
   .sub { text-align:center; font-family:var(--serif); font-size:19px; color:var(--soft); line-height:1.55; margin:10px auto 26px; max-width:500px; }
   select { width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:12px; font-size:16px; font-family:var(--serif); color:var(--sage); background:#fff; outline:none; cursor:pointer; }
   select:focus { border-color:var(--gold); }
+  select { -webkit-appearance:none; appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23b3925a' stroke-width='1.8' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat; background-position:right 16px center; padding-right:40px; }
   .card { display:none; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:30px 28px; margin-top:18px; box-shadow:0 10px 30px -18px rgba(56,60,54,.25); text-align:center; }
   .card h2 { font-family:var(--serif); font-size:26px; color:var(--sage); }
   .card .thanks { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:500; margin:14px 0 4px; }
