@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gift Contributors &mdash; Detroit Bridal Shower</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory:#f4f1ea; --card:#fff; --sage:#494e46; --gold:#b3925a; --gold-soft:#f3ead9; --ink:#2e2e29; --soft:#6d6d64; --line:#e7e2d8;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--ivory); font-family:var(--sans); color:var(--ink); min-height:100vh; }
+  .top { text-align:center; padding:34px 16px 0; }
+  .top img { width:96px; height:auto; margin:0 auto; display:block; }
+  .top .word { font-size:12px; letter-spacing:5px; text-transform:uppercase; color:var(--sage); margin-top:14px; }
+  .top a.back { display:inline-block; margin-top:10px; font-size:13px; color:var(--gold); text-decoration:none; letter-spacing:.05em; }
+  .wrap { max-width:640px; margin:22px auto 70px; padding:0 16px; }
+  h1 { font-family:var(--serif); font-style:italic; font-weight:500; font-size:42px; color:var(--gold); text-align:center; }
+  .sub { text-align:center; font-family:var(--serif); font-size:19px; color:var(--soft); line-height:1.55; margin:10px auto 26px; max-width:500px; }
+  select { width:100%; padding:13px 14px; border:1px solid var(--line); border-radius:12px; font-size:16px; font-family:var(--serif); color:var(--sage); background:#fff; outline:none; cursor:pointer; }
+  select:focus { border-color:var(--gold); }
+  .card { display:none; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:30px 28px; margin-top:18px; box-shadow:0 10px 30px -18px rgba(56,60,54,.25); text-align:center; }
+  .card h2 { font-family:var(--serif); font-size:26px; color:var(--sage); }
+  .card .thanks { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:500; margin:14px 0 4px; }
+  .names { font-family:var(--serif); font-size:19px; color:var(--ink); line-height:2; }
+  .names span { display:inline-block; padding:0 10px; }
+  .divider { width:54px; height:1px; background:#d9c9a6; margin:14px auto; }
+  .empty { text-align:center; font-family:var(--serif); font-size:20px; color:var(--soft); padding:40px 10px; }
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="/assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+  <div class="word">Detroit Bridal Shower</div>
+  <a class="back" href="/">&larr; Back to website</a>
+</div>
+<div class="wrap">
+  <h1>With Gratitude</h1>
+  <p class="sub">Every couple's bridal shower is made possible by friends and family across our community. Choose a couple to see everyone who gave toward their gift.</p>
+
+  <% if (couples.length === 0) { %>
+    <div class="empty">Contributor lists will appear here soon.</div>
+  <% } else { %>
+    <select id="couplePick" onchange="show(this.value)">
+      <option value="">Choose a couple&hellip;</option>
+      <% couples.forEach((c, i) => { %>
+        <option value="<%= i %>"><%= c.coupleNames %></option>
+      <% }) %>
+    </select>
+    <div class="card" id="listCard">
+      <h2 id="cNames"></h2>
+      <div class="divider"></div>
+      <div class="thanks">With thanks to</div>
+      <div class="names" id="cList"></div>
+    </div>
+    <script>
+      const DATA = <%- JSON.stringify(couples).replace(/</g, '\\u003c') %>;
+      function show(i) {
+        const card = document.getElementById('listCard');
+        if (i === '') { card.style.display = 'none'; return; }
+        const c = DATA[+i];
+        document.getElementById('cNames').textContent = c.coupleNames;
+        document.getElementById('cList').innerHTML = c.contributors
+          .map(n => '<span>' + n.replace(/</g, '&lt;') + '</span>').join(' &bull; ');
+        card.style.display = 'block';
+      }
+    </script>
+  <% } %>
+</div>
+</body>
+</html>

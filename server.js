@@ -50,6 +50,8 @@ app.use(cookieParser())
 
 // Set Routes
 app.use('/', homeRoutes)
+app.use('/give', require('./routes/give'))
+app.use('/contributors', require('./routes/contributors'))
 app.use('/about', aboutRoutes)
 app.use('/announcements', announcementsRoutes)
 app.use('/contact', contactRoutes)

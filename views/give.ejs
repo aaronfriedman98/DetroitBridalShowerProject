@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Give a Gift &mdash; Detroit Bridal Shower</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory:#f4f1ea; --card:#fff; --sage:#494e46; --gold:#b3925a; --gold-soft:#f3ead9; --ink:#2e2e29; --soft:#6d6d64; --line:#e7e2d8; --ok:#5f7d5f;
+    --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--ivory); font-family:var(--sans); color:var(--ink); min-height:100vh; }
+  .top { text-align:center; padding:34px 16px 0; }
+  .top img { width:96px; height:auto; margin:0 auto; display:block; }
+  .top .word { font-size:12px; letter-spacing:5px; text-transform:uppercase; color:var(--sage); margin-top:14px; }
+  .top a.back { display:inline-block; margin-top:10px; font-size:13px; color:var(--gold); text-decoration:none; letter-spacing:.05em; }
+  .wrap { max-width:660px; margin:22px auto 70px; padding:0 16px; }
+  h1 { font-family:var(--serif); font-style:italic; font-weight:500; font-size:42px; color:var(--gold); text-align:center; }
+  .sub { text-align:center; font-family:var(--serif); font-size:19px; color:var(--soft); line-height:1.55; margin:10px auto 26px; max-width:520px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px 26px 30px; box-shadow:0 10px 30px -18px rgba(56,60,54,.25); }
+  .label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:500; margin:6px 0 12px; }
+  .couple { display:flex; align-items:center; gap:14px; padding:13px 12px; border-bottom:1px solid #f0ece3; }
+  .couple:last-child { border-bottom:none; }
+  .couple input[type=checkbox] { width:17px; height:17px; accent-color:var(--gold); cursor:pointer; flex:none; }
+  .couple .names { flex:1; font-family:var(--serif); font-size:19px; color:var(--sage); line-height:1.3; cursor:pointer; }
+  .amt { display:flex; align-items:center; gap:4px; opacity:.35; transition:opacity .15s; }
+  .couple.on .amt { opacity:1; }
+  .amt span { color:var(--soft); font-size:14px; }
+  .amt input { width:74px; padding:8px 8px; border:1px solid var(--line); border-radius:9px; font-size:15px; font-family:var(--sans); text-align:right; outline:none; }
+  .amt input:focus { border-color:var(--gold); }
+  .you input { width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:10px; font-size:15px; font-family:var(--sans); outline:none; margin-bottom:10px; background:#fff; }
+  .you input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(179,146,90,.13); }
+  .totalbar { display:flex; justify-content:space-between; align-items:center; margin:18px 0 14px; padding:14px 16px; background:var(--gold-soft); border-radius:12px; }
+  .totalbar b { font-family:var(--serif); font-size:22px; color:var(--sage); }
+  .btn { width:100%; border:none; border-radius:999px; padding:15px; background:var(--gold); color:#fff; font-family:var(--sans); font-size:16px; letter-spacing:.05em; cursor:pointer; }
+  .btn:hover { background:#a3854f; }
+  .btn[disabled] { opacity:.5; pointer-events:none; }
+  .note { text-align:center; font-size:12.5px; color:var(--soft); margin-top:12px; line-height:1.6; }
+  .done { display:none; text-align:center; }
+  .done h2 { font-family:var(--serif); font-size:30px; color:var(--sage); margin-bottom:10px; }
+  .done p { font-family:var(--serif); font-size:19px; color:var(--soft); line-height:1.6; }
+  .pay { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px; text-align:center; }
+  .pay div { border:1px solid var(--line); border-radius:12px; padding:14px 10px; }
+  .pay .m { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--sage); font-weight:500; }
+  .pay .v { font-family:var(--serif); font-size:16px; color:var(--ink); margin-top:5px; line-height:1.4; }
+  .empty { text-align:center; font-family:var(--serif); font-size:20px; color:var(--soft); padding:30px 10px; }
+</style>
+</head>
+<body>
+<div class="top">
+  <img src="/assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+  <div class="word">Detroit Bridal Shower</div>
+  <a class="back" href="/">&larr; Back to website</a>
+</div>
+<div class="wrap">
+  <h1>Give a Gift</h1>
+  <p class="sub">Choose the couples you'd like to give to. The recommended amount is $65 per couple &mdash; any amount is warmly accepted.</p>
+
+  <div class="card" id="formCard">
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" style="position:absolute; left:-9999px; height:0; width:0; opacity:0;" aria-hidden="true">
+    <div class="label">Couples currently collecting</div>
+    <% if (couples.length === 0) { %>
+      <div class="empty">No couples are collecting right now &mdash; check back soon!</div>
+    <% } %>
+    <div id="couplesList">
+      <% couples.forEach(c => { %>
+      <div class="couple" data-id="<%= c._id %>">
+        <input type="checkbox" class="pick" id="ck<%= c._id %>">
+        <label class="names" for="ck<%= c._id %>"><%= c.chossonName %> &amp; <%= c.kallahName %></label>
+        <span class="amt"><span>$</span><input type="number" class="amount" value="65" min="1" step="1" disabled></span>
+      </div>
+      <% }) %>
+    </div>
+
+    <div class="label" style="margin-top:22px;">Your details</div>
+    <div class="you">
+      <input type="text" id="pName" placeholder="Your name (shown to the couple)">
+      <input type="email" id="pEmail" placeholder="Your email (optional)">
+      <input type="tel" id="pPhone" placeholder="Your phone (optional)">
+    </div>
+
+    <div class="totalbar"><span style="color:var(--soft); font-size:14px; letter-spacing:.06em;">TOTAL</span><b id="total">$0</b></div>
+    <button class="btn" id="submitBtn" onclick="submitPledge()">Submit My Gift Pledge</button>
+    <div class="note">After submitting you'll see how to send your payment.<br>Your name will be shared with the couple &mdash; the amount stays private.</div>
+  </div>
+
+  <div class="card done" id="doneCard">
+    <h2>Thank you! 💛</h2>
+    <p>Your pledge was sent to the Detroit Bridal Shower. Please complete your gift using one of these methods:</p>
+    <div class="pay">
+      <div><div class="m">Zelle</div><div class="v">beckyfriedman1@gmail.com</div></div>
+      <div><div class="m">Venmo</div><div class="v">@Becky-Friedman-8</div></div>
+      <div><div class="m">PayPal</div><div class="v">beckyfriedman1@gmail.com</div></div>
+      <div><div class="m">Check</div><div class="v">Detroit Bridal Shower Project<br>17322 Goldwin Drive<br>Southfield, MI 48075</div></div>
+    </div>
+    <p style="margin-top:20px; font-size:15px;">Total pledged: <b id="doneTotal" style="color:var(--gold);"></b></p>
+  </div>
+</div>
+<script>
+window.__loadedAt = String(Date.now());
+const rows = [...document.querySelectorAll('.couple')];
+function refresh() {
+  let total = 0;
+  rows.forEach(r => {
+    const on = r.querySelector('.pick').checked;
+    r.classList.toggle('on', on);
+    const amt = r.querySelector('.amount');
+    amt.disabled = !on;
+    if (on) total += parseFloat(amt.value) || 0;
+  });
+  document.getElementById('total').textContent = '$' + total.toFixed(2).replace(/\.00$/, '');
+  return total;
+}
+rows.forEach(r => {
+  r.querySelector('.pick').addEventListener('change', refresh);
+  r.querySelector('.amount').addEventListener('input', refresh);
+});
+async function submitPledge() {
+  const name = document.getElementById('pName').value.trim();
+  const selections = rows.filter(r => r.querySelector('.pick').checked)
+    .map(r => ({ coupleId: r.dataset.id, amount: parseFloat(r.querySelector('.amount').value) || 65 }));
+  if (!selections.length) { alert('Please select at least one couple.'); return; }
+  if (!name) { alert('Please enter your name.'); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('/give/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, email: document.getElementById('pEmail').value, phone: document.getElementById('pPhone').value,
+        selections, website: document.getElementById('website').value, formToken: window.__loadedAt
+      })
+    });
+    const data = await res.json();
+    if (!data.status) throw new Error(data.message || 'error');
+    document.getElementById('doneTotal').textContent = '$' + refresh().toFixed(2).replace(/\.00$/, '');
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('doneCard').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    alert(e.message === 'error' ? 'Something went wrong — please try again.' : e.message);
+    btn.disabled = false; btn.textContent = 'Submit My Gift Pledge';
+  }
+}
+refresh();
+</script>
+</body>
+</html>
