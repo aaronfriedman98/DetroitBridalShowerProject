@@ -1,244 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- font family -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;600;700&family=Roboto+Slab&display=swap" rel="stylesheet">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Poppins&family=Source+Sans+Pro:wght@200;300;400&display=swap" rel="stylesheet">
-
-    <!-- icons for mobile menu -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    
-    <!-- font awesome animations -->
-    <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="assets/css/headerFooter.css">
-    <link rel="stylesheet" href="assets/css/about.css">
-
-    <title>About</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About &mdash; Detroit Bridal Shower</title>
+<link rel="icon" href="../assets/images/bridalshowerpic.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory:#f4f1ea; --cream:#faf8f3; --sage:#494e46; --sage-dark:#383c36; --gold:#b3925a; --gold-soft:#f3ead9;
+    --ink:#2e2e29; --soft:#6d6d64; --line:#e7e2d8; --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--ivory); font-family:var(--sans); color:var(--ink); }
+  a { text-decoration:none; }
+  .n-nav { position:sticky; top:0; z-index:50; background:rgba(244,241,234,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  .n-nav-in { max-width:1180px; margin:0 auto; padding:14px 22px; display:flex; align-items:center; gap:26px; }
+  .n-brand { display:flex; align-items:center; gap:12px; }
+  .n-brand img { width:44px; height:44px; object-fit:contain; background:#fff; border-radius:50%; padding:4px; border:1px solid var(--line); }
+  .n-brand span { font-family:var(--serif); font-weight:600; font-size:17px; letter-spacing:.14em; text-transform:uppercase; color:var(--sage-dark); line-height:1.2; }
+  .n-links { display:flex; align-items:center; gap:26px; margin-left:auto; }
+  .n-links a { font-size:13.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--sage); }
+  .n-links a:hover { color:var(--gold); }
+  .n-cta { background:var(--gold); color:#fff !important; border-radius:999px; padding:11px 24px; }
+  @media (max-width:820px){ .n-links a:not(.n-cta){ display:none; } }
+  .hero { text-align:center; padding:66px 20px 26px; }
+  .hero img { width:120px; margin:0 auto 16px; display:block; }
+  .kicker { font-size:12px; letter-spacing:5px; text-transform:uppercase; color:var(--gold); font-weight:500; }
+  .hero h1 { font-family:var(--serif); font-weight:500; font-size:clamp(36px,5.5vw,52px); color:var(--sage-dark); margin:14px 0 8px; line-height:1.15; }
+  .hero h1 em { font-style:italic; color:var(--gold); }
+  .wrap { max-width:680px; margin:0 auto; padding:14px 22px 40px; }
+  .lede { font-family:var(--serif); font-size:22px; color:var(--soft); line-height:1.65; text-align:center; }
+  .divider { width:54px; height:1px; background:#d9c9a6; margin:36px auto; }
+  .block h2 { font-family:var(--serif); font-weight:600; font-size:27px; color:var(--sage-dark); margin-bottom:12px; text-align:center; }
+  .block p { font-family:var(--serif); font-size:19px; color:var(--ink); line-height:1.75; margin-bottom:16px; }
+  .block a { color:var(--gold); }
+  .cta-band { background:var(--cream); border-top:1px solid var(--line); border-bottom:1px solid var(--line); text-align:center; padding:52px 20px; }
+  .cta-band h2 { font-family:var(--serif); font-style:italic; font-weight:500; font-size:30px; color:var(--sage); margin-bottom:22px; }
+  .btn { display:inline-block; border-radius:999px; padding:14px 32px; font-size:14.5px; letter-spacing:.06em; margin:0 6px 10px; }
+  .btn-gold { background:var(--gold); color:#fff !important; }
+  .btn-line { border:1px solid var(--sage); color:var(--sage) !important; }
+  .foot { text-align:center; padding:34px 20px 40px; font-weight:300; font-size:12.5px; color:var(--soft); line-height:1.9; }
+  .foot a { color:var(--gold); }
+</style>
 </head>
-
-
 <body>
+<div class="n-nav"><div class="n-nav-in">
+  <a class="n-brand" href="/"><img src="../assets/images/bridalshowerpic.jpg" alt=""><span>Detroit<br>Bridal Shower</span></a>
+  <div class="n-links">
+    <a href="/give">Give a Gift</a>
+    <a href="/contributors">With Gratitude</a>
+    <a href="/contact">Contact</a>
+    <a class="n-cta" href="/#services">Add a Couple</a>
+  </div>
+</div></div>
 
+<div class="hero">
+  <img src="../assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+  <div class="kicker">Our story</div>
+  <h1>Built by a community,<br><em>for every new couple</em></h1>
+</div>
 
-    
+<div class="wrap">
+  <p class="lede">For years, the women of our Detroit community have come together around a simple idea: no chosson and kallah should begin married life with an empty home.</p>
+  <div class="divider"></div>
+  <div class="block">
+    <h2>What we do</h2>
+    <p>When a couple gets engaged, friends and family from across the community each give toward their bridal shower. The funds are pooled and spent thoughtfully on the essentials &mdash; kitchenware, linens, appliances, the cholent pot &mdash; everything a new home needs from day one.</p>
+    <p>With everything purchased together, every dollar is used wisely, and the new couple can focus on what matters: building a bayis ne'eman b'Yisroel.</p>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <h2>How it works</h2>
+    <p>Anyone can <a href="/#services">add a newly engaged couple</a> to the list. Once confirmed, the community is notified, and everyone can <a href="/give">give toward the shower</a> in under a minute. Every contributor is honored on our <a href="/contributors">With Gratitude</a> page &mdash; because every gift, no matter the size, builds a home.</p>
+    <p>Prefer to shop yourself? Our <a onclick="window.open('../assets/images/shoppingGuide.pdf','_blank')" style="cursor:pointer;">shopping guide</a> lays out everything a new household needs.</p>
+  </div>
+  <div class="divider"></div>
+  <div class="block">
+    <h2>A community project</h2>
+    <p>The Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization, run entirely by volunteers. Every simcha we celebrate is made possible by this community's generosity &mdash; thank you, Detroit.</p>
+  </div>
+</div>
 
-    <div class="body">
+<div class="cta-band">
+  <h2>Share in the next simcha</h2>
+  <a class="btn btn-gold" href="/#services">Add a Couple</a>
+  <a class="btn btn-line" href="/give">Give a Gift</a>
+</div>
 
-
-        <section class="header" id="heading">
-            <section class="logo test">
-                    <img src="assets/images/bridalshowerpic.jpg">
-                    <a href="/"><span class="main-header">Detroit</span><br>Bridal Shower</a>
-            </section>
-            <nav class="headerNav" id="navLinks">
-                <i class="fa fa-times" onclick="hideMenu()"></i>
-                <ul>
-                    <li><a href="/">HOME</a></li>
-                    <li><a href="about">ABOUT</a></li>
-                    <li><a href="contact">CONTACT US</a></li>
-                    
-                    <!-- For Mobile -->
-                    <div class="mobileNav">
-                        <li><a href="/#services">ADD A COUPLE</a></li>
-                        <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                        <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
-                        <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
-                        <li><a href="/#copyright">JOIN MAILING LIST</a></li>
-                    </div>
-                    <!--  -->
-                    <li class="drop drop-down">MORE <span class="sortDownContainer"> <i class="fa-solid fa-sort-down"></i></span></li>
-                        <ul class="dropDown">
-                            <!-- <li><a href="hostess">BECOME A HOSTESS</a></li> -->
-                            <li><a href="/#services">ADD A COUPLE</a></li>
-                            <li><a href="announcements">ANNOUNCEMENTS</a></li>
-                            <li><a href="" onclick="openPDF()">SHOPPING GUIDE</a></li>
-                            <li><a href="financialAssistance">FINANCIAL ASSISTANCE</a></li>
-                            <li><a href="/#copyright">JOIN MAILING LIST</a></li>
-
-                        </ul>
-                </ul>
-                
-            </nav>
-            <i class="fa fa-bars" onclick="showMenu()"></i>
-        </section>
-
-        <script>
-            function openPDF() {
-              window.open('../assets/images/shoppingGuide.pdf', '_blank');
-            }
-            </script>
-
-        <!-- <h1 style="color: #648880; font-size: 37px; z-index: 10000;">ABOUT</h1> -->
-        <!-- <div class="custom-shape-divider-top-1654779032" style="position: relative;">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M1200 0L0 0 598.97 114.72 1200 0z" class="shape-fill"></path>
-            </svg>
-            
-
-        </div> -->
-        
-        <div class="contain">
-
-
-            <div id="main">
-        
-                <section id="cta" class="main special">
-                        <header class="major">
-                            <h2 style="margin-left: auto; margin-right: auto; width: fit-content;">About Us</h2>
-                            
-                            <p>
-                                Welcome to the Detroit Bridal Shower Project, a heartwarming initiative that brings together the Detroit Orthodox Jewish community to 
-                                support and celebrate our newlyweds. Our mission is to provide a modern and streamlined platform that simplifies the process of contributing 
-                                to the establishment of young couples' new homes.
-
-                                The Detroit Bridal Shower Project has been a shining example of how our community comes together to help young couples establish their new homes in a smart and productive way. The funds thoughtfully collected from our esteemed hostesses are directed towards purchasing essential household items, creating a warm and loving environment for the newlyweds to begin their lives.
-                                <br>
-                                In the face of unprecedented challenges brought about by the recent pandemic, we've embraced change and adapted to a digital world. With the transition to a fully digitalized process, our newly established database of email addresses allows us to promptly notify our community members when an engagement is announced. This innovative approach empowers everyone in the database with the opportunity to become a hostess for a newly engaged couple.
-                                <br>
-                                Bringing convenience to your fingertips, our newly launched website offers an effortless experience. You can now effortlessly add a new engaged couple to our mailing list, while also having the option to engage a personal shopper who will thoughtfully manage all essential purchases on their behalf. For those who prefer a more hands-on approach, our shopping guide provides invaluable insights to support those who wish to curate the perfect gifts themselves. Together, we ensure that every contribution made is spent wisely, enriching the lives of the young couples as they embark on their new journey together.
-                                <br><br>
-                                Participation in our heartwarming tradition comes with a $65 fee to become a hostess for each bridal shower. However, we wholeheartedly welcome anyone who faces financial constraints and still wishes to take part in this special celebration. No amount is too small, as every contribution is genuinely appreciated.
-                                <br>
-                                To make your payment as seamless as possible, we offer various options:
-
-
-                                <!-- The Detroit community has been involved in helping newly married couples for many years. The Detroit Bridal Shower Project has helped 
-                                young couples establish their new homes in such a smart and productive way. The money that is collected from the hostesses is used to buy all the essential
-                                household items in order to complete their kitchen and new space. The goal is for the money to be spent appropriately and economically so that the new couples
-                                will have the necessary tools to facilitate their new life together. 
-                                <br>
-                                Due to the recent pandemic, some significant changes had to be made. Celebreating bridal shower brunches, lunches, and dinners were no longer possible.
-                                Becuase of this, the process has become completely digitalized. A database of email addresses has been created in order to notify when members of the community become engaged.
-                                Everyone included in this database will have the opportunity to become a hostess for a newly engaged couple! <br>
-                                The Detroit Bridal Shower Project has now advanced even further. Our new website allows you to add a new engaged couple to the 
-                                mailing list, and gives an option of having a personal shopper take care of shopping for all the essentials on their behalf. The website also provides 
-                                a shopping guide to help those who are interested in shopping on their own. After all the collections are made, you can view the hostesses for each bridal shower
-                                on our announcements page.
-                                <br><br>
-                                There is a $65 participation fee to become a hostess for each bridal shower. Those who
-                                have trouble affording this, and still want to take part in a bridal shower, may still participate and any amount is accepted. Payment is accepted in 4 
-                                different ways:  -->
-                            </p>
-                            <br>
-                            <ul>
-                                <li>PayPal - &nbsp; &nbsp; &nbsp; &nbsp;beckyfriedman1@gmail.com (avoid fees by choosing friends and family option)</li>
-                                <li>Venmo - &nbsp; &nbsp; &nbsp; &nbsp;@Becky-Friedman-8</li>
-                                <li>Zelle - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;beckyfriedman1@gmail.com</li>
-                                <li>Check - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Made out to Detroit Bridal Shower Project. <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mailed to 17322 Goldwin Dr, Southfield, MI 48075 <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(A check written out ot TEP is accepted)</li>
-                            </ul>
-                            <br>
-                            <p>We are immensely grateful for your support and participation in making a meaningful difference in the lives of our beloved newlyweds.</p>
-                        </div>
-                        
-             
-            
-                         
-                </section>
-        
-            </div>
-        
-        
-        
-            </div>
-
-<!--             
-            <div class="mainText fade-in" style="margin-top: 50px;">
-
-                <p>The Detroit community has been involved in helping newly married couples for many years. The Detroit Bridal Shower Project has helped 
-                    young couples establish their new homes in such a smart and productive way. The money that is collected from the hostesses is used to buy all the essential
-                    household items in order to complete their kitchen and new space. The goal is for the money to be spent appropriately and economically so that the new couples
-                    will have the necessary tools to facilitate their new life together. 
-                    <br>
-                    Due to the recent pandemic, some significant changes had to be made. Celebreating bridal shower brunches, lunches, and dinners were no longer possible.
-                    Becuase of this, the process has become completely digitalized. A database of email addresses has been created in order to notify when members of the community become engaged.
-                    Everyone included in this database will have the opportunity to become a hostess for a newly engaged couple! <br>
-                    The Detroit Bridal Shower Project has now advanced even further. Our new website allows you to add a new engaged couple to the 
-                    mailing list, and gives an option of having a personal shopper take care of shopping for all the essentials on their behalf. The website also provides 
-                    a shopping guide to help those who are interested in shopping on their own. After all the collections are made, you can view the hostesses for each bridal shower
-                    on our announcements page.
-                    <br><br>
-                    There is a $65 participation fee to become a hostess for each bridal shower. Those who
-                    have trouble affording this, and still want to take part in a bridal shower, may still participate and any amount is accepted. Payment is accepted in 4 
-                    different ways: 
-                </p>
-                <br>
-                <ul>
-                    <li>PayPal - &nbsp; &nbsp; &nbsp; &nbsp;beckyfriedman1@gmail.com (avoid fees by choosing friends and family option)</li>
-                    <li>Venmo - &nbsp; &nbsp; &nbsp; &nbsp;@Becky-Friedman-8</li>
-                    <li>Zelle - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;beckyfriedman1@gmail.com</li>
-                    <li>Check - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Made out to Detroit Bridal Shower Project. <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mailed to 17322 Goldwin Dr, Southfield, MI 48075 <br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(A check written out ot TEP is accepted)</li>
-                </ul>
-            </div>
-             -->
- 
-
-    </div>
-
-<!-- <footer>
-
-    <div class="bottom">
-        <a href="#heading"><i class="fa-solid fa-angle-up"></i></a>
-    </div>
-        
-    <div class="footerRow">
-
-        <div class="col-3 col1">
-            <h3>Links <div class="underline"><span></span></div> </h3>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="about.html">About</a></li>
-            </ul>
-        </div>
-
-        <div class="col-3 col2">
-            <div class="backLogo"><img src="assets/images/bridalshowerpic.jpg" class="miniLogo"></div>
-                <p>Sign up for the Newsletter to receive updates on detroit engagements and Bridal Shower updates.</p>
-                <div class="icons">
-                    <a href="contact.html"><i class="iconAffect fas fa-phone"></i></a>
-                    <a href="contact.html"><i class="iconAffect fas fa-envelope"></i></a>
-                    <a href="contact.html"><i class="iconAffect fas fa-solid fa-location-dot"></i></a>
-                </div>
-        </div>
-
-        <div class="col-3 col3">
-            <h3>Newsletter <div class="underline"><span></span></div> </h3>
-            <form>
-                <i class="far fa-envelope"></i>
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit"><i class="fas fa-arrow-right"></i></button>
-            </form>
-        </div>
-
-    </div>
-    <div class="mobileIcons">
-        <a href="contact.html"><i class="fas fa-phone"></i></a>
-        <a href="contact.html"><i class="fas fa-envelope"></i></a>
-        <a href="contact.html"><i class="fas fa-solid fa-location-dot"></i></a>
-    </div>
-    <hr>
-    <p class="copyright">Detroit Bridal Shower Project is a 501(c)(4) not-for-profit organization.<br>&copy; Detroit Bridal Shower Project, 2022</p>
-
-</footer> -->
-
-
-<script src="assets/js/fade.js"></script>
-
-    <script src="assets/js/menu.js"></script>
-    <script src="assets/js/smoothScroll.js"></script>
-    
-
-
+<div class="foot">
+  17322 Goldwin Drive &bull; Southfield, MI 48075 &bull; <a href="tel:2485147963">248-514-7963</a><br>
+  <a href="mailto:bridalshower@detroitbridalshower.org">bridalshower@detroitbridalshower.org</a><br>
+  &copy; Detroit Bridal Shower Project &middot; 501(c)(4) not-for-profit
+</div>
 </body>
 </html>
