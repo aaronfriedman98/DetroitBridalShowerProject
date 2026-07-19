@@ -439,14 +439,11 @@
       </div>
     </div>
 
-    <!-- pending banner -->
+    <!-- review queue banner -->
     <div class="pending" id="pendingBanner">
-      <span class="tag">New Couple</span>
-      <div class="names" id="pendingNames">
-        &nbsp;
-        <span class="sub">Awaiting review &mdash; toggle collecting to verify &amp; announce</span>
-      </div>
-      <button class="btn btn-ghost" id="pendingViewBtn">View Details</button>
+      <span class="tag" id="pendingTag">Awaiting Review</span>
+      <div class="names" id="pendingNames">&nbsp;</div>
+      <button class="btn btn-ghost" id="pendingViewBtn">Review Queue</button>
     </div>
 
     <!-- content grid -->
@@ -629,19 +626,29 @@ function renderAll() { renderStats(); renderPending(); renderTable(); renderColl
 function renderStats() {
   $('statTotal').textContent = state.couples.length;
   $('statCollecting').textContent = state.couples.filter(c => c.collecting).length;
-  $('statPending').textContent = state.newCouple.length;
+  $('statPending').textContent = state.couples.filter(c => !c.verified).length;
   $('statVerified').textContent = state.couples.filter(c => c.verified).length;
 }
 
 function renderPending() {
+  // review queue: couples submitted but never verified, newest first
   const banner = $('pendingBanner');
-  if (!state.newCouple.length) { banner.classList.remove('show'); return; }
-  const nc = state.newCouple[0];
-  $('pendingNames').innerHTML =
-    esc(nc.chosson) + ' <em>&amp;</em> ' + esc(nc.kallah) +
-    '<span class="sub">Awaiting review &mdash; turn on collecting to verify &amp; announce</span>';
-  const match = state.couples.find(c => String(c._id) === String(nc.tempId));
-  $('pendingViewBtn').onclick = () => { if (match) openCoupleModal(match._id, false); };
+  const queue = state.couples.filter(c => !c.verified);
+  if (!queue.length) { banner.classList.remove('show'); return; }
+
+  const shown = queue.slice(0, 3)
+    .map(c => esc(c.chossonName) + ' <em>&amp;</em> ' + esc(c.kallahName))
+    .join('<span style="color:var(--gold); padding:0 8px;">&bull;</span>');
+  const more = queue.length > 3 ? ' <span class="sub" style="display:inline;">+ ' + (queue.length - 3) + ' more</span>' : '';
+  $('pendingTag').textContent = queue.length === 1 ? 'Awaiting Review' : queue.length + ' Awaiting Review';
+  $('pendingNames').innerHTML = shown + more +
+    '<span class="sub">Turn on collecting to verify a couple &amp; send their announcement</span>';
+  $('pendingViewBtn').onclick = () => {
+    activeFilter = 'unverified';
+    document.querySelectorAll('.chip').forEach(ch => ch.classList.toggle('active', ch.dataset.filter === 'unverified'));
+    renderTable();
+    document.querySelector('.table-wrap').scrollTop = 0;
+  };
   banner.classList.add('show');
 }
 
@@ -659,15 +666,12 @@ function visibleCouples() {
 
 function renderTable() {
   const rows = visibleCouples();
-  const tempId = pendingTempId();
   $('tableCount').textContent = rows.length + ' of ' + state.couples.length;
   $('tableEmpty').style.display = rows.length ? 'none' : 'block';
   $('couplesBody').innerHTML = rows.map(c => {
-    const isPending = tempId && String(c._id) === tempId;
     const badge = c.collecting
       ? '<span class="badge collecting">Collecting</span>'
-      : (isPending ? '<span class="badge pending">New</span>'
-        : (c.verified ? '<span class="badge idle">Done</span>' : '<span class="badge idle">Unverified</span>'));
+      : (c.verified ? '<span class="badge idle">Done</span>' : '<span class="badge pending">Unverified</span>');
     return `
       <tr data-id="${c._id}">
         <td>
