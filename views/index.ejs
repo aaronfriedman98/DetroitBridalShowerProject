@@ -307,6 +307,10 @@
                 </script>
 
             <form class="formPopup" id="couplesForm">
+                <!-- honeypot: humans never see or fill this; bots auto-fill it -->
+                <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"
+                       style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;" aria-hidden="true">
+                <script>window.__formLoadedAt = String(Date.now())</script>
                 <div id="Form">
                     <h3>Personal Info</h3>
                     <input type="text" name="chossonName" placeholder="Name" id="name"  >
@@ -2067,6 +2071,8 @@ async function addCouple() {
     cholentPot: document.querySelector("#task5").checked,
     chossonDeceased: document.querySelector("#deceased").value,
     kallahDeceased: document.querySelector("#deceased2").value,
+    website: (document.querySelector("#website") || { value: '' }).value,
+    formToken: window.__formLoadedAt || '',
     // addParentChossonFatherTitle: document.querySelector("#addParentChossonFatherTitle").value,
     // addParentChossonFatherName: document.querySelector("#addParentChossonFatherName").value,
     // addParentChossonMotherTitle: document.querySelector("#addParentChossonMotherTitle").value,

@@ -58,28 +58,62 @@ module.exports = {
     // },
     getAdminPage: async (req, res) => {
       try {
-        const couples = await Couples.find();
-        console.log("found couples")
-    
-        // Sort the couples array alphabetically based on chossonName
-        // couples.sort((a, b) => {
-        //   return a.chossonName.localeCompare(b.chossonName);
-        // });
-        couples.sort((a, b) => {
-          const nameA = a.chossonName || ''; // Handle potential undefined or null values
-          const nameB = b.chossonName || ''; // Handle potential undefined or null values
-          return nameA.localeCompare(nameB);
-        });
-        
-        console.log("sorted couples")
-    
-        const announcements = await Announcements.find();
+        // exclude embedded announcement images - they add megabytes to the page
+        const couples = await Couples.find().select('-image -imageString').sort({ _id: -1 })
         const newCouple = await NewCouple.find();
-        console.log("found announcements and new couple")
-    
-        res.render('newAdmin.ejs', { coupleInfo: couples, newAnnouncements: announcements, newCouple: newCouple });
+        res.render('newAdmin.ejs', { coupleInfo: couples, newCouple: newCouple });
       } catch (err) {
+        console.error(err)
         return res.status(500).send(err);
+      }
+    },
+    getData: async (req, res) => {
+      try {
+        const couples = await Couples.find().select('-image -imageString').sort({ _id: -1 })
+        const newCouple = await NewCouple.find()
+        res.json({ couples, newCouple })
+      } catch (err) {
+        console.error(err)
+        return res.status(500).json({ error: 'Could not load data' })
+      }
+    },
+    updateEntry: async (req, res) => {
+      try {
+        const editableFields = [
+          'chossonName', 'chossonFatherTitle', 'chossonFatherName', 'chossonMotherTitle', 'chossonMotherName', 'chossonOrigin',
+          'kallahName', 'kallahFatherTitle', 'kallahFatherName', 'kallahMotherTitle', 'kallahMotherName', 'kallahOrigin',
+          'chossonMotherDivorcedTitle', 'chossonMotherDivorcedName', 'chossonMotherHusbandTitle', 'chossonMotherHusbandName',
+          'kallahMotherDivorcedTitle', 'kallahMotherDivorcedName', 'kallahMotherHusbandTitle', 'kallahMotherHusbandName',
+          'chossonDeceased', 'kallahDeceased', 'chesedPackage',
+          'name', 'email', 'phoneNumber', 'address', 'weddingDate', 'personalShopper'
+        ]
+        const updates = {}
+        for (const field of editableFields) {
+          if (req.body[field] !== undefined) updates[field] = req.body[field]
+        }
+        const couple = await Couples.findByIdAndUpdate(req.body.id, { $set: updates }, { new: true, select: '-image -imageString' })
+        if (!couple) return res.status(404).json({ status: false, message: 'Couple not found' })
+
+        // keep the pending new-couple record in sync if it mirrors this couple
+        await NewCouple.updateOne({ tempId: String(couple._id) }, { $set: {
+          chosson: couple.chossonName, kallah: couple.kallahName,
+          chossonFatherTitle: couple.chossonFatherTitle, chossonFatherName: couple.chossonFatherName,
+          chossonMotherTitle: couple.chossonMotherTitle, chossonMotherName: couple.chossonMotherName,
+          chossonOrigin: couple.chossonOrigin,
+          kallahFatherTitle: couple.kallahFatherTitle, kallahFatherName: couple.kallahFatherName,
+          kallahMotherTitle: couple.kallahMotherTitle, kallahMotherName: couple.kallahMotherName,
+          kallahOrigin: couple.kallahOrigin,
+          chossonMotherDivorcedTitle: couple.chossonMotherDivorcedTitle, chossonMotherDivorcedName: couple.chossonMotherDivorcedName,
+          chossonMotherHusbandTitle: couple.chossonMotherHusbandTitle, chossonMotherHusbandName: couple.chossonMotherHusbandName,
+          kallahMotherDivorcedTitle: couple.kallahMotherDivorcedTitle, kallahMotherDivorcedName: couple.kallahMotherDivorcedName,
+          kallahMotherHusbandTitle: couple.kallahMotherHusbandTitle, kallahMotherHusbandName: couple.kallahMotherHusbandName,
+          email: couple.email, phoneNumber: couple.phoneNumber
+        }})
+
+        return res.json({ status: true, couple })
+      } catch (err) {
+        console.error(err)
+        return res.status(500).json({ status: false, message: 'Error updating couple' })
       }
     },
 
@@ -229,7 +263,8 @@ module.exports = {
     deleteEntry : async (req, res) => {
             try{
                 await Couples.deleteOne({_id: req.body.id})
-                await NewCouple.deleteOne()
+                // only remove the pending new-couple record if it belongs to this couple
+                await NewCouple.deleteOne({ tempId: String(req.body.id) })
                 console.log(req.body.id)
                 return res.json('success')
             } catch (err) {
@@ -295,13 +330,14 @@ module.exports = {
             return res.json('verified');
             } else {
               const newCouple = await NewCouple.findOne();
-              if(couple.chossonName === newCouple.chosson && couple.kallahName === newCouple.kallah) {
+              if(newCouple && couple.chossonName === newCouple.chosson && couple.kallahName === newCouple.kallah) {
                 // console.log(couple.chossonName + " " + newCouple.chosson)
                 await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } });
               }
                 return res.json('unverified');
                 }
           } catch (err) {
+            console.error(err)
             return res.json('error');
           }
         }
@@ -465,15 +501,15 @@ if (isBronfinEdgeCase(newCouple)) {
           isDivorcedKallahSide = true
         }
         //FIX THE TRAILING WHITE SPACES IN THE DATABASE
-        // let chossonFatherFNameNew = newCouple.chossonFatherName.split(" ");
+        // let chossonFatherFNameNew = (newCouple.chossonFatherName || "").split(" ");
         // let chossonLastName = chossonFatherFNameNew.pop(); // Remove the last name
         // chossonFatherFNameNew = chossonFatherFNameNew.join(" ");
 
-        let chossonMotherFNameNew = newCouple.chossonMotherName.split(" ");
+        let chossonMotherFNameNew = (newCouple.chossonMotherName || "").split(" ");
         chossonMotherFNameNew.pop(); // Remove the last name
         chossonMotherFNameNew = chossonMotherFNameNew.join(" ");
 
-        // let kallahFatherFNameNew = newCouple.kallahFatherName.split(" ");
+        // let kallahFatherFNameNew = (newCouple.kallahFatherName || "").split(" ");
         // let kallahLastName = kallahFatherFNameNew.pop(); // Remove the last name
         // kallahFatherFNameNew = kallahFatherFNameNew.join(" ");
 
@@ -493,7 +529,7 @@ if (hasKallahFather) {
 }
 
 
-        let kallahMotherFNameNew = newCouple.kallahMotherName.split(" ");
+        let kallahMotherFNameNew = (newCouple.kallahMotherName || "").split(" ");
         kallahMotherFNameNew.pop(); // Remove the last name
         kallahMotherFNameNew = kallahMotherFNameNew.join(" ");
 
@@ -501,13 +537,13 @@ if (hasKallahFather) {
         let chossonStepDadFNameNew = ""
         let stepdadlastname = ""
         if(newCouple.chossonMotherHusbandName !== "") {
-          chossonStepDadFNameNew = newCouple.chossonMotherHusbandName.split(" ")
+          chossonStepDadFNameNew = (newCouple.chossonMotherHusbandName || "").split(" ")
           stepdadlastname = chossonStepDadFNameNew.pop()
           chossonStepDadFNameNew = chossonStepDadFNameNew.join(" ")
         }
         let chossonDivorcedMotherFNameNew = ""
         if(newCouple.chossonMotherDivorcedName !== "") {
-          chossonDivorcedMotherFNameNew = newCouple.chossonMotherDivorcedName.split(" ")
+          chossonDivorcedMotherFNameNew = (newCouple.chossonMotherDivorcedName || "").split(" ")
           chossonDivorcedMotherFNameNew.pop()
           chossonDivorcedMotherFNameNew = chossonDivorcedMotherFNameNew.join(" ")
         }
@@ -515,13 +551,13 @@ if (hasKallahFather) {
         let kallahStepDadFNameNew = ""
         let stepdadlastnameKallah = ""
         if(newCouple.kallahMotherHusbandName !== "") {
-          kallahStepDadFNameNew = newCouple.kallahMotherHusbandName.split(" ")
+          kallahStepDadFNameNew = (newCouple.kallahMotherHusbandName || "").split(" ")
           stepdadlastnameKallah = kallahStepDadFNameNew.pop()
           kallahStepDadFNameNew = kallahStepDadFNameNew.join(" ")
         }
         let kallahDivorcedMotherFNameNew = ""
         if(newCouple.kallahMotherDivorcedName !== "") {
-          kallahDivorcedMotherFNameNew = newCouple.kallahMotherDivorcedName.split(" ")
+          kallahDivorcedMotherFNameNew = (newCouple.kallahMotherDivorcedName || "").split(" ")
           kallahDivorcedMotherFNameNew.pop()
           kallahDivorcedMotherFNameNew = kallahDivorcedMotherFNameNew.join(" ")
         }
@@ -705,8 +741,8 @@ console.log("putting together the email")
 
 
 
-// let chossonFatherFNameNewOld = newCouple.chossonFather.split(" ").slice(0, -1).join(" ")
-// let kallahFatherFNameNewOld = newCouple.kallahFather.split(" ").slice(0, -1).join(" ")
+// let chossonFatherFNameNewOld = (newCouple.chossonFather || "").split(" ").slice(0, -1).join(" ")
+// let kallahFatherFNameNewOld = (newCouple.kallahFather || "").split(" ").slice(0, -1).join(" ")
 
 // if(newCouple.chossonOrigin === 'detroit' && newCouple.kallahOrigin === 'detroit') {
 //     newCoupleString += `<strong>${newCouple.chossonName}</strong> is engaged to <strong>${newCouple.kallahName}</strong> <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> and daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
@@ -827,19 +863,19 @@ for(let i = 0; i < databaseCouples.length; i++) {
 
 
 
-    let chossonFatherFName = databaseCouples[i].chossonFatherName.split(" ")
+    let chossonFatherFName = (databaseCouples[i].chossonFatherName || "").split(" ")
     let chossonLastNameOld = chossonFatherFName.pop(); // Remove the last name
     chossonFatherFName = chossonFatherFName.join(" ");
 
-    let kallahFatherFName = databaseCouples[i].kallahFatherName.split(" ")
+    let kallahFatherFName = (databaseCouples[i].kallahFatherName || "").split(" ")
     let kallahLastNameOld = kallahFatherFName.pop(); // Remove the last name
     kallahFatherFName = kallahFatherFName.join(" ");
 
-    let chossonMotherFName = databaseCouples[i].chossonMotherName.split(" ")
+    let chossonMotherFName = (databaseCouples[i].chossonMotherName || "").split(" ")
     chossonMotherFName.pop(); // Remove the last name
     chossonMotherFName = chossonMotherFName.join(" ");
 
-    let kallahMotherFName = databaseCouples[i].kallahMotherName.split(" ")
+    let kallahMotherFName = (databaseCouples[i].kallahMotherName || "").split(" ")
     kallahMotherFName.pop(); // Remove the last name
     kallahMotherFName = kallahMotherFName.join(" ");
     
@@ -847,13 +883,13 @@ for(let i = 0; i < databaseCouples.length; i++) {
     let chossonStepDadFNameOld = ""
     let stepdadlastnameOld = ""
     if(databaseCouples[i].chossonMotherHusbandName !== "") {
-      chossonStepDadFNameOld = databaseCouples[i].chossonMotherHusbandName.split(" ")
+      chossonStepDadFNameOld = (databaseCouples[i].chossonMotherHusbandName || "").split(" ")
       stepdadlastnameOld = chossonStepDadFNameOld.pop()
       chossonStepDadFNameOld = chossonStepDadFNameOld.join(" ")
     }
     let chossonDivorcedMotherFNameOld = ""
     if(databaseCouples[i].chossonMotherDivorcedName !== "") {
-      chossonDivorcedMotherFNameOld = databaseCouples[i].chossonMotherDivorcedName.split(" ")
+      chossonDivorcedMotherFNameOld = (databaseCouples[i].chossonMotherDivorcedName || "").split(" ")
       chossonDivorcedMotherFNameOld.pop()
       chossonDivorcedMotherFNameOld = chossonDivorcedMotherFNameOld.join(" ")
     }
@@ -862,19 +898,19 @@ for(let i = 0; i < databaseCouples.length; i++) {
     let kallahStepDadFNameOld = ""
     let stepdadlastnameOldKallah = ""
     if(databaseCouples[i].kallahMotherHusbandName !== "") {
-      kallahStepDadFNameOld = databaseCouples[i].kallahMotherHusbandName.split(" ")
+      kallahStepDadFNameOld = (databaseCouples[i].kallahMotherHusbandName || "").split(" ")
       stepdadlastnameOldKallah = kallahStepDadFNameOld.pop()
       kallahStepDadFNameOld = kallahStepDadFNameOld.join(" ")
     }
     let kallahDivorcedMotherFNameOld = ""
     if(databaseCouples[i].kallahMotherDivorcedName !== "") {
-      kallahDivorcedMotherFNameOld = databaseCouples[i].kallahMotherDivorcedName.split(" ")
+      kallahDivorcedMotherFNameOld = (databaseCouples[i].kallahMotherDivorcedName || "").split(" ")
       kallahDivorcedMotherFNameOld.pop()
       kallahDivorcedMotherFNameOld = kallahDivorcedMotherFNameOld.join(" ")
     }
     // let stepdadlastnameOldKallah = ""
     // if(databaseCouples[i].kallahMotherHusbandName !== "") {
-    //   stepdadlastnameOldKallah = databaseCouples[i].kallahMotherHusbandName.split(" ").pop()
+    //   stepdadlastnameOldKallah = (databaseCouples[i].kallahMotherHusbandName || "").split(" ").pop()
     // }
 
 
@@ -1019,8 +1055,8 @@ for(let i = 0; i < databaseCouples.length; i++) {
       }
     }
 
-    // let chossonFatherFName = databaseCouples[i].chossonFather.split(" ").slice(0, -1).join(" ")
-    // let kallahFatherFName = databaseCouples[i].kallahFather.split(" ").slice(0, -1).join(" ")
+    // let chossonFatherFName = (databaseCouples[i].chossonFather || "").split(" ").slice(0, -1).join(" ")
+    // let kallahFatherFName = (databaseCouples[i].kallahFather || "").split(" ").slice(0, -1).join(" ")
 
     // if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
     //     couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
@@ -1036,675 +1072,13 @@ for(let i = 0; i < databaseCouples.length; i++) {
 
 const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
 
-const collectionEmail = `<!DOCTYPE html>
+const collectionEmail = buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL)
 
-<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
-<head>
-<title></title>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
-<link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond" rel="stylesheet" type="text/css"/><!--<![endif]-->
-<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
-
-		#MessageViewBody a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		p {
-			line-height: inherit
-		}
-
-		.desktop_hide,
-		.desktop_hide table {
-			mso-hide: all;
-			display: none;
-			max-height: 0px;
-			overflow: hidden;
-		}
-
-		.image_block img+div {
-			display: none;
-		}
-
-		@media (max-width:700px) {
-			.desktop_hide table.icons-inner {
-				display: inline-block !important;
-			}
-
-			.icons-inner {
-				text-align: center;
-			}
-
-			.icons-inner td {
-				margin: 0 auto;
-			}
-
-			.image_block img.big,
-			.row-content {
-				width: 100% !important;
-			}
-
-			.mobile_hide {
-				display: none;
-			}
-
-			.stack .column {
-				width: 100%;
-				display: block;
-			}
-
-			.mobile_hide {
-				min-height: 0;
-				max-height: 0;
-				max-width: 0;
-				overflow: hidden;
-				font-size: 0px;
-			}
-
-			.desktop_hide,
-			.desktop_hide table {
-				display: table !important;
-				max-height: none !important;
-			}
-
-			.row-3 .column-1 .block-11.heading_block h1,
-			.row-3 .column-1 .block-12.heading_block h1,
-			.row-3 .column-1 .block-13.heading_block h1,
-			.row-3 .column-1 .block-14.heading_block h1,
-			.row-3 .column-1 .block-6.heading_block h1 {
-				font-size: 21px !important;
-			}
-		}
-	</style>
-</head>
-<div align="center" class="alignment" style="line-height:10px"><img src="https://i.imgur.com/ssGV6SR.jpg" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" width="340"/></div>
-<body style="margin: 0; background-color: white; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-<table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:22px;"><span style="font-size:46px;">Mazel Tov!</span></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">We are so fortunate for all the future Chasanim and Kallah's from our community. Please reach out (reply to this email if you would like to participate in these bridal showers.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><strong><span style="font-size:30px;">New Chasan/Kallah: </span></strong></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:30px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 23px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${newCoupleString}</h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:26px;"><strong><span style="">Still collecting for:</span></strong></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-10" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-11" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:30px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 23px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${couplesString}</h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-15" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-16" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-17" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">The recommended amount is $65.00 per shower however, any amount is accepted.</p>
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">Please send a reply email specifying and confirming which shower/s you would like to participate in and send payment through one of the following methods:</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">PayPal</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">beckyfriedman1@gmail.com</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">(Avoid fees: Choose the friends and family option)</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">Venmo</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;"><span id="a87eae2e-beb4-4376-89b1-53f397ca0e04" style="">@Becky-Friedman-8</span></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;"><strong>Zelle</strong></span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">beckyfriedman1@gmail.com</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">Check</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">mailed and made out to:</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">Detroit Bridal Shower Project</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">17322 Goldwin Drive Southfield, MI 48075</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<div class="spacer_block block-1" style="height:30px;line-height:30px;font-size:1px;"> </div>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">All the collections will be used to start off the Chasan and Kallah with all household basics.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you would like to add a newly engaged couple to this bridal shower list, please visit our website <u><a href="https://detroit-bridal-shower.azurewebsites.net/">here</a>.</u></p>
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">You can also view all of the past hostesses on the <u><a href="https://detroit-bridal-shower.azurewebsites.net/announcements">announcements</a></u> page from our website.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you have any questions or concerns, please reach out to <u>bridalshower@detroitbridalshower.org</u>.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">We should continue to hear of many more Simchas!</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-</div>
-</div>
-</td>
-</tr>
-</table>
-<div class="spacer_block block-9" style="height:30px;line-height:30px;font-size:1px;"> </div>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #6b7066;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; background-color: #6b7066; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: white; line-height: 1.2;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Copyright &copy; 2023 Detroit Bridal Shower. All rights reserved.</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"> </p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Our mailing address is:</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Detroit Bridal Showers</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">17322 Goldwin Dr.</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Southfield, MI 48075</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:16px;">To stop receiving emails from us, click <u><a href="${unsubscribeURL}">here</a>.</u></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="icons_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="vertical-align: middle; color: #9d9d9d; font-family: inherit; font-size: 15px; padding-bottom: 5px; padding-top: 5px; text-align: center;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="alignment" style="vertical-align: middle; text-align: center;"><!--[if vml]><table align="left" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"><![endif]-->
-<!--[if !vml]><!-->
-<table cellpadding="0" cellspacing="0" class="icons-inner" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; margin-right: -4px; padding-left: 0px; padding-right: 0px;"><!--<![endif]-->
-<tr>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table><!-- End -->
-</body>
-</html>`
+// preview mode: return the built email html instead of sending anything
+if (req.preview) {
+  res.set('Content-Type', 'text/html')
+  return res.send(collectionEmail)
+}
 
 const personalCollectionEmail = `<!DOCTYPE html>
 
@@ -2667,8 +2041,8 @@ sendNewNewsletter: async (req, res) => {
               }
 
 
-      // let chossonFatherFNameNew = newCouple.chossonFather.split(" ").slice(0, -1).join(" ")
-      // let kallahFatherFNameNew = newCouple.kallahFather.split(" ").slice(0, -1).join(" ")
+      // let chossonFatherFNameNew = (newCouple.chossonFather || "").split(" ").slice(0, -1).join(" ")
+      // let kallahFatherFNameNew = (newCouple.kallahFather || "").split(" ").slice(0, -1).join(" ")
 
       // if(newCouple.chossonOrigin === 'detroit' && newCouple.kallahOrigin === 'detroit') {
       //   newCoupleString += `<strong>${newCouple.chosson}</strong> is engaged to <strong>${newCouple.kallah}</strong> <br> son of ${newCouple.chossonFatherTitle} & ${newCouple.chossonMotherTitle} ${chossonFatherFNameNew} and ${newCouple.chossonMother} <br> and daughter of ${newCouple.kallahFatherTitle} & ${newCouple.kallahMotherTitle} ${kallahFatherFNameNew} and ${newCouple.kallahMother} <br> <br>`
@@ -2692,22 +2066,22 @@ sendNewNewsletter: async (req, res) => {
         isDivorcedKallahSide = true
       }
 
-      let chossonFatherFNameNew = newCouple.chossonFatherName.split(" ");
+      let chossonFatherFNameNew = (newCouple.chossonFatherName || "").split(" ");
       let chossonLastName = chossonFatherFNameNew.pop(); // Remove the last name
       chossonFatherFNameNew = chossonFatherFNameNew.join(" ");
 
-      let chossonMotherFNameNew = newCouple.chossonMotherName.split(" ");
+      let chossonMotherFNameNew = (newCouple.chossonMotherName || "").split(" ");
       chossonMotherFNameNew.pop(); // Remove the last name
       chossonMotherFNameNew = chossonMotherFNameNew.join(" ");
 
-      let kallahFatherFNameNew = newCouple.kallahFatherName.split(" ");
+      let kallahFatherFNameNew = (newCouple.kallahFatherName || "").split(" ");
       console.log(kallahFatherFNameNew)
       let kallahLastName = kallahFatherFNameNew.pop(); // Remove the last name
       console.log(kallahLastName)
       kallahFatherFNameNew = kallahFatherFNameNew.join(" ");
 
 
-      let kallahMotherFNameNew = newCouple.kallahMotherName.split(" ");
+      let kallahMotherFNameNew = (newCouple.kallahMotherName || "").split(" ");
       kallahMotherFNameNew.pop(); // Remove the last name
       kallahMotherFNameNew = kallahMotherFNameNew.join(" ");
 
@@ -2715,13 +2089,13 @@ sendNewNewsletter: async (req, res) => {
       let chossonStepDadFNameNew = ""
       let stepdadlastname = ""
       if(newCouple.chossonMotherHusbandName !== "") {
-        chossonStepDadFNameNew = newCouple.chossonMotherHusbandName.split(" ")
+        chossonStepDadFNameNew = (newCouple.chossonMotherHusbandName || "").split(" ")
         stepdadlastname = chossonStepDadFNameNew.pop()
         chossonStepDadFNameNew = chossonStepDadFNameNew.join(" ")
       }
       let chossonDivorcedMotherFNameNew = ""
       if(newCouple.chossonMotherDivorcedName !== "") {
-        chossonDivorcedMotherFNameNew = newCouple.chossonMotherDivorcedName.split(" ")
+        chossonDivorcedMotherFNameNew = (newCouple.chossonMotherDivorcedName || "").split(" ")
         chossonDivorcedMotherFNameNew.pop()
         chossonDivorcedMotherFNameNew = chossonDivorcedMotherFNameNew.join(" ")
       }
@@ -2729,13 +2103,13 @@ sendNewNewsletter: async (req, res) => {
       let kallahStepDadFNameNew = ""
       let stepdadlastnameKallah = ""
       if(newCouple.kallahMotherHusbandName !== "") {
-        kallahStepDadFNameNew = newCouple.kallahMotherHusbandName.split(" ")
+        kallahStepDadFNameNew = (newCouple.kallahMotherHusbandName || "").split(" ")
         stepdadlastnameKallah = kallahStepDadFNameNew.pop()
         kallahStepDadFNameNew = kallahStepDadFNameNew.join(" ")
       }
       let kallahDivorcedMotherFNameNew = ""
       if(newCouple.kallahMotherDivorcedName !== "") {
-        kallahDivorcedMotherFNameNew = newCouple.kallahMotherDivorcedName.split(" ")
+        kallahDivorcedMotherFNameNew = (newCouple.kallahMotherDivorcedName || "").split(" ")
         kallahDivorcedMotherFNameNew.pop()
         kallahDivorcedMotherFNameNew = kallahDivorcedMotherFNameNew.join(" ")
       }
@@ -2889,8 +2263,8 @@ const databaseCouples = await Couples.find().sort({_id: -1})
 // if (databaseCouples[i].collecting === true && !databaseCouples[i]._id.equals(newCouple.tempId)) {
 
 
-//   let chossonFatherFName = databaseCouples[i].chossonFather.split(" ").slice(0, -1).join(" ")
-//   let kallahFatherFName = databaseCouples[i].kallahFather.split(" ").slice(0, -1).join(" ")
+//   let chossonFatherFName = (databaseCouples[i].chossonFather || "").split(" ").slice(0, -1).join(" ")
+//   let kallahFatherFName = (databaseCouples[i].kallahFather || "").split(" ").slice(0, -1).join(" ")
 
 //   if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
 //       couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
@@ -3008,19 +2382,19 @@ for(let i = 0; i < databaseCouples.length; i++) {
     let trimmedChossonMotherName = databaseCouples[i].chossonMotherName.trim()
     let trimmedKallahMotherName = databaseCouples[i].kallahMotherName.trim()
 
-    let chossonFatherFName = trimmedChossonFatherName.split(" ")
+    let chossonFatherFName = (trimmedChossonFatherName || "").split(" ")
     let chossonLastNameOld = chossonFatherFName.pop(); // Remove the last name
     chossonFatherFName = chossonFatherFName.join(" ");
 
-    let kallahFatherFName = trimmedKallahFatherName.split(" ")
+    let kallahFatherFName = (trimmedKallahFatherName || "").split(" ")
     let kallahLastNameOld = kallahFatherFName.pop(); // Remove the last name
     kallahFatherFName = kallahFatherFName.join(" ");
 
-    let chossonMotherFName = trimmedChossonMotherName.split(" ")
+    let chossonMotherFName = (trimmedChossonMotherName || "").split(" ")
     chossonMotherFName.pop(); // Remove the last name
     chossonMotherFName = chossonMotherFName.join(" ");
 
-    let kallahMotherFName = trimmedKallahMotherName.split(" ")
+    let kallahMotherFName = (trimmedKallahMotherName || "").split(" ")
     kallahMotherFName.pop(); // Remove the last name
     kallahMotherFName = kallahMotherFName.join(" ");
 
@@ -3033,13 +2407,13 @@ for(let i = 0; i < databaseCouples.length; i++) {
     let chossonStepDadFNameOld = ""
     let stepdadlastnameOld = ""
     if(databaseCouples[i].chossonMotherHusbandName !== "") {
-      chossonStepDadFNameOld = databaseCouples[i].chossonMotherHusbandName.split(" ")
+      chossonStepDadFNameOld = (databaseCouples[i].chossonMotherHusbandName || "").split(" ")
       stepdadlastnameOld = chossonStepDadFNameOld.pop()
       chossonStepDadFNameOld = chossonStepDadFNameOld.join(" ")
     }
     let chossonDivorcedMotherFNameOld = ""
     if(databaseCouples[i].chossonMotherDivorcedName !== "") {
-      chossonDivorcedMotherFNameOld = databaseCouples[i].chossonMotherDivorcedName.split(" ")
+      chossonDivorcedMotherFNameOld = (databaseCouples[i].chossonMotherDivorcedName || "").split(" ")
       chossonDivorcedMotherFNameOld.pop()
       chossonDivorcedMotherFNameOld = chossonDivorcedMotherFNameOld.join(" ")
     }
@@ -3047,19 +2421,19 @@ for(let i = 0; i < databaseCouples.length; i++) {
     let kallahStepDadFNameOld = ""
     let stepdadlastnameOldKallah = ""
     if(databaseCouples[i].kallahMotherHusbandName !== "") {
-      kallahStepDadFNameOld = databaseCouples[i].kallahMotherHusbandName.split(" ")
+      kallahStepDadFNameOld = (databaseCouples[i].kallahMotherHusbandName || "").split(" ")
       stepdadlastnameOldKallah = kallahStepDadFNameOld.pop()
       kallahStepDadFNameOld = kallahStepDadFNameOld.join(" ")
     }
     let kallahDivorcedMotherFNameOld = ""
     if(databaseCouples[i].kallahMotherDivorcedName !== "") {
-      kallahDivorcedMotherFNameOld = databaseCouples[i].kallahMotherDivorcedName.split(" ")
+      kallahDivorcedMotherFNameOld = (databaseCouples[i].kallahMotherDivorcedName || "").split(" ")
       kallahDivorcedMotherFNameOld.pop()
       kallahDivorcedMotherFNameOld = kallahDivorcedMotherFNameOld.join(" ")
     }
     // let stepdadlastnameOldKallah = ""
     // if(databaseCouples[i].kallahMotherHusbandName !== "") {
-    //   stepdadlastnameOldKallah = databaseCouples[i].kallahMotherHusbandName.split(" ").pop()
+    //   stepdadlastnameOldKallah = (databaseCouples[i].kallahMotherHusbandName || "").split(" ").pop()
     // }
 
 
@@ -3211,8 +2585,8 @@ for(let i = 0; i < databaseCouples.length; i++) {
     // console.log(couplesString)
     
 
-    // let chossonFatherFName = databaseCouples[i].chossonFather.split(" ").slice(0, -1).join(" ")
-    // let kallahFatherFName = databaseCouples[i].kallahFather.split(" ").slice(0, -1).join(" ")
+    // let chossonFatherFName = (databaseCouples[i].chossonFather || "").split(" ").slice(0, -1).join(" ")
+    // let kallahFatherFName = (databaseCouples[i].kallahFather || "").split(" ").slice(0, -1).join(" ")
 
     // if(databaseCouples[i].chossonOrigin === 'detroit' && databaseCouples[i].kallahOrigin === 'detroit') {
     //     couplesString += `<strong>${databaseCouples[i].chossonName}</strong> is engaged to <strong>${databaseCouples[i].kallahName}</strong> <br> son of ${databaseCouples[i].chossonFatherTitle} & ${databaseCouples[i].chossonMotherTitle} ${chossonFatherFName} and ${databaseCouples[i].chossonMother} <br> and daughter of ${databaseCouples[i].kallahFatherTitle} & ${databaseCouples[i].kallahMotherTitle} ${kallahFatherFName} and ${databaseCouples[i].kallahMother} <br> <br>`
@@ -3232,679 +2606,13 @@ const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
 // const unsubscribeURL = req.protocol + '://' + req.get('host') + '/unsubscribe'
 
 
-const collectionEmail = `
+const collectionEmail = buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL)
 
-<!DOCTYPE html>
-
-<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
-<head>
-<title></title>
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->
-<link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond" rel="stylesheet" type="text/css"/><!--<![endif]-->
-<style>
-		* {
-			box-sizing: border-box;
-		}
-
-		body {
-			margin: 0;
-			padding: 0;
-		}
-
-		a[x-apple-data-detectors] {
-			color: inherit !important;
-			text-decoration: inherit !important;
-		}
-
-		#MessageViewBody a {
-			color: inherit;
-			text-decoration: none;
-		}
-
-		p {
-			line-height: inherit
-		}
-
-		.desktop_hide,
-		.desktop_hide table {
-			mso-hide: all;
-			display: none;
-			max-height: 0px;
-			overflow: hidden;
-		}
-
-		.image_block img+div {
-			display: none;
-		}
-
-		@media (max-width:700px) {
-			.desktop_hide table.icons-inner {
-				display: inline-block !important;
-			}
-
-			.icons-inner {
-				text-align: center;
-			}
-
-			.icons-inner td {
-				margin: 0 auto;
-			}
-
-			.image_block img.big,
-			.row-content {
-				width: 100% !important;
-			}
-
-			.mobile_hide {
-				display: none;
-			}
-
-			.stack .column {
-				width: 100%;
-				display: block;
-			}
-
-			.mobile_hide {
-				min-height: 0;
-				max-height: 0;
-				max-width: 0;
-				overflow: hidden;
-				font-size: 0px;
-			}
-
-			.desktop_hide,
-			.desktop_hide table {
-				display: table !important;
-				max-height: none !important;
-			}
-
-			.row-3 .column-1 .block-11.heading_block h1,
-			.row-3 .column-1 .block-12.heading_block h1,
-			.row-3 .column-1 .block-13.heading_block h1,
-			.row-3 .column-1 .block-14.heading_block h1,
-			.row-3 .column-1 .block-6.heading_block h1 {
-				font-size: 21px !important;
-			}
-		}
-	</style>
-</head>
-<div align="center" class="alignment" style="line-height:10px"><img src="https://i.imgur.com/ssGV6SR.jpg" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" width="340"/></div>
-<body style="margin: 0; background-color: white; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;">
-<table border="0" cellpadding="0" cellspacing="0" class="nl-container" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:22px;"><span style="font-size:46px;">Mazel Tov!</span></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">We are so fortunate for all the future Chassanim and Kallah's from our community. Please reply to this email if you would like to participate in these bridal showers.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><strong><span style="font-size:30px;">New Chassan/Kallah: </span></strong></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:30px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 23px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${newCoupleString}</h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;"><span style="font-size:26px;"><strong><span style="">Still collecting for:</span></strong></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-10" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-11" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:30px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 23px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0; margin: 0 5px;">${couplesString}</h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-15" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-16" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-17" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">The recommended amount is $65.00 per shower however, any amount is accepted.</p>
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">Please send a reply email specifying and confirming which shower/s you would like to participate in and send payment through one of the following methods:</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">PayPal</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">beckyfriedman1@gmail.com</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">Venmo</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;"><span id="a87eae2e-beb4-4376-89b1-53f397ca0e04" style="">@Becky-Friedman-8</span></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;"><strong>Zelle</strong></span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">beckyfriedman1@gmail.com</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="heading_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;text-align:center;width:100%;">
-<h1 style="margin: 0; color: #6b7066; direction: ltr; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; font-size: 30px; font-weight: normal; letter-spacing: 1px; line-height: 120%; text-align: center; margin-top: 0; margin-bottom: 0;"><span class="tinyMce-placeholder"></span></h1>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 340px; max-width: 100%;" title="divider" width="340"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="10" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 25.2px; color: #6b7066; line-height: 1.8;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 25.2px; letter-spacing: 1px;"><strong><span style="font-size:20px;">Check</span></strong></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">mailed and made out to:</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">Detroit Bridal Shower Project</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 36px; letter-spacing: 1px;"><span style="font-size:20px;">17322 Goldwin Drive Southfield, MI 48075</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<div class="spacer_block block-1" style="height:30px;line-height:30px;font-size:1px;"> </div>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">All the collections will be used to start off the Chassan and Kallah with all household basics.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"><img alt="divider" class="big" src="https://i.imgur.com/s0GqZ2p.png" style="display: block; height: auto; border: 0; width: 680px; max-width: 100%;" title="divider" width="680"/></a></div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-4" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you would like to add a newly engaged couple to this bridal shower list, please visit our website <u><a href="https://detroit-bridal-shower.azurewebsites.net/">here</a>.</u></p>
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">You can also view all of the past hostesses on the <u><a href="https://detroit-bridal-shower.azurewebsites.net/announcements">announcements</a></u> page from the website.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-5" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">If you have any questions or concerns, please reach out to <u>bridalshower@detroitbridalshower.org</u>.</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-6" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">We should continue to hear of many more Simchas!</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 12px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 14.399999999999999px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 12px; mso-line-height-alt: 14.399999999999999px;"> </p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:10px;padding-left:50px;padding-right:50px;padding-top:10px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: #6b7066; line-height: 1.2;">
-<p style="margin: 0; font-size: 22px; text-align: center; mso-line-height-alt: 26.4px;">Becky Friedman</p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<div class="spacer_block block-9" style="height:30px;line-height:30px;font-size:1px;"> </div>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-7" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: white; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 25px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-<td class="column column-2" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="50%">
-<table border="0" cellpadding="0" cellspacing="0" class="image_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="width:100%;padding-right:0px;padding-left:0px;">
-<div align="center" class="alignment" style="line-height:10px"><a href="www.example.com" style="outline:none" tabindex="-1" target="_blank"></a></div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-8" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #6b7066;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; background-color: #6b7066; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 16.8px; color: white; line-height: 1.2;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Copyright &copy; 2023 Detroit Bridal Shower. All rights reserved.</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"> </p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Our mailing address is:</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Detroit Bridal Showers</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">17322 Goldwin Dr.</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:24px;">Southfield, MI 48075</span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-2" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
-</div>
-</div>
-</td>
-</tr>
-</table>
-<table border="0" cellpadding="0" cellspacing="0" class="text_block block-3" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;" width="100%">
-<tr>
-<td class="pad" style="padding-bottom:25px;padding-left:50px;padding-right:50px;padding-top:25px;">
-<div style="font-family: 'Times New Roman', serif">
-<div class="" style="font-size: 14px; font-family: 'Cormorant Garamond', 'Times New Roman', Times, serif; mso-line-height-alt: 21px; color: white; line-height: 1.5;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:16px;">Please be advised:  You were added to this notification database at the request of the Chassan and Kallah, or you agreed to receive emails for this project. Please disregard the email if you do not want to participate.</span></p>
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 24px;"><span style="font-size:16px;">To stop receiving emails from us, click <u><a href="${unsubscribeURL}">here</a>.</u></span></p>
-</div>
-</div>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row row-9" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tbody>
-<tr>
-<td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" class="row-content stack" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; color: #000000; width: 680px;" width="680">
-<tbody>
-<tr>
-<td class="column column-1" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-weight: 400; text-align: left; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;" width="100%">
-<table border="0" cellpadding="0" cellspacing="0" class="icons_block block-1" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="pad" style="vertical-align: middle; color: #9d9d9d; font-family: inherit; font-size: 15px; padding-bottom: 5px; padding-top: 5px; text-align: center;">
-<table cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;" width="100%">
-<tr>
-<td class="alignment" style="vertical-align: middle; text-align: center;"><!--[if vml]><table align="left" cellpadding="0" cellspacing="0" role="presentation" style="display:inline-block;padding-left:0px;padding-right:0px;mso-table-lspace: 0pt;mso-table-rspace: 0pt;"><![endif]-->
-<!--[if !vml]><!-->
-<table cellpadding="0" cellspacing="0" class="icons-inner" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; display: inline-block; margin-right: -4px; padding-left: 0px; padding-right: 0px;"><!--<![endif]-->
-<tr>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table><!-- End -->
-</body>
-</html>
-`
+// preview mode: return the built email html instead of sending anything
+if (req.preview) {
+  res.set('Content-Type', 'text/html')
+  return res.send(collectionEmail)
+}
 
 const personalCollectionEmail = `<!DOCTYPE html>
 
@@ -4965,3 +3673,152 @@ async function sendNewsletterToList(req, htmlNewsletter, listID) {
 
 
 
+
+
+// ---------------------------------------------------------------------------
+// Collection email template (shared by sendNewsletter, sendNewNewsletter and
+// the dashboard preview). The couple strings are built by the callers with
+// the full divorced / remarried / deceased parent logic - this only wraps
+// them in the branded layout. Table-based + inline styles for email clients.
+// ---------------------------------------------------------------------------
+function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
+  const site = (process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net').replace(/['"]/g, '')
+  const logo = site + '/assets/images/bridalshowerpic.jpg'
+  const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif"
+  const sans = "'Jost', 'Segoe UI', Arial, sans-serif"
+  const ink = '#2e2e29', soft = '#6d6d64', sage = '#494e46', gold = '#b3925a'
+
+  const sectionLabel = (text) => `
+  <tr><td align="center" style="padding: 34px 40px 6px;">
+    <div style="font-family: ${sans}; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: ${gold}; font-weight: bold;">${text}</div>
+    <div style="width: 54px; height: 1px; background-color: #d9c9a6; margin: 12px auto 0; font-size: 0; line-height: 0;">&nbsp;</div>
+  </td></tr>`
+
+  const payCell = (method, value) => `
+  <td width="50%" align="center" valign="top" style="padding: 14px 10px;">
+    <div style="font-family: ${sans}; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: ${sage}; font-weight: bold; padding-bottom: 6px;">${method}</div>
+    <div style="font-family: ${serif}; font-size: 18px; color: ${ink}; line-height: 1.45;">${value}</div>
+  </td>`
+
+  const featuredSection = newCoupleString ? `
+  ${sectionLabel('New Chosson &amp; Kallah')}
+  <tr><td align="center" style="padding: 16px 48px 8px;">
+    <div style="font-family: ${serif}; font-size: 24px; color: ${sage}; line-height: 1.55;">${newCoupleString}</div>
+  </td></tr>` : ''
+
+  const collectingSection = couplesString ? `
+  ${sectionLabel('Still Collecting For')}
+  <tr><td align="center" style="padding: 16px 48px 8px;">
+    <div style="font-family: ${serif}; font-size: 20px; color: ${soft}; line-height: 1.55;">${couplesString}</div>
+  </td></tr>` : ''
+
+  return `<!DOCTYPE html>
+<html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<title>Detroit Bridal Shower</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]-->
+<!--[if !mso]><!-->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" type="text/css"/>
+<!--<![endif]-->
+<style>
+  body { margin: 0; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none; }
+  table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+  img { border: 0; display: block; }
+  a[x-apple-data-detectors] { color: inherit !important; text-decoration: inherit !important; }
+  @media (max-width: 700px) {
+    .card { width: 100% !important; }
+    .pad-lg { padding-left: 22px !important; padding-right: 22px !important; }
+  }
+</style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f1ea;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f1ea;">
+<tr><td align="center" style="padding: 36px 12px 44px;">
+
+  <table role="presentation" class="card" width="640" cellpadding="0" cellspacing="0" style="width: 640px; max-width: 640px; background-color: #ffffff; border: 1px solid #e7e2d8; border-radius: 18px;">
+
+    <!-- header -->
+    <tr><td align="center" style="padding: 44px 40px 0;">
+      <img src="${logo}" width="120" alt="Detroit Bridal Shower" style="width: 120px; height: auto; margin: 0 auto;"/>
+    </td></tr>
+    <tr><td align="center" style="padding: 22px 40px 0;">
+      <div style="font-family: ${sans}; font-size: 13px; letter-spacing: 6px; text-transform: uppercase; color: ${sage};">Detroit Bridal Shower</div>
+    </td></tr>
+    <tr><td align="center" style="padding: 10px 40px 0;">
+      <div style="font-family: ${serif}; font-style: italic; font-size: 52px; color: ${gold}; line-height: 1.1;">Mazel Tov!</div>
+    </td></tr>
+
+    <!-- intro -->
+    <tr><td align="center" class="pad-lg" style="padding: 22px 56px 4px;">
+      <div style="font-family: ${serif}; font-size: 20px; color: ${ink}; line-height: 1.6;">
+        We are so fortunate for all the future Chossons and Kallahs from our community.
+        If you would like to participate in these bridal showers, simply reply to this email.
+      </div>
+    </td></tr>
+
+    ${featuredSection}
+    ${collectingSection}
+
+    <!-- amount -->
+    <tr><td class="pad-lg" style="padding: 30px 48px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f3e8; border-radius: 14px;">
+        <tr><td align="center" style="padding: 24px 30px;">
+          <div style="font-family: ${serif}; font-size: 21px; color: ${sage}; line-height: 1.55;">
+            The recommended amount is <strong style="color: ${gold};">$65 per shower</strong> &mdash; any amount is warmly accepted.
+          </div>
+          <div style="font-family: ${sans}; font-size: 14px; color: ${soft}; line-height: 1.6; padding-top: 10px;">
+            Please reply confirming which shower/s you would like to join, and send payment using one of the methods below.
+          </div>
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- payment methods -->
+    ${sectionLabel('Ways to Give')}
+    <tr><td class="pad-lg" style="padding: 10px 40px 6px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          ${payCell('Zelle', 'beckyfriedman1@gmail.com')}
+          ${payCell('Venmo', '@Becky-Friedman-8')}
+        </tr>
+        <tr>
+          ${payCell('PayPal', 'beckyfriedman1@gmail.com')}
+          ${payCell('Check', 'Made out to<br/>Detroit Bridal Shower Project<br/>17322 Goldwin Drive<br/>Southfield, MI 48075')}
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- closing -->
+    <tr><td align="center" class="pad-lg" style="padding: 26px 56px 0;">
+      <div style="width: 54px; height: 1px; background-color: #d9c9a6; margin: 0 auto 22px; font-size: 0; line-height: 0;">&nbsp;</div>
+      <div style="font-family: ${serif}; font-size: 19px; color: ${soft}; line-height: 1.65;">
+        Every collection helps start off a Chosson and Kallah with all of their household basics.<br/>
+        Recently engaged? <a href="${site}" style="color: ${gold}; text-decoration: underline;">Add your couple on our website</a>.
+      </div>
+    </td></tr>
+
+    <tr><td align="center" class="pad-lg" style="padding: 26px 56px 40px;">
+      <div style="font-family: ${serif}; font-size: 20px; color: ${ink}; line-height: 1.6;">
+        We should continue to hear of many more simchas!
+      </div>
+      <div style="font-family: ${serif}; font-style: italic; font-size: 26px; color: ${sage}; padding-top: 10px;">Becky Friedman</div>
+    </td></tr>
+  </table>
+
+  <!-- footer -->
+  <table role="presentation" width="640" class="card" cellpadding="0" cellspacing="0" style="width: 640px; max-width: 640px;">
+    <tr><td align="center" style="padding: 20px 30px 0;">
+      <div style="font-family: ${sans}; font-size: 12px; color: #9b998e; line-height: 1.7;">
+        Questions? Reach us at <a href="mailto:bridalshower@detroitbridalshower.org" style="color: #9b998e;">bridalshower@detroitbridalshower.org</a><br/>
+        Detroit Bridal Shower &middot; Southfield, Michigan${unsubscribeURL ? `<br/><a href="${unsubscribeURL}" style="color: #9b998e; text-decoration: underline;">Unsubscribe</a>` : ''}
+      </div>
+    </td></tr>
+  </table>
+
+</td></tr>
+</table>
+</body>
+</html>`
+}

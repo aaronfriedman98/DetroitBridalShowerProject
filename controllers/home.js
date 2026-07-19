@@ -15,6 +15,43 @@ const expressFileUpload = require('express-fileupload')
 sgMail.setApiKey(process.env.API_KEY)
 sgClient.setApiKey(process.env.API_KEY)
 
+// ---- spam protection helpers ----
+// A name is "spammy" when it reads like a random consonant string
+// (e.g. "Qkmxetvbpazszqxp"). Thresholds are deliberately loose so real
+// consonant-heavy names (Schwartz, Kornbleuth, Schuraytz...) always pass;
+// addEntry additionally requires BOTH the chosson and kallah name to fail
+// before rejecting.
+function looksLikeSpamName(s) {
+  if (!s) return false
+  const str = String(s).trim()
+  const letters = str.replace(/[^a-zA-Z]/g, '')
+  if (!letters) return false
+  let score = 0
+  const vowelRatio = (letters.match(/[aeiouAEIOU]/g) || []).length / letters.length
+  if (vowelRatio < 0.2) score += 2
+  else if (vowelRatio < 0.28) score += 1
+  if (/[bcdfghjklmnpqrstvwxz]{5,}/i.test(letters)) score += 2
+  else if (/[bcdfghjklmnpqrstvwxz]{4}/i.test(letters)) score += 1
+  if (!str.includes(' ') && str.length > 14) score += 1
+  return score >= 2
+}
+
+// in-memory rate limiter: max 3 submissions per rolling hour per IP
+const submissionLog = new Map()
+function isRateLimited(req) {
+  const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.ip || 'unknown'
+  const now = Date.now()
+  const hits = (submissionLog.get(ip) || []).filter(t => now - t < 60 * 60 * 1000)
+  if (hits.length >= 3) return true
+  hits.push(now)
+  submissionLog.set(ip, hits)
+  if (submissionLog.size > 5000) {  // don't grow unbounded
+    for (const [k, v] of submissionLog) if (v.every(t => now - t > 60 * 60 * 1000)) submissionLog.delete(k)
+  }
+  return false
+}
+// ---- end spam protection helpers ----
+
 // app.use(expressFileUpload())
 
 
@@ -894,6 +931,35 @@ module.exports = {
             message: 'You have missing fields. Please fill out the required fields.'
           })
         }
+
+        // ---- spam protection ----
+        // 1. honeypot: hidden field humans never fill; answer with a fake
+        //    success so bots don't learn they were caught
+        if (req.body.website) {
+          console.log('spam blocked (honeypot):', req.body.email)
+          return res.json({ status: true, title: 'Thank You!', message: 'You have been sent an email for confirmation. Please open your email and confirm the submission.' })
+        }
+        // 2. timing token: set by the page at load; direct bot POSTs lack it,
+        //    automated fills submit faster than any human can type
+        const loadedAt = parseInt(req.body.formToken, 10)
+        if (!loadedAt || Date.now() - loadedAt < 5000 || Date.now() - loadedAt > 24*60*60*1000) {
+          console.log('spam blocked (timing):', req.body.email)
+          return res.json({ status: true, title: 'Thank You!', message: 'You have been sent an email for confirmation. Please open your email and confirm the submission.' })
+        }
+        // 3. gibberish names (random consonant strings)
+        if (looksLikeSpamName(req.body.chossonName) && looksLikeSpamName(req.body.kallahName)) {
+          console.log('spam blocked (gibberish):', req.body.chossonName, req.body.kallahName)
+          return res.json({ status: false, title: 'Oops!', message: 'Please double-check the names you entered.' })
+        }
+        if (!/^\S+@\S+\.\S+$/.test(req.body.email)) {
+          return res.json({ status: false, title: 'Oops!', message: 'Please enter a valid email address.' })
+        }
+        // 4. rate limit per IP: max 3 submissions per hour
+        if (isRateLimited(req)) {
+          console.log('spam blocked (rate limit):', req.ip)
+          return res.json({ status: false, title: 'Slow down!', message: 'Too many submissions from your network. Please try again later.' })
+        }
+        // ---- end spam protection ----
 
       
     try {
