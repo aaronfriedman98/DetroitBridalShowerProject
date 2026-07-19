@@ -172,6 +172,11 @@
     }
     .card-head h3 { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--sage-darker); }
     .card-head .count { font-size: 12px; color: var(--ink-soft); font-weight: 300; letter-spacing: .05em; }
+    .clear-search {
+      border: 1px solid var(--gold); background: var(--gold-soft); color: var(--gold);
+      font-size: 11px; padding: 2px 9px; border-radius: 999px; margin-left: 4px;
+    }
+    .clear-search:hover { background: var(--gold); color: #fff; }
 
     .chips { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 22px 14px; }
     .chip {
@@ -666,7 +671,12 @@ function visibleCouples() {
 
 function renderTable() {
   const rows = visibleCouples();
-  $('tableCount').textContent = rows.length + ' of ' + state.couples.length;
+  const q = searchTerm.trim();
+  $('tableCount').innerHTML = rows.length + ' of ' + state.couples.length +
+    (q ? ' &middot; matching &ldquo;' + esc(q) + '&rdquo; <button class="clear-search" onclick="clearSearch()">clear &times;</button>' : '');
+  $('tableEmpty').textContent = q
+    ? 'No couples match "' + q + '" with this filter — clear the search box to see all.'
+    : 'No couples match this filter.';
   $('tableEmpty').style.display = rows.length ? 'none' : 'block';
   $('couplesBody').innerHTML = rows.map(c => {
     const badge = c.collecting
@@ -977,6 +987,11 @@ async function doSend(url, body) {
 
 /* ================= wiring ================= */
 $('searchInput').addEventListener('input', (e) => { searchTerm = e.target.value; renderTable(); });
+function clearSearch() {
+  searchTerm = '';
+  $('searchInput').value = '';
+  renderTable();
+}
 $('filterChips').addEventListener('click', (e) => {
   const chip = e.target.closest('.chip');
   if (!chip) return;
