@@ -6,9 +6,6 @@
     <title>Detroit Bridal Shower</title>
     <link rel="icon" href="../assets/images/bridalshowerpic.jpg">
     <script src="https://kit.fontawesome.com/ec81d6615d.js" crossorigin="anonymous"></script>
-    <!-- main.css + button.css power the add-couple form popup only; all visible page styling is new below -->
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/button.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
       :root { --ivory:#f4f1ea; --cream:#faf8f3; --sage:#494e46; --sage-dark:#383c36; --gold:#b3925a; --gold-soft:#f3ead9;
@@ -141,7 +138,7 @@
 
   <!-- ===== HERO ===== -->
   <div class="n-hero">
-    <img src="../assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+    <img src="../assets/images/logo-transparent.png" alt="Detroit Bridal Shower">
     <div class="n-kicker">A Detroit community tradition</div>
     <h1>Every new home begins<br><em>with all of us</em></h1>
     <p>When a chosson and kallah get engaged, our community comes together to gift them the essentials for their new home &mdash; one simcha at a time.</p>
@@ -211,1129 +208,180 @@
     <a href="/contributors">See who gave &rarr;</a>
   </div>
 
-  <!-- form machinery (overlay + popup) -->
-  <div class="overlay"></div>
-<form class="formPopup" id="couplesForm">
-                <!-- honeypot: humans never see or fill this; bots auto-fill it -->
-                <input type="text" name="website" id="website" tabindex="-1" autocomplete="off"
-                       style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;" aria-hidden="true">
-                <script>window.__formLoadedAt = String(Date.now())</script>
-                <div id="Form">
-                    <h3>Personal Info</h3>
-                    <input type="text" name="chossonName" placeholder="Name" id="name"  >
-                    <label class="placeholder placeholder01">Enter Your Name:</label>
-                    <input type="text" name="chossonName" placeholder="Phone Number" id="phoneNumber"  >
-                    <label class="placeholder placeholder02">Phone Number:</label>
-                    <input type="text" name="chossonName" placeholder="Email" id="email"  >
-                    <label class="placeholder placeholder03">Email: </label>
-                    <input type="text" name="chossonName" placeholder="Address" id="address"  >
-                    <label class="placeholder placeholder04">Address:</label>
-                    <div class="btn-box">
-                        <button type="button" id="close-btn">Cancel</button>
-                        <button type="button" id="Next">Next</button>
-                    </div>
+    <!-- ===== ADD-A-COUPLE MODAL (dashboard-style) ===== -->
+  <style>
+    .cf-ov { position:fixed; inset:0; z-index:90; background:rgba(40,42,38,.45); backdrop-filter:blur(3px);
+      display:none; align-items:flex-start; justify-content:center; padding:4vh 16px 16px; overflow-y:auto; }
+    .cf-ov.show { display:flex; }
+    .cf-modal { background:#fffdfa; border-radius:20px; box-shadow:0 24px 60px -20px rgba(40,42,38,.4);
+      width:100%; max-width:680px; overflow:hidden; animation:cfpop .22s cubic-bezier(.2,.9,.3,1.2); }
+    @keyframes cfpop { from { transform:scale(.94) translateY(8px); opacity:0; } to { transform:none; opacity:1; } }
+    .cf-head { padding:24px 28px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+    .cf-head h3 { font-family:var(--serif); font-size:27px; font-weight:600; color:var(--sage-dark); margin:0; }
+    .cf-head .sub { font-family:var(--sans); font-weight:300; font-size:13.5px; color:var(--soft); margin-top:4px; }
+    .cf-x { border:none; background:#eef0ec; color:var(--sage); width:34px; height:34px; border-radius:50%; font-size:17px; line-height:1; cursor:pointer; flex:none; }
+    .cf-x:hover { background:#e9dad3; }
+    .cf-body { padding:16px 28px 26px; }
+    .cf-label { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:500;
+      margin:20px 0 10px; display:flex; align-items:center; gap:10px; font-family:var(--sans); }
+    .cf-label::after { content:''; height:1px; background:var(--line); flex:1; }
+    .cf-label:first-child { margin-top:6px; }
+    .cf-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+    .cf-row.t { grid-template-columns:110px 1fr; }
+    .cf-row.one { grid-template-columns:1fr; }
+    @media (max-width:560px){ .cf-row { grid-template-columns:1fr; } .cf-row.t { grid-template-columns:100px 1fr; } }
+    .cf-f label { display:block; font-size:11.5px; color:var(--soft); letter-spacing:.06em; margin-bottom:4px; font-family:var(--sans); }
+    .cf-f input, .cf-f select { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px;
+      background-color:#fff; font-size:14.5px; color:var(--ink); outline:none; font-family:var(--sans); box-sizing:border-box; }
+    .cf-f input:focus, .cf-f select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(179,146,90,.13); }
+    .cf-f select { -webkit-appearance:none; appearance:none; cursor:pointer;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23b3925a' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+    .cf-chk { display:flex; align-items:center; gap:8px; margin:2px 0 10px; cursor:pointer; user-select:none;
+      font-size:13px; color:var(--sage); letter-spacing:.03em; font-family:var(--sans); }
+    .cf-chk input { width:15px; height:15px; accent-color:var(--gold); cursor:pointer; }
+    .cf-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:8px 12px;
+      border:1px solid var(--line); border-radius:10px; padding:12px 14px; background:#fff; }
+    .cf-foot { display:flex; justify-content:flex-end; gap:10px; padding:0 28px 26px; flex-wrap:wrap; align-items:center; }
+    .cf-err { color:#b05252; font-size:13px; font-family:var(--sans); margin-right:auto; display:none; }
+    .cf-btn { border:none; border-radius:999px; padding:13px 26px; font-family:var(--sans); font-size:14.5px; letter-spacing:.04em; cursor:pointer; }
+    .cf-btn-gold { background:var(--gold); color:#fff; }
+    .cf-btn-gold:hover { background:#a3854f; }
+    .cf-btn-gold[disabled] { opacity:.55; pointer-events:none; }
+    .cf-btn-ghost { background:transparent; border:1px solid var(--line); color:var(--sage); }
+    .cf-btn-ghost:hover { background:#eef0ec; }
+    .cf-done { text-align:center; padding:46px 34px 50px; display:none; }
+    .cf-done .big { font-family:var(--serif); font-style:italic; font-size:36px; color:var(--gold); }
+    .cf-done p { font-family:var(--serif); font-size:19px; color:var(--ink); line-height:1.65; margin:14px auto 0; max-width:420px; }
+  </style>
 
-                </div>
-                <div id="Form1">
-                    <h3>Enter Chosson's Info</h3>
-
-                    <input type="text" name="chossonName" placeholder="Chosson's full name" id="chossonName"  >
-                    <label class="placeholder placeholder1">Chosson's Full Name:</label>
-
-                    <div class=combine>
-                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                        <select class="selectTitle" name="chossonFatherTitle" id="chossonFatherTitle">
-                            <option>Title</option>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Rabbi">Rabbi</option>
-                            <option value="Dr.">Dr.</option>
-                        </select>
-                        <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonFatherName" id="chossonFatherName">
-                        <label class="placeholder placeholder2">Chosson's Father (Include last name):</label>
-                    </div>
-                    <div class="combine">
-                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                        <select class="selectTitle" name="chossonMotherTitle" id="chossonMotherTitle">
-                            <option>Title</option>
-                            <option value="Mrs.">Mrs.</option>
-                            <option value="Rebbetzin">Rebbetzin</option>
-                            <option value="Dr.">Dr.</option>
-                        </select>
-                    <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherName" id="chossonMotherName">
-                    <label class="placeholder placeholder3"><p class="nonDivorcedField">Chosson's Mother (Include last name):</p><p class="divorcedField swapField">Chosson's Step Mother: <span style="font-size: 12px">(optional)</span></p></label>
-                    <!-- <label class="placeholder placeholder3 divorcedField swapField">Chosson's Father's Wife (Full Name):</label> -->
-                    </div>
-
-
-                    <!-- divorced edgecase-->
-                    <div class="divorced">
-                        <div class=combine>
-                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                            <select class="selectTitle" name="chossonMotherDivorcedTitle" id="chossonMotherDivorcedTitle">
-                                <option>Title</option>
-                                <option value="Mrs.">Mrs.</option>
-                                <option value="Rebbetzin">Rebbetzin</option>
-                                <option value="Dr.">Dr.</option>
-                            </select>
-                            <input type="text" placeholder="Chosson's Father" class="smallInput" name="chossonMotherDivorcedName" id="chossonMotherDivorcedName">
-                            <label class="placeholder placeholder6">Chosson's Mother (Include last name):</label>
-                        </div>
-                        <div class="combine">
-                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                            <select class="selectTitle" name="chossonMotherHusbandTitle" id="chossonMotherHusbandTitle">
-                                <option>Title</option>
-                                <option value="Mr.">Mr.</option>
-                                <option value="Rabbi">Rabbi</option>
-                                <option value="Dr.">Dr.</option>
-                            </select>
-                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="chossonMotherHusbandName" id="chossonMotherHusbandName">
-                        <label class="placeholder placeholder7">Chosson's Step Father: <span style="font-size: 12px">(optional)</span></label>
-                        </div>
-                    </div>
-
-
-
-                    <select class="select" name="chossonOrigin" id="chossonOrigin">
-                        <option>Where is the chosson from?</option>
-                        <option value="detroit">Detroit</option>
-                        <option value="other">Other</option>
-                    </select>
-
-                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-                     <!-- multiple parent option -->
-                     <!-- <span style="position: absolute; right: -37px; top: 162px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Divorced
-                        <i onclick="openParentModal1()" class="fas fa-angle-down addParent" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span>
-                      <span style="position: absolute; right: -37px; top: 115px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Deceased
-                        <i onclick="openParentModal1()" class="fas fa-comment-alt addParent" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span> -->
-
-                      <span onclick="openDivorcedFields()" class="addParent divorcedButton" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Divorced
-                        <i class="fas fa-angle-down angle1" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span>
-                      <span class="deseasedButton addParent" onclick="openDeceasedModal()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Deceased
-                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span>
-                      
-                     <!-- <span><i onclick="openParentModal1()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 125px;"></i></span> -->
-
-                    <div class="btn-box" style="margin-top: 50px">
-                        <button type="button" id="Back">Back</button>
-                        <button type="button" id="Next1">Next</button>
-                    </div>
-
-                </div>
-
-                <div id="Form2">
-                    <h3>Enter Kallah's Info</h3>
-                    <input type="text" placeholder="Kallah's Full Name" name="kallahName" id="kallahName"  >
-                    <label class="placeholder placeholder1">Kallah's Full Name:</label>
-                    <div class=combine>
-                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                        <select class="selectTitle" name="kallahFatherTitle" id="kallahFatherTitle">
-                            <option>Title</option>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Rabbi">Rabbi</option>
-                            <option value="Dr.">Dr.</option>
-                        </select>
-                        <input type="text" placeholder="kallah's Father" class="smallInput" name="kallahFatherName" id="kallahFatherName">
-                        <label class="placeholder placeholder2">Kallah's Father (Include last name):</label>
-                    </div>
-                    <div class="combine">
-                        <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                        <select class="selectTitle" name="kallahMotherTitle" id="kallahMotherTitle">
-                            <option>Title</option>
-                            <option value="Mrs.">Mrs.</option>
-                            <option value="Rebbetzin">Rebbetzin</option>
-                            <option value="Dr.">Dr.</option>
-                        </select>
-                    <input type="text" placeholder="Kallah's Mother" class="smallInput" name="kallahMotherName" id="kallahMotherName">
-                    <label class="placeholder placeholder3"><p class="nonDivorcedField2">Kallah's Mother (Include Last Name):</p><p class="divorcedField2 swapField">Kallah's Step Mother: <span style="font-size: 12px">(optional)</span></p></label>
-                    </div>
-
-
-                    <!-- divorced edgecase-->
-                    <div class="divorced2">
-                        <div class=combine>
-                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                            <select class="selectTitle" name="kallahMotherDivorcedTitle" id="kallahMotherDivorcedTitle">
-                                <option>Title</option>
-                                <option value="Mrs.">Mrs.</option>
-                                <option value="Rebbetzin">Rebbetzin</option>
-                                <option value="Dr.">Dr.</option>
-                            </select>
-                            <input type="text" placeholder="Kallah's Father" class="smallInput" name="kallahMotherDivorcedName" id="kallahMotherDivorcedName">
-                            <label class="placeholder placeholder6">Kallah's Mother (Include last name):</label>
-                        </div>
-                        <div class="combine">
-                            <!-- <input type="" placeholder="Title" class="smallInput"> -->
-                            <select class="selectTitle" name="kallahMotherHusbandTitle" id="kallahMotherHusbandTitle">
-                                <option>Title</option>
-                                <option value="Mr.">Mr.</option>
-                                <option value="Rabbi">Rabbi</option>
-                                <option value="Dr.">Dr.</option>
-                            </select>
-                        <input type="text" placeholder="Chosson's Mother" class="smallInput" name="kallahMotherHusbandName" id="kallahMotherHusbandName">
-                        <label class="placeholder placeholder7">Kallah's Step Father: <span style="font-size: 12px">(optional)</span></label>
-                        </div>
-                    </div>
-
-
-                    <select class="select" name="kallahOrigin" id="kallahOrigin">
-                        <option>Where is the kallah from?</option>
-                        <option value="detroit">Detroit</option>
-                        <option value="other">Other</option>
-                    </select>
-
-
-                    <span onclick="openDivorcedFields2()" class="addParent divorcedButton2" style="position: absolute; right: 73px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Divorced
-                        <i class="fas fa-angle-down angle2" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span>
-                      <span class="deseasedButton2 addParent" onclick="openDeceasedModal2()" style="position: absolute; right: 198px; top: 260px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 5px; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); font-family: Arial, sans-serif; color: rgba(16, 16, 16, 0.387);">
-                        Deceased
-                        <i class="fas fa-comment-alt" style="color: rgba(16, 16, 16, 0.387); margin-left: 2px;"></i>
-                      </span>
-                    <!-- <input type="" placeholder="Where is the Chosson From?"> -->
-
-                    <!-- multiple parent option -->
-                    <!-- <span><i onclick="openParentModal2()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 172px;"></i></span>
-                    <span><i onclick="openParentModal2()" class="fa-solid fa-circle-plus addParent" style="color: rgba(16, 16, 16, 0.387); position:absolute; right: 10px; top: 125px;"></i></span> -->
-
-                    <div class="btn-box" style="margin-top: 50px">
-                        <button type="button" id="Back1">back</button>
-                        <button type="button" id="Next2">Next</button>
-                    </div>
-
-                </div>
-
-                <div id="Form3">
-                    <h3>Other Info</h3>
-                    <!-- <input type="text" placeholder="Address" name="address" id="address"  > -->
-                    <!-- <label class="placeholder placeholder1">Address:</label>
-                    <div class="combine combine2">
-                        <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-                        <input type="email" placeholder="Email" name="email" id="email"  >
-                        <label class="placeholder placeholder4">Email:</label>
-                    </div> -->
-                    <input type="date" placeholder="Wedding Date" name="weddingDate" id="weddingDate"  >
-                    <label class="placeholder placeholder001">WeddingDate:</label>
-
-                    <script>
-                        const date = document.getElementById('weddingDate')
-                        const label = document.querySelector('.placeholder001')
-
-                        date.addEventListener('click', function() {
-                            label.style.top = '60px'
-                            label.style.left = '-10px'
-                            label.style.color = '#84aa6d'
-                            label.style.transform = 'scale(.8)'
-                        })
-                    </script>
-    
-                    <select class="select" name="personalShopper" id="personalShopper">
-                        <option>Would you like a personal shopper?</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                    <input type="text" placeholder="Detroit Chesed Package Gift: (Select) &blacktriangledown;" class="input-selector">
-                    <label class="placeholder placeholder03">Detroit Chesed Package Gift: (financial assistance)</label>
-                    <i id="Info-icon" class="fas fa-info-circle" style="margin-top: 5px; cursor: pointer; position:absolute; right: 10px; top: 168px; color: rgba(9, 9, 9, 0.609)"></i>
-                    <input type="text" placeholder="" name="" id="DCPG">
-
-                    
-                    
-
-                  
-
-
-
-                    <div class="list">
-
-                        <span class="close-btn">&times;</span>
-    
-                        <label for="task1" class="task">
-                             <input type="checkbox" name="toaster" id="task1" value="Toaster">
-                             Toaster
-                             <!-- <span>10 mins</span> -->
-                      </label>
-                        <label for="task2" class="task">
-                             <input type="checkbox" name="urn" id="task2" value="Urn">
-                             Urn
-                             <!-- <span>20 mins</span> -->
-                      </label>
-                        <label for="task3" class="task">
-                             <input type="checkbox" name="kitchenTowels" id="task3" value="Kitchen towels">
-                             Kitchen towels
-                             <!-- <span>30 mins</span> -->
-                      </label>
-                        <label for="task4" class="task">
-                             <input type="checkbox" name="vacuum" id="task4" value="Vacuum">
-                             Vacuum
-                             <!-- <span>40 mins</span> -->
-                      </label>
-                      <label for="task5" class="task">
-                        <input type="checkbox" name="cholentPot" id="task5" value="Cholent pot">
-                        Cholent pot
-                        <!-- <span>40 mins</span> -->
-                        </label>
-                 
-                      </div>
-                    <!-- <select class="select">
-                        <option>Would you like the Detroit Chesed Package Gift? (Select all that you would like)</option>
-                        <option>Toaster</option>
-                        <option>Urn</option>
-                        <option>Kitchen towels</option>
-                        <option>Vacuum</option>
-                        <option>Cholent pot</option>
-                    </select> -->
-
-                    <div class="btn-box">
-                        <button type="button" id="Back2">back</button>
-                        <button type="button" onclick="addCouple()">submit</button>
-                        <!-- onclick="coupleSubmit()" -->
-                    </div>
-
-                </div>
-
-                <div class="step-row">
-                    <div id="progress"></div>
-                    <div class="step-col"><small>Step 1</small></div>
-                    <div class="step-col"><small>Step 2</small></div>
-                    <div class="step-col"><small>Step 3</small></div>
-                    <div class="step-col"><small>Step 4</small></div>
-                </div>
-
-            </form>
-
-
-            <!-- option to add multiple parents -->
-
-
-
-            <!-- <div class="modal_wrapper">
-                <div class="shadow"></div>
-                <div class="success_wrap">
-                    <span class="modal_icon">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
-                    <p>Successfully submitted!</p>
-                </div>
-            </div> -->
-
-        
-        </section>
-    </div>
-    <!-- <div class="mainIcon down">
-        <div class="tooltip3">Newsletter</div>
-        <a href="#footer" class="link"><i class="fa-solid fa-circle-chevron-down"></i></a>
-    </div> -->
-
-
-    </div>
-
-    <!-- chesed package info modal -->
-                    <!-- Info Popup Modal -->
-    <div class="info-popup-modal">
-        <div class="info-modal-header">
-            <h2>Detroit Chessed Package:</h2>
+  <div class="cf-ov" id="cfOverlay">
+    <div class="cf-modal">
+      <div id="cfFormWrap">
+        <div class="cf-head">
+          <div>
+            <h3>Add a Couple</h3>
+            <div class="sub">Mazel tov! Tell us about the chosson and kallah &mdash; we'll email you a confirmation link.</div>
+          </div>
+          <button class="cf-x" onclick="closeCoupleForm()" type="button">&times;</button>
         </div>
-        
-        <div class="info-modal-content">
-            <p></p>
-        </div>
-    </div>
+        <div class="cf-body">
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off"
+                 style="position:absolute; left:-9999px; top:-9999px; height:0; width:0; opacity:0;" aria-hidden="true">
 
+          <div class="cf-label">Your details</div>
+          <div class="cf-row">
+            <div class="cf-f"><label>Your name *</label><input type="text" id="cf_name"></div>
+            <div class="cf-f"><label>Phone *</label><input type="tel" id="cf_phone"></div>
+          </div>
+          <div class="cf-row">
+            <div class="cf-f"><label>Email *</label><input type="email" id="cf_email"></div>
+            <div class="cf-f"><label>Address *</label><input type="text" id="cf_address"></div>
+          </div>
 
-                    <style>
-
-      /* Info Popup Modal Styles */
-.info-popup-modal {
-    /* display: none; */
-    position: fixed;
-    top: 48%;
-    right: 16%;
-    transform: translate(0, -50%);
-    background-color: rgba(255, 255, 255, 0.9); /* Light gray with 10% transparency */
-    color: #444; /* Dark gray text color */
-    padding: 20px;
-    border-radius: 10px;
-    z-index: 1;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Box shadow for the modal */
-    font-family: 'Arial', sans-serif; /* Choose your preferred font */
-    line-height: 1.5; /* Adjust line height for readability */
-}
-/* Updated CSS with opacity and visibility */
-.info-popup-modal {
-    visibility: hidden; /* Initially, hide the modal */
-    opacity: 0; /* Initially, set opacity to 0 */
-    transition: visibility 0s 0.3s, opacity 0.3s ease-in-out; /* Delay visibility transition */
-    /* ... (your existing styles) ... */
-}
-
-.info-popup-modal.active {
-    visibility: visible;
-    opacity: 1;
-    transition: visibility 0s 0s, opacity 0.3s ease-in-out;
-}
-
-
-.info-modal-content {
-    max-width: 300px; /* Wider modal for better readability */
-    font-size: 16px; /* Larger font size for better readability */
-}
-
-.info-modal-header {
-font-size: 18px;
-font-weight: 600;
-}
-
-.info-modal-header h2 {
-    margin: 0;
-}
-
-
-
-                        
-                        
-                    </style>
-                        
-                                            <script>
-const infoIcon = document.getElementById("Info-icon");
-const infoPopupModal = document.querySelector(".info-popup-modal");
-
-infoIcon.addEventListener("mouseover", () => {
-    infoPopupModal.classList.add("active");
-});
-
-infoIcon.addEventListener("mouseout", () => {
-    infoPopupModal.classList.remove("active");
-});
-                        
-                        
-                                            </script>
-                                                <!-- ********************************************** -->
-
-    <!-- chossons parents modal -->
-    <!-- <div id="myModal" class="myModal1">
-        <div class="modal modall">
-            <span class="close" onclick="closeParentModal1()">&times;</span>
-            <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p>
-            <div class="combine">
-              
-                <select class="selectTitle" name="addParentChossonFatherTitle" id="addParentChossonFatherTitle">
-                    <option>Mr.</option>
-                    <option value="Mrs.">Mrs.</option>
-                    <option value="Rebbetzin">Rebbetzin</option>
-                    <option value="Dr.">Dr.</option>
-                </select>
-            <input type="text" class="smallInput" name="addParentChossonFatherName" id="addParentChossonFatherName" placeholder="Chosson's Father (Full Name):">
-            
+          <div class="cf-label">Chosson</div>
+          <div class="cf-row">
+            <div class="cf-f"><label>Full name *</label><input type="text" id="cf_chossonName"></div>
+            <div class="cf-f"><label>Where is the chosson from? *</label>
+              <select id="cf_chossonOrigin"><option value="">Choose&hellip;</option><option value="detroit">Detroit</option><option value="other">Out of town</option></select></div>
+          </div>
+          <div class="cf-row t">
+            <div class="cf-f"><label>Title</label>
+              <select id="cf_chossonFatherTitle"><option>Title</option><option value="Mr.">Mr.</option><option value="Rabbi">Rabbi</option><option value="Dr.">Dr.</option></select></div>
+            <div class="cf-f"><label>Father's full name</label><input type="text" id="cf_chossonFatherName"></div>
+          </div>
+          <div class="cf-row t">
+            <div class="cf-f"><label>Title</label>
+              <select id="cf_chossonMotherTitle"><option>Title</option><option value="Mrs.">Mrs.</option><option value="Rebbetzin">Rebbetzin</option><option value="Dr.">Dr.</option></select></div>
+            <div class="cf-f"><label>Mother's full name</label><input type="text" id="cf_chossonMotherName"></div>
+          </div>
+          <label class="cf-chk"><input type="checkbox" id="cf_chossonDiv" onchange="cfToggleDiv('chosson', this.checked)"> Parents divorced</label>
+          <div id="cf_chossonDivWrap" style="display:none;">
+            <div class="cf-row t">
+              <div class="cf-f"><label>Title</label>
+                <select id="cf_chossonMotherDivorcedTitle"><option>Title</option><option value="Mrs.">Mrs.</option><option value="Rebbetzin">Rebbetzin</option><option value="Dr.">Dr.</option></select></div>
+              <div class="cf-f"><label>Mother's name (listed separately)</label><input type="text" id="cf_chossonMotherDivorcedName"></div>
             </div>
-            <div class="combine">
-                
-                <select class="selectTitle" name="addParentChossonMotherTitle" id="addParentChossonMotherTitle">
-                    <option>Mrs.</option>
-                    <option value="Mrs.">Mrs.</option>
-                    <option value="Rebbetzin">Rebbetzin</option>
-                    <option value="Dr.">Dr.</option>
-                </select>
-            <input type="text" placeholder="Chosson's Mother (Full Name):" class="smallInput" name="addParentChossonMotherName" id="addParentChossonMotherName">
+            <div class="cf-row t">
+              <div class="cf-f"><label>Title</label>
+                <select id="cf_chossonMotherHusbandTitle"><option>Title</option><option value="Mr.">Mr.</option><option value="Rabbi">Rabbi</option><option value="Dr.">Dr.</option></select></div>
+              <div class="cf-f"><label>Mother's husband (if remarried)</label><input type="text" id="cf_chossonMotherHusbandName"></div>
             </div>
-        
-            <button onclick="submitParentModal1()">Submit</button>
-        </div>
-    </div> -->
+          </div>
+          <div class="cf-row one">
+            <div class="cf-f"><label>Deceased parent note (optional)</label><input type="text" id="cf_chossonDeceased" placeholder="e.g. son of R' Ploni z&quot;l"></div>
+          </div>
 
-    <!-- deceased info modals -->
-    <div id="myModal" class="myModal1">
-        <div class="modal modall">
-            <span class="close" onclick="closeDeceasedModal()">&times;</span>
-            <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
-            <p>If a parent of the chosson has passed away, please specify:</p>
-            <textarea name="deceased" id="deceased" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+          <div class="cf-label">Kallah</div>
+          <div class="cf-row">
+            <div class="cf-f"><label>Full name *</label><input type="text" id="cf_kallahName"></div>
+            <div class="cf-f"><label>Where is the kallah from? *</label>
+              <select id="cf_kallahOrigin"><option value="">Choose&hellip;</option><option value="detroit">Detroit</option><option value="other">Out of town</option></select></div>
+          </div>
+          <div class="cf-row t">
+            <div class="cf-f"><label>Title</label>
+              <select id="cf_kallahFatherTitle"><option>Title</option><option value="Mr.">Mr.</option><option value="Rabbi">Rabbi</option><option value="Dr.">Dr.</option></select></div>
+            <div class="cf-f"><label>Father's full name</label><input type="text" id="cf_kallahFatherName"></div>
+          </div>
+          <div class="cf-row t">
+            <div class="cf-f"><label>Title</label>
+              <select id="cf_kallahMotherTitle"><option>Title</option><option value="Mrs.">Mrs.</option><option value="Rebbetzin">Rebbetzin</option><option value="Dr.">Dr.</option></select></div>
+            <div class="cf-f"><label>Mother's full name</label><input type="text" id="cf_kallahMotherName"></div>
+          </div>
+          <label class="cf-chk"><input type="checkbox" id="cf_kallahDiv" onchange="cfToggleDiv('kallah', this.checked)"> Parents divorced</label>
+          <div id="cf_kallahDivWrap" style="display:none;">
+            <div class="cf-row t">
+              <div class="cf-f"><label>Title</label>
+                <select id="cf_kallahMotherDivorcedTitle"><option>Title</option><option value="Mrs.">Mrs.</option><option value="Rebbetzin">Rebbetzin</option><option value="Dr.">Dr.</option></select></div>
+              <div class="cf-f"><label>Mother's name (listed separately)</label><input type="text" id="cf_kallahMotherDivorcedName"></div>
+            </div>
+            <div class="cf-row t">
+              <div class="cf-f"><label>Title</label>
+                <select id="cf_kallahMotherHusbandTitle"><option>Title</option><option value="Mr.">Mr.</option><option value="Rabbi">Rabbi</option><option value="Dr.">Dr.</option></select></div>
+              <div class="cf-f"><label>Mother's husband (if remarried)</label><input type="text" id="cf_kallahMotherHusbandName"></div>
+            </div>
+          </div>
+          <div class="cf-row one">
+            <div class="cf-f"><label>Deceased parent note (optional)</label><input type="text" id="cf_kallahDeceased" placeholder="e.g. daughter of Mrs. Plonis a&quot;h"></div>
+          </div>
 
-            <!-- <input type="text" placeholder="Input Field 1"> -->
-            <!-- <input type="text" placeholder="Input Field 2"> -->
-            <button class="submitComment" onclick="submitDeceasedModal()">Submit</button>
+          <div class="cf-label">Wedding details</div>
+          <div class="cf-row">
+            <div class="cf-f"><label>Wedding date (if known)</label><input type="date" id="cf_weddingDate"></div>
+            <div class="cf-f"><label>Personal shopper?</label>
+              <select id="cf_personalShopper"><option value="">Choose&hellip;</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+          </div>
+          <div class="cf-f" style="margin-top:4px;">
+            <label style="display:flex; align-items:center; justify-content:space-between;">Detroit Chesed Package Gift (optional)
+              <button type="button" class="cf-btn cf-btn-ghost" style="padding:4px 14px; font-size:11.5px;" onclick="cfChesedAll(this)">Select all</button>
+            </label>
+            <div class="cf-grid">
+              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_toaster"> Toaster</label>
+              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_urn"> Urn</label>
+              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_kitchenTowels"> Kitchen towels</label>
+              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_vacuum"> Vacuum</label>
+              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_cholentPot"> Cholent pot</label>
+            </div>
+          </div>
         </div>
+        <div class="cf-foot">
+          <span class="cf-err" id="cfErr"></span>
+          <button class="cf-btn cf-btn-ghost" type="button" onclick="closeCoupleForm()">Cancel</button>
+          <button class="cf-btn cf-btn-gold" type="button" id="cfSubmit" onclick="cfSubmit()">Submit Couple</button>
+        </div>
+      </div>
+      <div class="cf-done" id="cfDone">
+        <div class="big">Mazel Tov!</div>
+        <p id="cfDoneMsg">Check your email for a confirmation link &mdash; once you confirm, the couple will be reviewed and announced to the community.</p>
+        <button class="cf-btn cf-btn-gold" style="margin-top:22px;" onclick="closeCoupleForm()">Done</button>
+      </div>
     </div>
+  </div>
 
-    <div id="myModal" class="myModal2">
-        <div class="modal modall">
-            <span class="close" onclick="closeDeceasedModal2()">&times;</span>
-            <!-- <p>For additional parent/s, add here. <br>Please keep the couple/s together.</p> -->
-            <p>If a parent of the kallah has passed away, please specify:</p>
-            <textarea name="deceased2" id="deceased2" cols="30" rows="3" placeholder="..." style="border: .5px solid #ccccccb2; border-radius: 5px; padding: 10px; font-family: Arial, sans-serif; font-size: 14px; margin-top: 5px;"></textarea>
+  <!-- mailing list result toast -->
+  <div id="cfToast" style="display:none; position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200;
+       background:#383c36; color:#f4f3ee; border-radius:12px; padding:13px 20px; font-family:var(--sans); font-size:14px; max-width:90vw; text-align:center;"></div>
 
-            <!-- <input type="text" placeholder="Input Field 1"> -->
-            <!-- <input type="text" placeholder="Input Field 2"> -->
-            <button class="submitComment" onclick="submitDeceasedModal2()">Submit</button>
-        </div>
-    </div>
-
-    <style>
-        .myModal {
-            z-index: 123456789;
-        }
-        .addParent{
-            /* transition:cubic-bezier(1, 0, 0, 1) 200ms; */
-        }
-        .addParent:hover {
-            cursor: pointer !important;
-            color: rgba(61, 58, 58, 0.756) !important;
-        }
-        .addParent:hover .fa-angle-down, .addParent:hover .fa-comment-alt {
-            color: rgba(61, 58, 58, 0.756) !important;
-        }
-
-
-        /* Styles for the modal content */
-        .myModal1 {
-            display: none;
-        }
-        .myModal2 {
-            display: none;
-        }
-        .modal {
-            background: #fffffffc !important;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            /* padding: 20px; */
-            text-align: center;
-            height: 175px !important;
-            width: 300px !important;
-
-            /* position: absolute; */
-            top: 44% !important;
-            left: 20% !important;
-            transform: translateX(100%) !important;
-        }
-        @media screen and (max-width: 980px) {
-            .modal {
-                left: -60% !important;
-                right: 80% !important;
-                top: 30% !important;
-            }
-            
-        }
-
-        /* Styles for the paragraph */
-        .modal p {
-            font-size: 16px;
-            color: rgba(0, 0, 0, 0.598);
-            line-height: normal;
-        }
-
-        /* Styles for input fields */
-        .modal input {
-            /* display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px; */
-            /* width: 100%; */
-            padding: 10px 5px;
-            margin: 5px 0;
-            border: 0;
-            border-bottom: 1px solid #999;
-            outline: none;
-            background: transparent;
-        }
-        .modall input::placeholder {
-    color: #999; /* Adjust the color to your preference */
-}
-
-        /* Close button style */
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
-
-        #myModal button {
-    background: #4c4d4f;
-    color: #fff; /* Text color */
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    margin-top: 5px; /* Adjust the margin as needed */
-}
-#myModal button:hover {
-    background: #666; /* Darken the button on hover */
-}
-
-
-
-
-.divorced {
-    display: none;
-}
-.divorced2 {
-    display: none;
-}
-.rotate180 {
-    transform: rotate(180deg);
-    transition: transform 0.3s; /* Add a transition for a smooth animation */
-}
-
-/* change placeholders when divorced button is clicked */
-.swapField {
-    display: none;
-}
-
-
-
-    </style>
-
-    <style>
-        .subscribeEmail::placeholder {
-    color: rgba(255, 255, 255, 0.574);
-    opacity: 1; /* Firefox */
-
-        }
-
-    .placeholder6 {
-    top: 224px !important;
-    left: 88px;
-}
-input:focus + .placeholder6, input:not(:placeholder-shown) + .placeholder6 {
-    top: 202px !important;
-    left: 77px;
-    color: #84aa6d !important;
-    transform: scale(.8);
-}
-.placeholder7 {
-    top: 270px !important;
-    left: 88px;
-}
-input:focus + .placeholder7, input:not(:placeholder-shown) + .placeholder7 {
-    top: 250px !important;
-    left: 74px;
-    color: #84aa6d !important;
-    transform: scale(.8);
-}
-
-    </style>
-
-    <script>
-          // JavaScript functions to open and close the parent modals
-  function openDeceasedModal() {
-    console.log("open")
-    let parentModal1 = document.querySelector(".myModal1");
-    parentModal1.style.display = "block";
-    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
-}
-
-//deceased modal functions
-function closeDeceasedModal() {
-    document.querySelector(".myModal1").style.display = "none";
-    document.querySelector("#deceased").value = ""
-}
-
-function submitDeceasedModal() {
-    document.querySelector(".myModal1").style.display = "none";
-}
-
-function openDeceasedModal2() {
-    console.log("open")
-    let parentModal2 = document.querySelector(".myModal2");
-    parentModal2.style.display = "block";
-    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
-}
-
-//deceased modal functions
-function closeDeceasedModal2() {
-    document.querySelector(".myModal2").style.display = "none";
-    document.querySelector("#deceased2").value = ""
-}
-
-function submitDeceasedModal2() {
-    document.querySelector(".myModal2").style.display = "none";
-}
-
-//divorced fields functions
-// function openDivorcedFields() {
-//     document.querySelector(".divorced").style.display = "block";
-//     document.querySelector(".formPopup").style.height = "550px"; //moved up 100px
-//     document.querySelector(".divorcedButton").style.top = "355px"; //moved up 200px
-//     document.querySelector(".deseasedButton").style.top = "355px"; //moved up 200px
-// }
-let divorced = false
-let divorced2 = false
-
-const divorcedElements = document.querySelectorAll(".divorced");
-const formPopup = document.querySelector(".formPopup");
-const divorcedButton = document.querySelector(".divorcedButton");
-const deseasedButton = document.querySelector(".deseasedButton");
-
-
-
-function openDivorcedFields() {
-
-
-//swap divorced fields
-const divorcedField = document.querySelector(".divorcedField");
-const nonDivorcedField = document.querySelector(".nonDivorcedField");
-divorcedField.classList.toggle("swapField");
-nonDivorcedField.classList.toggle("swapField");
-
-// Rotate the arrow
-const arrow = document.querySelector(".angle1");
-arrow.classList.toggle("rotate180");
-
-// Check if the elements are currently displayed (visible)
-const isDisplayed = divorcedElements[0].style.display === "block";
-
-if (isDisplayed) {
-// Elements are currently displayed, so hide them
-
-divorced = false
-
-for (const element of divorcedElements) {
-    element.style.display = "none";
-}
-formPopup.style.height = "450px"; // Adjustd the height accordingly
-divorcedButton.style.top = "260px"; // Adjust the top position accordingly
-deseasedButton.style.top = "260px"; // Adjust the top position accordingly
-} else {
-// Elements are currently hidden, so show them
-
-divorced = true
-
-for (const element of divorcedElements) {
-    element.style.display = "block";
-}
-formPopup.style.height = "550px"; // Adjust the height accordingly
-divorcedButton.style.top = "355px"; // Adjust the top position accordingly
-deseasedButton.style.top = "355px"; // Adjust the top position accordingly
-}
-}
-
-
-const divorcedButton2 = document.querySelector(".divorcedButton2");
-const deseasedButton2 = document.querySelector(".deseasedButton2");
-
-const divorcedElements2 = document.querySelectorAll(".divorced2");
-
-function openDivorcedFields2() {
-
-
-    //swap divorced fields
-    const divorcedField2 = document.querySelector(".divorcedField2");
-    const nonDivorcedField2 = document.querySelector(".nonDivorcedField2");
-    divorcedField2.classList.toggle("swapField");
-    nonDivorcedField2.classList.toggle("swapField");
-    
-    // Rotate the arrow
-    const arrow2 = document.querySelector(".angle2");
-    arrow2.classList.toggle("rotate180");
-    
-    // Check if the elements are currently displayed (visible)
-    const isDisplayed = divorcedElements2[0].style.display === "block";
-    
-    if (isDisplayed) {
-    // Elements are currently displayed, so hide them
-    
-    divorced2 = false
-    
-    for (const element of divorcedElements2) {
-        element.style.display = "none";
-    }
-    formPopup.style.height = "450px"; // Adjustd the height accordingly
-    divorcedButton2.style.top = "260px"; // Adjust the top position accordingly
-    deseasedButton2.style.top = "260px"; // Adjust the top position accordingly
-    } else {
-    // Elements are currently hidden, so show them
-    
-    divorced2 = true
-    
-    for (const element of divorcedElements2) {
-        element.style.display = "block";
-    }
-    formPopup.style.height = "550px"; // Adjust the height accordingly
-    divorcedButton2.style.top = "355px"; // Adjust the top position accordingly
-    deseasedButton2.style.top = "355px"; // Adjust the top position accordingly
-    }
-    }
-
-
-function closeParentModal1() {
-    document.querySelector(".myModal1").style.display = "none";
-    document.querySelector("#addParentChossonFatherTitle").value = "Title"
-    document.querySelector("#addParentChossonFatherName").value = ""
-    document.querySelector("#addParentChossonMotherTitle").value = "Title"
-    document.querySelector("#addParentChossonMotherName").value = ""
-
-}
-function submitParentModal1() {
-    document.querySelector(".myModal1").style.display = "none";
-}
-
-function openParentModal2() {
-    console.log("open")
-    let parentModal2 = document.querySelector(".myModal2");
-    parentModal2.style.display = "block";
-    // parentModalModal.style.left = "calc(100% + 20px)"; // Adjust the distance from the button
-}
-
-function closeParentModal2() {
-    document.querySelector(".myModal2").style.display = "none";
-    document.querySelector("#addParentKallahFatherTitle").value = "Title"
-    document.querySelector("#addParentKallahFatherName").value = ""
-    document.querySelector("#addParentKallahMotherTitle").value = "Title"
-    document.querySelector("#addParentKallahMotherName").value = ""
-}
-function closeParentModal2() {
-    document.querySelector(".myModal2").style.display = "none";
-}
-
-
-
-//form validaiton for couple submission variables
-const name = document.querySelector("#name")
-const email = document.querySelector("#email")
-const phoneNumber = document.querySelector("#phoneNumber")
-const address = document.querySelector("#address")
-const chossonName = document.querySelector("#chossonName")
-
-const chossonFatherTitle = document.querySelector("#chossonFatherTitle")
-const chossonFatherName = document.querySelector("#chossonFatherName")
-const chossonMotherTitle = document.querySelector("#chossonMotherTitle")
-const chossonMotherName = document.querySelector("#chossonMotherName")
-const chossonOrigin = document.querySelector("#chossonOrigin")
-const kallahName = document.querySelector("#kallahName")
-const kallahFatherTitle = document.querySelector("#kallahFatherTitle")
-const kallahFatherName = document.querySelector("#kallahFatherName")
-const kallahMotherTitle = document.querySelector("#kallahMotherTitle")
-const kallahMotherName = document.querySelector("#kallahMotherName")
-
-const chossonMotherDivorcedTitle = document.querySelector("#chossonMotherDivorcedTitle")
-const chossonMotherDivorcedName = document.querySelector("#chossonMotherDivorcedName")
-const chossonMotherHusbandTitle = document.querySelector("#chossonMotherHusbandTitle")
-const chossonMotherHusbandName = document.querySelector("#chossonMotherHusbandName")
-const kallahMotherDivorcedTitle = document.querySelector("#kallahMotherDivorcedTitle")
-const kallahMotherDivorcedName = document.querySelector("#kallahMotherDivorcedName")
-const kallahMotherHusbandTitle = document.querySelector("#kallahMotherHusbandTitle")
-const kallahMotherHusbandName = document.querySelector("#kallahMotherHusbandName")
-
-// const addParentChossonFatherTitle = document.querySelector("#addParentChossonFatherTitle")
-// const addParentChossonFatherName = document.querySelector("#addParentChossonFatherName")
-// const addParentChossonMotherTitle = document.querySelector("#addParentChossonMotherTitle")
-// const addParentChossonMotherName = document.querySelector("#addParentChossonMotherName")
-// const addParentKallahFatherTitle = document.querySelector("#addParentKallahFatherTitle")
-// const addParentKallahFatherName = document.querySelector("#addParentKallahFatherName")
-// const addParentKallahMotherTitle = document.querySelector("#addParentKallahMotherTitle")
-// const addParentKallahMotherName = document.querySelector("#addParentKallahMotherName")
-const kallahOrigin = document.querySelector("#kallahOrigin")
-const weddingDate = document.querySelector("#weddingDate")
-const personalShoppers = document.querySelector("#personalShoppers")
-const chesedPackage = document.querySelector("#chesedPackage")
-
-console.log('hi')
-
-const Form1 = document.querySelector("#Form1")
-const Form2 = document.querySelector("#Form2")
-const Form3 = document.querySelector("#Form3")
-const Form = document.querySelector("#Form")
-
-const Next1 = document.querySelector("#Next1")
-const Next2 = document.querySelector("#Next2")
-const Back1 = document.querySelector("#Back1")
-const Back2 = document.querySelector("#Back2")
-const Next = document.querySelector("#Next")
-const Back = document.querySelector("#Back")
-
-const progress = document.querySelector("#progress")
-
-Next.onclick = function() {
-    
-    if(name.value == "") {
-        showErrorModal("Please enter your name");
-    }
-    else if(phoneNumber.value == "") {
-        showErrorModal("Please enter your phone number");
-    }
-    else if(email.value == "") {
-        showErrorModal("Please enter your email");
-    }
-    else if(address.value == "") {
-        showErrorModal("Please enter your address");
-    }
-    else if(name.value !== "" && email.value !== "" && phoneNumber.value !== "" && address.value !== "") {
-
-        if(divorced) {
-            formPopup.style.height = "550px"; // Adjust the height accordingly
-            divorcedButton.style.top = "355px"; // Adjust the top position accordingly
-            deseasedButton.style.top = "355px"; // Adjust the top position accordingly
-        }
-
-        Form.style.left = "-450px";
-        Form1.style.left = "40px";
-        progress.style.width = "210px";
-    }
-}
-
-Next1.onclick = function() {
-
-    if(chossonName.value == "") {
-        showErrorModal("Please enter the Chosson's name")
-    }
-    
-    else if(chossonFatherTitle.value === "" || chossonFatherTitle.value === "Title" || chossonFatherName.value === "") {
-        showErrorModal("Please enter the Chosson's father's full name")
-    }
-
-
-    else if(divorced === false && (chossonMotherTitle.value === "" || chossonMotherTitle.value === "Title" || chossonMotherName.value === "")) {
-        // if(chossonMotherDivorcedTitle.value === "" || chossonMotherDivorcedTitle.value === "Title" || chossonMotherDivorcedName.value === "") {
-        showErrorModal("Please enter the Chosson's mother's full name")
-        // }
-        // else if (chossonName.value !== "" && chossonOrigin.value !== ""){
-        //     Form1.style.left = "-450px";
-        //     Form2.style.left = "40px";
-        //     progress.style.width = "325px";
-        // }
-    }
-    else if(divorced === true && (chossonMotherDivorcedTitle.value === "" || chossonMotherDivorcedTitle.value === "Title" || chossonMotherDivorcedName.value === "")) {
-        showErrorModal("Please enter the Chosson's mother's full name")
-    }
-    else if(chossonOrigin.value !== "detroit" && chossonOrigin.value !== "other") {
-        showErrorModal("Please enter where the chosson is from")
-    }
-
-    //check if any of the optional fields have titles are selected without names, or vice versa
-    else if(divorced && ((chossonMotherTitle.value !== "" && chossonMotherTitle.value !== "Title") && chossonMotherName.value === "") || ((chossonMotherTitle.value === "" || chossonMotherTitle.value === "Title") && chossonMotherName.value !== "")) {
-        showErrorModal("Please complete the Chosson's father's wife's full name and title")
-    }
-    else if(((chossonMotherHusbandTitle.value !== "" && chossonMotherHusbandTitle.value !== "Title") && chossonMotherHusbandName.value === "") || ((chossonMotherHusbandTitle.value === "" || chossonMotherHusbandTitle.value === "Title") && chossonMotherHusbandName.value !== "")) {
-        showErrorModal("Please complete the Chosson's mother's husband's full name and title")
-    }
-
-    else if(chossonName.value !== "" && chossonOrigin.value !== "") {
-        
-
-        if(divorced2 === false) {
-            formPopup.style.height = "450px"; // Adjustd the height accordingly
-            divorcedButton.style.top = "260px"; // Adjust the top position accordingly
-            deseasedButton.style.top = "260px"; // Adjust the top position accordingly
-        }
-        else {
-            formPopup.style.height = "550px"; // Adjust the height accordingly
-            divorcedButton.style.top = "355px"; // Adjust the top position accordingly
-            deseasedButton.style.top = "355px"; // Adjust the top position accordingly
-        }
-        
-    
-    Form1.style.left = "-450px";
-    Form2.style.left = "40px";
-    progress.style.width = "325px";
-    }
-}
-
-Back.onclick = function () {
-    
-    formPopup.style.height = "450px"; // Adjustd the height accordingly
-    
-
-    Form.style.left = "40px";
-    Form1.style.left = "450px";
-    progress.style.width = "100px";
-}
-
-Back1.onclick = function() {
-
-    if(divorced) {
-        formPopup.style.height = "550px"; // Adjust the height accordingly
-        divorcedButton.style.top = "355px"; // Adjust the top position accordingly
-        deseasedButton.style.top = "355px"; // Adjust the top position accordingly
-    }
-    else {
-        formPopup.style.height = "450px"; // Adjustd the height accordingly
-        divorcedButton.style.top = "260px"; // Adjust the top position accordingly
-        deseasedButton.style.top = "260px"; // Adjust the top position accordingly
-    }
-
-    Form1.style.left = "40px";
-    Form2.style.left = "450px";
-    progress.style.width = "210px";
-}
-
-Next2.onclick = function() {
-
-    // if(kallahName.value == "") {
-    //     showErrorModal("Please enter the Kallah's name")
-    // }
-    // else if(kallahFatherTitle.value === "" || kallahFatherTitle.value === "Title" || kallahFather.value === "") {
-    //     if(addParentKallahFatherTitle.value === "" || addParentKallahFatherTitle.value === "Title" || addParentKallahFatherName.value === "") {
-    //     showErrorModal("Please enter the Kallah's father's full name")
-    //     }
-    // }
-    // else if(kallahMotherTitle.value === "" || kallahMotherTitle.value === "Title" || kallahMother.value === "") {
-    //     if(addParentKallahMotherTitle.value === "" || addParentKallahMotherTitle.value === "Title" || addParentKallahMotherName.value === "") {
-    //     showErrorModal("Please enter the Kallah's mother's full name")
-    //     }
-    // }
-    // else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
-    //     showErrorModal("Please enter where the kallah is from")
-    // }
-    // else if(kallahName.value !== "" && kallahOrigin.value !== "") {
-
-
-
-
-        if(kallahName.value == "") {
-            showErrorModal("Please enter the Kallah's name")
-        }
-        
-        else if(kallahFatherTitle.value === "" || kallahFatherTitle.value === "Title" || kallahFatherName.value === "") {
-            showErrorModal("Please enter the kallah's father's full name")
-        }
-    
-    
-        else if(divorced2 === false && (kallahMotherTitle.value === "" || kallahMotherTitle.value === "Title" || kallahMotherName.value === "")) {
-            // if(kallahMotherDivorcedTitle.value === "" || kallahMotherDivorcedTitle.value === "Title" || kallahMotherDivorcedName.value === "") {
-            showErrorModal("Please enter the kallah's mother's full name")
-            // }
-            // else if (kallahName.value !== "" && kallahOrigin.value !== ""){
-            //     Form1.style.left = "-450px";
-            //     Form2.style.left = "40px";
-            //     progress.style.width = "325px";
-            // }
-        }
-        else if(divorced2 === true && (kallahMotherDivorcedTitle.value === "" || kallahMotherDivorcedTitle.value === "Title" || kallahMotherDivorcedName.value === "")) {
-            showErrorModal("Please enter the kallah's mother's full name")
-        }
-        else if(kallahOrigin.value !== "detroit" && kallahOrigin.value !== "other") {
-            showErrorModal("Please enter where the kallah is from")
-        }
-
-        //check if any of the optional fields have titles are selected without names, or vice versa
-        else if(divorced2 && ((kallahMotherTitle.value !== "" && kallahMotherTitle.value !== "Title") && kallahMotherName.value === "") || ((kallahMotherTitle.value === "" || kallahMotherTitle.value === "Title") && kallahMotherName.value !== "")) {
-            showErrorModal("Please complete the kallah's father's wife's full name and title")
-        }
-        else if(((kallahMotherHusbandTitle.value !== "" && kallahMotherHusbandTitle.value !== "Title") && kallahMotherHusbandName.value === "") || ((kallahMotherHusbandTitle.value === "" || kallahMotherHusbandTitle.value === "Title") && kallahMotherHusbandName.value !== "")) {
-            showErrorModal("Please complete the kallah's mother's husband's full name and title")
-        }
-    
-        else if(kallahName.value !== "" && kallahOrigin.value !== "") {
-            
-    
-                formPopup.style.height = "450px"; // Adjustd the height accordingly
-                divorcedButton.style.top = "260px"; // Adjust the top position accordingly
-                deseasedButton.style.top = "260px"; // Adjust the top position accordingly
-           
-
-
-
-
-
-    Form2.style.left = "-450px";
-    Form3.style.left = "40px";
-    progress.style.width = "450px";
-    }
-}
-
-Back2.onclick = function() {
-
-    if(divorced2) {
-        formPopup.style.height = "550px"; // Adjust the height accordingly
-        divorcedButton.style.top = "355px"; // Adjust the top position accordingly
-        deseasedButton.style.top = "355px"; // Adjust the top position accordingly
-    }
-    else {
-        formPopup.style.height = "450px"; // Adjustd the height accordingly
-        divorcedButton.style.top = "260px"; // Adjust the top position accordingly
-        deseasedButton.style.top = "260px"; // Adjust the top position accordingly
-    }
-
-    Form2.style.left = "40px";
-    Form3.style.left = "450px";
-    progress.style.width = "325px";
-}
-
-
-document.querySelector('.input-selector').addEventListener('click',()=>{
-document.querySelector('.list').classList.toggle('show')
-})
-document.querySelector('.close-btn').addEventListener('click',()=>{
-    document.querySelector('.list').classList.remove('show')
-    })
-
-
-
-
-document.querySelector("#showForm").addEventListener("click", function() {
-    console.log("clicked")
-    document.querySelector(".formPopup").classList.add("active")
-    document.querySelector(".overlay").classList.add("overlayActive")
-})
-document.querySelector(".overlay").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-})
-document.querySelector("#close-btn").addEventListener("click", function() {
-    document.querySelector(".formPopup").classList.remove("active")
-    document.querySelector(".overlay").classList.remove("overlayActive")
-})
-
-
-
-
-// Function to display error modal
-function showErrorModal(message) {
-    const errorModal = document.createElement("div");
-    errorModal.classList.add("error-modal");
-  
-    const errorIcon = document.createElement("div");
-    errorIcon.innerHTML = '<i class="fas fa-circle-xmark"></i>';
-    errorIcon.classList.add("error-icon");
-  
-    const errorMessage = document.createElement("div");
-    errorMessage.textContent = message;
-    errorMessage.classList.add("error-description");
-  
-    const dismissButton = document.createElement("button");
-    dismissButton.textContent = "Dismiss";
-    dismissButton.classList.add("dismiss-button");
-    // dismissButton.setAttribute("aria-label", "Dismiss error");
-  
-    errorModal.appendChild(errorIcon);
-    errorModal.appendChild(errorMessage);
-    errorModal.appendChild(dismissButton);
-  
-    document.body.appendChild(errorModal);
-  
-    // Show modal
-    setTimeout(() => {
-      errorModal.classList.add("active");
-    }, 100);
-  
-    // Hide modal
-    dismissButton.addEventListener("click", () => {
-      errorModal.classList.remove("active");
-  
-      setTimeout(() => {
-        document.body.removeChild(errorModal);
-      }, 300);
-    });
-  }
-  
-  
-
-    </script>
-
-    
 
   <!-- ===== FOOTER ===== -->
   <div class="n-footer">
@@ -1372,925 +420,105 @@ function showErrorModal(message) {
 
 </div>
 
-<script>
-  function openCoupleForm() {
-    document.querySelector('.formPopup').classList.add('active')
-    document.querySelector('.overlay').classList.add('overlayActive')
-  }
-  function openPDF() {
-    window.open('../assets/images/shoppingGuide.pdf', '_blank')
-  }
 </script>
 
 
-    <!-- <footer class="primary-footer">
-        <span>&copy; Detroit Bridal Shower</span>
-    </footer>
-     -->
+    <script>
+  function openPDF() { window.open('../assets/images/shoppingGuide.pdf', '_blank') }
+  function openCoupleForm() { document.getElementById('cfOverlay').classList.add('show') }
+  function closeCoupleForm() { document.getElementById('cfOverlay').classList.remove('show') }
+  document.getElementById('showForm').addEventListener('click', openCoupleForm)
+  document.getElementById('cfOverlay').addEventListener('mousedown', function(e) { if (e.target === e.currentTarget) closeCoupleForm() })
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeCoupleForm() })
+  window.__formLoadedAt = String(Date.now())
 
-
-     <!-- popup modal -->
-     <div class="popupModal center successPopup">
-        <div class="iconCheck">
-            <i class="fa-solid fa-check"></i>
-        </div>
-        <div class="title">
-            
-        </div><br>
-        <div class="description">
-            
-        </div><br>
-        <div class="dismissButton dismiss-btn">
-            <button id="dismiss-popup-btn">
-                Dismiss
-            </button>
-        </div>
-     </div>
-
-     <!-- error Popup -->
-     <div class="popupModalFalse center errorPopup">
-        <div class="iconCheckFalse">
-            <i class="fa-solid fa-circle-xmark"></i>
-        </div>
-        <div class="title">
-            Error
-        </div>
-        <div class="description">
-            Your submission was unsuccessful.
-        </div>
-        <div class="dismiss-btnFalse">
-            <button id="dismiss-popup-btnFalse">
-                Dismiss
-            </button>
-        </div>
-     </div>
-
-
-     <!-- missing fields popup modal -->
-     <div class="popupModalFalse center missingFieldsPopup">
-        <div class="iconCheckFalse">
-            <i class="fa-solid fa-circle-xmark"></i>
-        </div>
-        <div class="title">
-            Error
-        </div>
-        <div class="description">
-            You are missing required fields.
-        </div>
-        <div class="dismiss-btnFalse">
-            <button id="dismiss-popup-btnFalse">
-                retry
-            </button>
-        </div>
-     </div>
-
-     <!-- style for popup modal -->
-     <style>
-
-        .center {
-            font-family: "source sans pro";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .popupModal {
-            position: fixed;
-            width: 350px;
-            height: 280px;
-            padding: 30px 20px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            box-sizing: border-box;
-            z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
-            text-align: center;
-            opacity: 0;
-            top: -200%;
-            transform: translate(-50%, -50%) scale(0.5);
-            transition: opacity 300ms ease-in-out,
-                        top 1000ms ease-in-out,
-                        transform 1000ms ease-in-out;
-
-        }
-        .popupModal.active {
-            opacity: 1;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19)
-        }
-        .popupModal .iconCheck {
-            margin: 5px 0px;
-            width: 50px;
-            height: 50px;
-            border: 2px solid #34f234;
-            text-align: center;
-            display: inline-block;
-            border-radius: 50%;
-            line-height: 60px;
-        }
-        .popupModal .iconCheck i {
-            font-size: 30px;
-        }
-        .popupModal .iconCheck .fa-check {
-            color: #34f234;
-        }
-        .popupModal .title {
-            margin: 5px 0px;
-            font-size: 30px;
-            font-weight: 600;
-        }
-        .popupModal .description {
-            color: #222;
-            font-size: 15px;
-            padding: 5px;
-        }
-        .popupModal .dismiss-btn {
-            margin-top: 15px;
-        }
-        .popupModal .dismiss-btn button {
-            padding: 10px 20px;
-            background: #34f234;
-            color: #f5f5f5;
-            border: 2px solid #34f234;
-            font-size: 16px;
-            font-weight: 600;
-            outline: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 300ms ease-in-out;
-        }
-        .popupModal .dismiss-btn button:hover {
-            color:rgb(5, 202, 5);
-            background:rgba(255, 255, 255, 0.804);
-        }
-
-        /* error popup */
-
-        .popupModalFalse {
-            position: fixed;
-            width: 350px;
-            height: 280px;
-            padding: 30px 20px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            box-sizing: border-box;
-            z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
-            text-align: center;
-            opacity: 0;
-            top: -200%;
-            transform: translate(-50%, -50%) scale(0.5);
-            transition: opacity 300ms ease-in-out,
-                        top 1000ms ease-in-out,
-                        transform 1000ms ease-in-out;
-
-        }
-        .popupModalFalse.active {
-            opacity: 1;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1);
-            transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
-        }
-        .popupModalFalse .iconCheckFalse {
-            margin: 5px 0px;
-            width: 50px;
-            height: 50px;
-            /* border: 2px solid #34f234; */
-            text-align: center;
-            display: inline-block;
-            border-radius: 50%;
-            line-height: 60px;
-        }
-        .popupModal .iconCheckFalse i {
-            font-size: 30px;
-            color: red;
-        }
-        .popupModalFalse .title {
-            margin: 5px 0px;
-            font-size: 30px;
-            font-weight: 600;
-        }
-        .popupModalFalse .description {
-            color: #222;
-            font-size: 15px;
-            padding: 5px;
-        }
-        .popupModalFalse .dismiss-btnFalse {
-            margin-top: 15px;
-        }
-        .popupModal .dismiss-btnFalse button {
-            padding: 10px 20px;
-            background: red;
-            color: #f5f5f5;
-            border: 2px solid red;
-            font-size: 16px;
-            font-weight: 600;
-            outline: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 300ms ease-in-out;
-        }
-        .popupModal .dismiss-btnFalse button:hover {
-            color: red;
-            background:rgba(255, 255, 255, 0.804);
-        }
-
-
-
-        /* form validation client side*/
-  
-        .error-modal {
-  font-family: "source sans pro";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
-  opacity: 0;
-  width: 350px;
-  height: 230px;
-  padding: 30px 20px;
-  background: #f5f5f5;
-  border-radius: 10px;
-  box-sizing: border-box;
-  z-index: 222222222222222222222222222222222222222222222222222222222222222222222222222222222222222;
-  text-align: center;
-  transition: opacity 300ms ease-in-out,
-              top 1000ms ease-in-out,
-              transform 1000ms ease-in-out;
-    border: solid red 1px;
-}
-
-.error-modal.active {
-  opacity: 1;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  transition: transform 300ms cubic-bezier(0.18,0.89,0.43,1.19);
-}
-
-.error-icon {
-  margin: 5px 0px;
-  width: 50px;
-  height: 50px;
-  /* border: 2px solid #34f234; */
-  text-align: center;
-  display: inline-block;
-  border-radius: 50%;
-  line-height: 60px;
-}
-
-.error-icon i {
-  font-size: 30px;
-}
-
-.error-icon .fa-circle-xmark
- {
-  color: red;
-}
-
-.error-message {
-  margin: 5px 0px;
-  font-size: 30px;
-  font-weight: 600;
-}
-
-.error-description {
-  color: #222;
-  font-size: 15px;
-  padding: 5px;
-}
-
-.dismiss-button {
-  margin-top: 15px;
-}
-
-.dismiss-button {
-  padding: 8px 16px;
-  background: red;
-  color: #f5f5f5;
-  border: 2px solid red;
-  font-size: 16px;
-  font-weight: 600;
-  outline: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 300ms ease-in-out;
-}
-
-.dismiss-button:hover {
-  color: red;
-  background: #f5f5f5;
-}
-
-
-     </style>
-
-
-
-
-
-
-     <style>
-        /* Style for the overlay */
-.overlayy {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-}
-
-/* Style for the modal */
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.804);
-  border-radius: 10px;
-  padding: 20px;
-  z-index: 2;
-  width: 500px;
-  height: 250px;
-  font-family: 'source sans pro';
-  font-size: 20px;
-}
-.flexer i {
-    color: rgb(5, 202, 5);
-    font-size: 50px;
-    /* margin-right: 20px; */
-}
-.flexer .fa-circle-xmark {
-    color: rgb(0, 5, 71);
-    font-size: 25px;
-    position: absolute; 
-    top: 10px;
-    right: 5px;
-}
-
-/* Style for the modal content */
-.modal-content {
-  text-align: center;
-}
-
-.flexer {
-    display: flex;
-    justify-content: space-evenly;
-}
-     </style>
-
-     <script>
-
-        //control modal script
-        function fillInModal(title, message, color) {
-            const iconFill = document.querySelector(".popupModal .iconCheck .fa-solid")
-            const titleFill = document.querySelector(".title")
-            const messageFill = document.querySelector(".description")
-            titleFill.innerText = title
-            messageFill.innerText = message 
-            if(color === true) {
-                iconFill.style.color = "rgb(5, 202, 5)"
-                iconFill.classList.remove("fa-circle-xmark")
-                iconFill.classList.add("fa-check")
-                document.querySelector(".iconCheck").style.border = "2px solid rgb(5, 202, 5)"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btnFalse")
-                document.querySelector(".dismissButton").classList.add("dismiss-btn")
-            }
-            else {
-                iconFill.style.color = "red"
-                iconFill.classList.remove("fa-check")
-                iconFill.classList.add("fa-circle-xmark")
-                document.querySelector(".iconCheck").style.border = "none"
-                document.querySelector(".dismissButton").classList.remove("dismiss-btn")
-                document.querySelector(".dismissButton").classList.add("dismiss-btnFalse")
-            }
-        }
-        function openModal() {
-            document.querySelector(".popupModal").classList.add("active")
-            document.querySelector("#subscribeEmail").value = ""
-        }
-
-        function clearModal() {
-            document.querySelector("#name").value = ""
-            document.querySelector("#email").value = ""
-            document.querySelector("#phoneNumber").value = ""
-            document.querySelector("#address").value = ""
-            document.querySelector("#chossonName").value = ""
-            document.querySelector("#chossonFatherTitle").value = ""
-            document.querySelector("#chossonFatherName").value = ""
-            document.querySelector("#chossonMotherTitle").value = ""
-            document.querySelector("#chossonMotherName").value = ""
-            document.querySelector("#chossonOrigin").value = "Where is the chosson from?"
-            document.querySelector("#kallahName").value = ""
-            document.querySelector("#kallahFatherTitle").value = ""
-            document.querySelector("#kallahFatherName").value = ""
-            document.querySelector("#kallahMotherTitle").value = ""
-            document.querySelector("#kallahMotherName").value = ""
-            document.querySelector("#kallahOrigin").value = "Where is the kallah from?"
-            document.querySelector("#weddingDate").value = ""
-            document.querySelector("#personalShopper").value = "Personal Shopper?"
-            document.querySelector("#DCPG").value = ""
-        }
-
-
-
-        const subscribeEmail = document.querySelector("#subscribeEmail")
-        // const subscribeEmailFname = document.querySelector(".subscribeEmailFname")
-        // const subscribeEmailLname = document.querySelector(".subscribeEmailLname")
-
-        function handleSubmit() {
-            const emailSubscription = {
-                email: subscribeEmail.value,
-                // first_name: subscribeEmailFname.value,
-                // last_name: subscribeEmailLname.value
-            }
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type' : 'application/json'
-                },
-                body: JSON.stringify(emailSubscription)
-            }
-            fetch('/addEmail', options)
-            .then( async (res) => {
-                let data = await res.json()
-
-                if(data.status === true) {
-                    fillInModal(data.title, data.message, true)
-                    openModal()
-                }
-                else {
-                    fillInModal(data.title, data.message, false)
-                    openModal()
-                }
-            
-                    
-                // }
-
-            })
-
-        }
-    //     const couplesData = [
-    //     {
-    //         chossonName : document.querySelector("#chossonName").value
-    //     },
-    //     {
-    //         chossonFatherTitle : document.querySelector("#chossonFatherTitle").value
-    //     },
-    //     {
-    //         chossonFatherName : document.querySelector("#chossonFatherName").value
-    //     },
-    //     {
-    //         chossonMotherTitle : document.querySelector("#chossonMotherTitle").value
-    //     },
-    //     {
-    //         chossonMotherName : document.querySelector("#chossonMotherName").value
-    //     },
-    //     {
-    //         chossonOrigin : document.querySelector("#chossonOrigin").value
-    //     },
-    //     {
-    //         kallahName : document.querySelector("#kallahName").value
-    //     },
-    //     {
-    //         kallahFatherTitle : document.querySelector("#kallahFatherTitle").value
-    //     },
-    //     {
-    //         kallahFatherName : document.querySelector("#kallahFatherName").value
-    //     },
-    //     {
-    //         kallahMotherTitle : document.querySelector("#kallahMotherTitle").value
-    //     },
-    //     {
-    //         kallahMotherName : document.querySelector("#kallahMotherName").value
-    //     },
-    //     {
-    //         kallahOrigin : document.querySelector("#kallahOrigin").value
-    //     },
-    //     {
-    //         address : document.querySelector("#address").value
-    //     },
-    //     {
-    //         weddingDate : document.querySelector("#weddingDate").value
-    //     },
-    //     {
-    //         email : document.querySelector("#email").value
-    //     }
-    // ]
-
-        // function coupleSubmit() {
-        //     const options = {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type' : 'application/json'
-        //         },
-        //         body: JSON.stringify(couplesData)
-        //     }
-        //     fetch('/addEntry', options)
-        //     .then( async (res) => {
-        //         let data = await res.json()
-
-        //         if(data.status === true) {
-        //             document.getElementsByClassName("popupModal")
-        //             [0].classList.add("active")
-        //         }
-        //         else {
-        //             document.getElementsByClassName("popupModalFalse")
-        //             [0].classList.add("active")
-        //         }
-            
-                    
-        //         // }
-
-        //     })
-        // }
-
-        // const coupleForm = document.querySelector("#couplesForm")
-        // coupleForm.addEventListener('submit', function(e) {
-        //     e.preventDefault()
-
-        //     const payload = new FormData(coupleForm)
-        //     console.log([...payload])
-
-        //     fetch('/addEntry', {
-        //         method: "POST",
-        //         body: payload,
-        //         headers: {
-        //             'Content-Type' : 'application/json'
-        //         }
-        //     })
-        //     .then(res => res.json())
-        //     .then(data => console.log(data))
-        //     .catch(err => console.log(err))
-        // })
-
-
-        
-
-
-
-
-
-async function addCouple() {
-  const loadingMessage = document.getElementById('loading-message');
-  loadingMessage.style.display = 'block';
-
-  const coupleObject = {
-    name: document.querySelector("#name").value,
-    phoneNumber: document.querySelector("#phoneNumber").value,
-    email: document.querySelector("#email").value,
-    address: document.querySelector("#address").value,
-    chossonName: document.querySelector("#chossonName").value,
-    chossonFatherTitle: document.querySelector("#chossonFatherTitle").value,
-    chossonFatherName: document.querySelector("#chossonFatherName").value,
-    chossonMotherTitle: document.querySelector("#chossonMotherTitle").value,
-    chossonMotherName: document.querySelector("#chossonMotherName").value,
-    chossonOrigin: document.querySelector("#chossonOrigin").value,
-    kallahName: document.querySelector("#kallahName").value,
-    kallahFatherTitle: document.querySelector("#kallahFatherTitle").value,
-    kallahFatherName: document.querySelector("#kallahFatherName").value,
-    kallahMotherTitle: document.querySelector("#kallahMotherTitle").value,
-    kallahMotherName: document.querySelector("#kallahMotherName").value,
-    kallahOrigin: document.querySelector("#kallahOrigin").value,
-    chossonMotherDivorcedTitle: document.querySelector("#chossonMotherDivorcedTitle").value,
-    chossonMotherDivorcedName: document.querySelector("#chossonMotherDivorcedName").value,
-    chossonMotherHusbandTitle: document.querySelector("#chossonMotherHusbandTitle").value,
-    chossonMotherHusbandName: document.querySelector("#chossonMotherHusbandName").value,
-    kallahMotherDivorcedTitle: document.querySelector("#kallahMotherDivorcedTitle").value,
-    kallahMotherDivorcedName: document.querySelector("#kallahMotherDivorcedName").value,
-    kallahMotherHusbandTitle: document.querySelector("#kallahMotherHusbandTitle").value,
-    kallahMotherHusbandName: document.querySelector("#kallahMotherHusbandName").value,
-    weddingDate: document.querySelector("#weddingDate").value,
-    personalShopper: document.querySelector("#personalShopper").value,
-    toaster: document.querySelector("#task1").checked,
-    urn: document.querySelector("#task2").checked,
-    kitchenTowels: document.querySelector("#task3").checked,
-    vacuum: document.querySelector("#task4").checked,
-    cholentPot: document.querySelector("#task5").checked,
-    chossonDeceased: document.querySelector("#deceased").value,
-    kallahDeceased: document.querySelector("#deceased2").value,
-    website: (document.querySelector("#website") || { value: '' }).value,
-    formToken: window.__formLoadedAt || '',
-    // addParentChossonFatherTitle: document.querySelector("#addParentChossonFatherTitle").value,
-    // addParentChossonFatherName: document.querySelector("#addParentChossonFatherName").value,
-    // addParentChossonMotherTitle: document.querySelector("#addParentChossonMotherTitle").value,
-    // addParentChossonMotherName: document.querySelector("#addParentChossonMotherName").value,
-    // addParentKallahFatherTitle: document.querySelector("#addParentKallahFatherTitle").value,
-    // addParentKallahFatherName: document.querySelector("#addParentKallahFatherName").value,
-    // addParentKallahMotherTitle: document.querySelector("#addParentKallahMotherTitle").value,
-    // addParentKallahMotherName: document.querySelector("#addParentKallahMotherName").value
-
-  };
-
-  const request = new Request('/addEntry', {
-    method: 'POST',
-    body: JSON.stringify(coupleObject),
-    headers: {
-      'Content-Type': 'application/json'
+  function cfToggleDiv(prefix, on) {
+    document.getElementById('cf_' + prefix + 'DivWrap').style.display = on ? '' : 'none'
+    if (!on) {
+      document.getElementById('cf_' + prefix + 'MotherDivorcedName').value = ''
+      document.getElementById('cf_' + prefix + 'MotherHusbandName').value = ''
+      document.getElementById('cf_' + prefix + 'MotherDivorcedTitle').selectedIndex = 0
+      document.getElementById('cf_' + prefix + 'MotherHusbandTitle').selectedIndex = 0
     }
-  });
+  }
+  function cfChesedAll(btn) {
+    var ids = ['cf_toaster', 'cf_urn', 'cf_kitchenTowels', 'cf_vacuum', 'cf_cholentPot']
+    var all = ids.every(function(i) { return document.getElementById(i).checked })
+    ids.forEach(function(i) { document.getElementById(i).checked = !all })
+    btn.textContent = all ? 'Select all' : 'Unselect all'
+  }
+  function cfV(id) { return document.getElementById(id).value }
+  function cfC(id) { return document.getElementById(id).checked }
 
-  try {
-    const response = await fetch(request);
-    const data = await response.json();
-
-    if (data.status === true) {
-      fillInModal(data.title, data.message, true);
-      document.querySelector(".formPopup").classList.remove("active");
-    //   closeParentModal1();
-    //   closeParentModal2();
-      document.querySelector(".overlay").classList.remove("overlayActive");
-      openModal();
-      clearModal();
-    } else {
-      fillInModal(data.title, data.message, false);
-      openModal();
+  async function cfSubmit() {
+    var err = document.getElementById('cfErr')
+    err.style.display = 'none'
+    var required = [['cf_name', 'your name'], ['cf_phone', 'your phone number'], ['cf_email', 'your email'], ['cf_address', 'your address'],
+      ['cf_chossonName', "the chosson's full name"], ['cf_chossonOrigin', 'where the chosson is from'],
+      ['cf_kallahName', "the kallah's full name"], ['cf_kallahOrigin', 'where the kallah is from']]
+    for (var i = 0; i < required.length; i++) {
+      if (!cfV(required[i][0]).trim()) { err.textContent = 'Please enter ' + required[i][1] + '.'; err.style.display = 'block'; return }
     }
-  } catch (err) {
-    console.log(err);
+    var body = {
+      name: cfV('cf_name'), phoneNumber: cfV('cf_phone'), email: cfV('cf_email'), address: cfV('cf_address'),
+      chossonName: cfV('cf_chossonName'), chossonOrigin: cfV('cf_chossonOrigin'),
+      chossonFatherTitle: cfV('cf_chossonFatherTitle'), chossonFatherName: cfV('cf_chossonFatherName'),
+      chossonMotherTitle: cfV('cf_chossonMotherTitle'), chossonMotherName: cfV('cf_chossonMotherName'),
+      chossonMotherDivorcedTitle: cfV('cf_chossonMotherDivorcedTitle'), chossonMotherDivorcedName: cfV('cf_chossonMotherDivorcedName'),
+      chossonMotherHusbandTitle: cfV('cf_chossonMotherHusbandTitle'), chossonMotherHusbandName: cfV('cf_chossonMotherHusbandName'),
+      chossonDeceased: cfV('cf_chossonDeceased'),
+      kallahName: cfV('cf_kallahName'), kallahOrigin: cfV('cf_kallahOrigin'),
+      kallahFatherTitle: cfV('cf_kallahFatherTitle'), kallahFatherName: cfV('cf_kallahFatherName'),
+      kallahMotherTitle: cfV('cf_kallahMotherTitle'), kallahMotherName: cfV('cf_kallahMotherName'),
+      kallahMotherDivorcedTitle: cfV('cf_kallahMotherDivorcedTitle'), kallahMotherDivorcedName: cfV('cf_kallahMotherDivorcedName'),
+      kallahMotherHusbandTitle: cfV('cf_kallahMotherHusbandTitle'), kallahMotherHusbandName: cfV('cf_kallahMotherHusbandName'),
+      kallahDeceased: cfV('cf_kallahDeceased'),
+      weddingDate: cfV('cf_weddingDate'), personalShopper: cfV('cf_personalShopper'),
+      toaster: cfC('cf_toaster'), urn: cfC('cf_urn'), kitchenTowels: cfC('cf_kitchenTowels'),
+      vacuum: cfC('cf_vacuum'), cholentPot: cfC('cf_cholentPot'),
+      website: cfV('website'), formToken: window.__formLoadedAt
+    }
+    var btn = document.getElementById('cfSubmit')
+    btn.disabled = true; btn.textContent = 'Submitting…'
+    try {
+      var res = await fetch('/addEntry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      var data = await res.json()
+      if (data.status === true) {
+        document.getElementById('cfFormWrap').style.display = 'none'
+        document.getElementById('cfDone').style.display = 'block'
+        if (data.message) document.getElementById('cfDoneMsg').textContent = data.message
+      } else {
+        err.textContent = data.message || 'Something went wrong — please try again.'
+        err.style.display = 'block'
+      }
+    } catch (e) {
+      err.textContent = 'Something went wrong — please try again.'
+      err.style.display = 'block'
+    } finally {
+      btn.disabled = false; btn.textContent = 'Submit Couple'
+    }
   }
 
-  loadingMessage.style.display = 'none';
-}
-
-        
-
-        // async function addCouple() {
-        //     const coupleObject = {
-        //     name : document.querySelector("#name").value,
-        //     phoneNumber : document.querySelector("#phoneNumber").value,
-        //     email : document.querySelector("#email").value,
-        //     address : document.querySelector("#address").value,
-        //     chossonName : document.querySelector("#chossonName").value,
-        //     chossonFatherTitle : document.querySelector("#chossonFatherTitle").value,
-        //     chossonFatherName : document.querySelector("#chossonFatherName").value,
-        //     chossonMotherTitle : document.querySelector("#chossonMotherTitle").value,
-        //     chossonMotherName : document.querySelector("#chossonMotherName").value,
-        //     chossonOrigin : document.querySelector("#chossonOrigin").value,
-        //     kallahName : document.querySelector("#kallahName").value,
-        //     kallahFatherTitle : document.querySelector("#kallahFatherTitle").value,
-        //     kallahFatherName : document.querySelector("#kallahFatherName").value,
-        //     kallahMotherTitle : document.querySelector("#kallahMotherTitle").value,
-        //     kallahMotherName : document.querySelector("#kallahMotherName").value,
-        //     kallahOrigin : document.querySelector("#kallahOrigin").value,
-        //     weddingDate : document.querySelector("#weddingDate").value,
-        //     personalShopper : document.querySelector("#personalShopper").value,
-        //     toaster : document.querySelector("#task1").checked,
-        //     urn : document.querySelector("#task2").checked,
-        //     kitchenTowels : document.querySelector("#task3").checked,
-        //     vacuum : document.querySelector("#task4").checked,
-        //     cholentPot : document.querySelector("#task5").checked,
-            
-        // }
-        //     const request = new Request('/addEntry', {
-        //         method: 'POST',
-        //         body: JSON.stringify(coupleObject),
-        //         headers: {
-        //             'Content-Type' : 'application/json'
-        //         }
-        //     })
-        //     const response = await fetch(request)
-        //     .then( async (res) => {
-        //         let data = await res.json()
-
-        //         if(data.status === true) {
-        //             fillInModal(data.title, data.message, true)
-        //             document.querySelector(".formPopup").classList.remove("active")
-        //             document.querySelector(".overlay").classList.remove("overlayActive")
-        //             openModal()
-        //             clearModal()
-        //         }
-        //         else {
-        //             fillInModal(data.title, data.message, false)
-        //             openModal()
-
-        //         }
-        //     })
-        // }
-            
-
-
-        document.getElementById("dismiss-popup-btn").addEventListener("click",function() {
-            document.getElementsByClassName("popupModal")
-            [0].classList.remove("active")
-        })
-        document.getElementById("dismiss-popup-btnFalse").addEventListener("click",function() {
-            document.getElementsByClassName("popupModalFalse")
-            [0].classList.remove("active")
-        })
-        
-
-        // let btn_done = document.querySelector("#submit_btn")
-        // let modal_wrapper = document.querySelector(".modal_wrapper")
-        // let shadow = document.querySelector(".shadow")
-
-        // btn_done.addEventListener("click", function() {
-        // function showMessage() {
-        //     modal_wrapper.classList.add("active")
-        // }
-        // })
-        // shadow.addEventListener("click", function() {
-        //     modal_wrapper.classList.remove("active")
-        // })
-
-        // function handleSubmit(event) {
-        //     event.preventDefault()
-        //     fetch('/addEntry', {
-        //         method: 'POST',
-        //         body: new FormData(event.target)
-        //     })
-        //     .then(response => response.json())
-        //     .then(data => {
-
-        //         const modal_wrapper = document.querySelector(".modal_wrapper")
-        //         const modalMessage = document.querySelector('.modal_wrapper p');
-        //         modalMessage.textContent = data.message;
-        //         modal_wrapper.classList.add("active")
-
-        //         let shadow = document.querySelector(".shadow")
-        //         shadow.addEventListener("click", function() {
-        //         modal_wrapper.classList.remove("active")
-        //         });
-        //     })
-        //     .catch(error => {
-        //         console.error(error)
-        //     })
-        // }
-
-
-        // function handleSubmit() {
-        //     console.log('Inside handleSubmit');
-        //     alert('Inside handleSubmit');
-        //     event.preventDefault();
-
-        //     var email=document.
-        //     fetch('/addEmail', {
-        //         method: 'POST',
-        //         body: new FormData(event.target),
-        //     })
-        //     .then((response) => response.text())
-        //     .then((data)=>console.log(data));
-
-
-            //     .then(data => {
-            // // Show a success message in a modal with a background overlay
-            // const modal = document.createElement('div');
-            // modal.className = 'modal';
-
-            // const modalContent = document.createElement('div');
-            // modalContent.className = 'modal-content';
-
-            // const responseDiv = document.createElement('div');
-            // responseDiv.innerHTML = data;
-
-            // console.log(data)
-
-            // modalContent.appendChild(responseDiv);
-            // modal.appendChild(modalContent);
-
-            // const overlayy = document.createElement('div');
-            // overlayy.className = 'overlayy';
-            // overlayy.addEventListener('click', () => {
-            //     modal.style.display = 'none';
-            // });
-
-            // document.body.appendChild(overlayy);
-            // document.body.appendChild(modal);
-    //          })
-
-    // .catch(error => {
-    //   console.error(error);
-    //     });
-        
-    
-//     alert('Returning from function');
-// return false;
-// }
-
-     </script>
-
-<div id="loading-message" style="display:none;">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Processing...</div>
-  </div>
-
-
-<style>
-    #loading-message {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  z-index: 9999;
-}
-
-.loading-spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  animation: spin 1s linear infinite;
-}
-
-.loading-text {
-  margin-left: 20px;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-</style>
-     <script>
-
-        //display chesed package choices in input field
-        const toaster = document.querySelector("#task1")
-        const urn = document.querySelector("#task2")
-        const kitchenTowel = document.querySelector("#task3")
-        const vacuum = document.querySelector("#task4")
-        const cholentPot = document.querySelector("#task5")
-        const fillIn = document.querySelector("#DCPG")
-
-        toasterChoice = false
-        urnChoice = false
-        kitchenTowelChoice = false
-        vacuumChoice = false
-        cholentPotChoice = false
-
-        toaster.addEventListener("click", function() {
-            if(toasterChoice === false) {
-                fillIn.value += "Toaster  "
-                toasterChoice = true
-            }
-            else {
-                fillIn.value = fillIn.value.replace("Toaster  ", "")
-                toasterChoice = false
-            }
-        })
-        urn.addEventListener("click", function() {
-            if(urnChoice === false) {
-                fillIn.value += "Urn  "
-                urnChoice = true
-            }
-            else {
-                fillIn.value = fillIn.value.replace("Urn  ", "")
-                urnChoice = false
-            }
-        })
-        kitchenTowel.addEventListener("click", function() {
-            if(kitchenTowelChoice === false) {
-                fillIn.value += "Kitchen Towel  "
-                kitchenTowelChoice = true
-            }
-            else {
-                fillIn.value = fillIn.value.replace("Kitchen Towel  ", "")
-                kitchenTowelChoice = false
-            }
-        })
-        vacuum.addEventListener("click", function() {
-            if(vacuumChoice === false) {
-                fillIn.value += "Vacuum  "
-                vacuumChoice = true
-            }
-            else {
-                fillIn.value = fillIn.value.replace("Vacuum  ", "")
-                vacuumChoice = false
-            }
-        })
-        cholentPot.addEventListener("click", function() {
-            if(cholentPotChoice === false) {
-                fillIn.value += "Cholent Pot  "
-                cholentPotChoice = true
-            }
-            else {
-                fillIn.value = fillIn.value.replace("Cholent Pot  ", "")
-                cholentPotChoice = false
-            }
-        })
-
-        
-        
-        
-     </script>
-
-    
-
-    <script src="../assets/js/smoothScroll.js"></script>
-    <script src="../assets/js/formSlide.js"></script>
-    <script src="../assets/js/fade.js"></script>
-    <script src="../assets/js/menu.js"></script>
-    <script src="../assets/js/scroll.js"></script>
+  function cfToastShow(msg) {
+    var t = document.getElementById('cfToast')
+    t.textContent = msg
+    t.style.display = 'block'
+    clearTimeout(window.__cfToastT)
+    window.__cfToastT = setTimeout(function() { t.style.display = 'none' }, 4500)
+  }
+  function handleSubmit() {
+    var input = document.getElementById('subscribeEmail')
+    var em = input.value.trim()
+    if (!em) { cfToastShow('Please enter your email address.'); return }
+    fetch('/addEmail', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
+      .then(async function(res) {
+        var d = await res.json()
+        cfToastShow(d.message || 'Check your inbox to confirm your subscription!')
+        if (d.status === true) input.value = ''
+      })
+      .catch(function() { cfToastShow('Something went wrong — please try again.') })
+  }
+</script>
 
 </body>
 </html>
