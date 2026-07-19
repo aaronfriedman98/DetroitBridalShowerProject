@@ -315,6 +315,10 @@
       font-size: 13px; color: var(--sage-deep); letter-spacing: .03em;
     }
     .chk-row input { width: 15px; height: 15px; accent-color: var(--gold); cursor: pointer; }
+    .chk-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px 12px;
+      border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: #fff;
+    }
 
     .confirm-msg { font-size: 15px; line-height: 1.55; color: var(--ink); padding-top: 4px; }
 
@@ -869,9 +873,48 @@ function coupleFormHTML(c, editable) {
       ${fieldHTML({ key: 'address', label: 'Address' }, c.address, editable)}
       ${fieldHTML({ key: 'personalShopper', label: 'Personal shopper', type: 'select', optional: true, options: [{v:'yes',t:'Yes'},{v:'no',t:'No'}] }, c.personalShopper, editable)}
     </div>
+    ${chesedFieldHTML(c.chesedPackage, editable)}`;
+}
+
+const CHESED_OPTIONS = ['Toaster', 'Urn', 'Kitchen towels', 'Vacuum', 'Cholent pot'];
+
+function chesedFieldHTML(value, editable) {
+  const selected = String(value || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const isOn = (opt) => selected.includes(opt.toLowerCase());
+  if (!editable) {
+    const shown = CHESED_OPTIONS.filter(isOn).join(', ');
+    return `
     <div class="frow" style="grid-template-columns: 1fr;">
-      ${fieldHTML({ key: 'chesedPackage', label: 'Detroit Chesed Package Gift' }, c.chesedPackage, editable)}
+      ${fieldHTML({ key: 'chesedPackage', label: 'Detroit Chesed Package Gift' }, shown || '—', false)}
     </div>`;
+  }
+  return `
+  <div class="field" style="margin-bottom: 10px;">
+    <label style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+      Detroit Chesed Package Gift
+      <button type="button" class="clear-search" onclick="chesedSelectAll(this)">Select all</button>
+    </label>
+    <div class="chk-grid" id="chesedGroup">
+      ${CHESED_OPTIONS.map(opt => `
+      <label class="chk-row" style="margin: 0;">
+        <input type="checkbox" class="chesed-opt" value="${opt}" ${isOn(opt) ? 'checked' : ''} onchange="chesedSyncAllBtn()">
+        <span>${opt}</span>
+      </label>`).join('')}
+    </div>
+  </div>`;
+}
+
+function chesedSelectAll(btn) {
+  const boxes = [...document.querySelectorAll('.chesed-opt')];
+  const allChecked = boxes.every(b => b.checked);
+  boxes.forEach(b => { b.checked = !allChecked; });
+  chesedSyncAllBtn();
+}
+
+function chesedSyncAllBtn() {
+  const boxes = [...document.querySelectorAll('.chesed-opt')];
+  const btn = document.querySelector('#chesedGroup') && document.querySelector('.field button.clear-search[onclick^="chesedSelectAll"]');
+  if (btn) btn.textContent = boxes.length && boxes.every(b => b.checked) ? 'Unselect all' : 'Select all';
 }
 
 function readForm() {
@@ -882,6 +925,9 @@ function readForm() {
                 'name','email','phoneNumber','weddingDate','address','personalShopper','chesedPackage'];
   const out = {};
   keys.forEach(k => { const el = $('f_' + k); if (el) out[k] = el.value; });
+  // chesed package comes from the checkbox group when present (edit mode)
+  const chesedBoxes = [...document.querySelectorAll('.chesed-opt')];
+  if (chesedBoxes.length) out.chesedPackage = chesedBoxes.filter(b => b.checked).map(b => b.value).join(', ');
   return out;
 }
 
