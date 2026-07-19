@@ -3761,7 +3761,8 @@ function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f1ea;">
 <tr><td align="center" style="padding: 36px 12px 44px;">
 
-  <table role="presentation" class="card" align="center" width="640" cellpadding="0" cellspacing="0" style="width: 640px; max-width: 100%; margin: 0 auto; background-color: #ffffff; border: 1px solid #e7e2d8; border-radius: 18px;">
+  <!--[if mso]><table role="presentation" width="640" align="center" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+  <table role="presentation" class="card" align="center" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e7e2d8; border-radius: 18px;">
 
     <!-- header -->
     <tr><td align="center" style="padding: 44px 40px 0;">
@@ -3832,7 +3833,7 @@ function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
   </table>
 
   <!-- footer -->
-  <table role="presentation" width="640" class="card" align="center" cellpadding="0" cellspacing="0" style="width: 640px; max-width: 100%; margin: 0 auto;">
+  <table role="presentation" class="card" align="center" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto;">
     <tr><td align="center" style="padding: 20px 30px 0;">
       <div style="font-family: ${sans}; font-size: 12px; color: #9b998e; line-height: 1.7;">
         Questions? Reach us at <a href="mailto:bridalshower@detroitbridalshower.org" style="color: #9b998e;">bridalshower@detroitbridalshower.org</a><br/>
@@ -3840,6 +3841,7 @@ function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
       </div>
     </td></tr>
   </table>
+  <!--[if mso]></td></tr></table><![endif]-->
 
 </td></tr>
 </table>
