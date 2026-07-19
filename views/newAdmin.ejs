@@ -517,6 +517,10 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
             Preview Email
           </button>
+          <button class="btn btn-ghost" style="width:100%; justify-content:center;" onclick="sendTestEmail()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+            Send Test Email
+          </button>
         </div>
         <div class="collection-list" id="collectionList"></div>
         <div class="send-note">Sends the collection newsletter to all subscribers &mdash; featuring the newest couple (if pending) and everyone currently collecting.</div>
@@ -1072,6 +1076,37 @@ function openEmailPreview() {
   };
   frame.src = '/newAdmin/previewEmail?t=' + Date.now();
   $('previewOverlay').classList.add('show');
+}
+
+/* ================= test email ================= */
+async function sendTestEmail() {
+  const remembered = localStorage.getItem('testEmailAddr') || '';
+  const yes = await askConfirm(
+    'Send the current collection email to a single address only &mdash; nothing goes to your subscribers.' +
+    '<div class="field" style="margin-top:14px;"><label>Test email address</label>' +
+    '<input type="email" id="testEmailInput" value="' + esc(remembered) + '" placeholder="you@example.com"></div>',
+    { title: 'Send a test email', yesText: 'Send Test' });
+  if (!yes) return;
+  const addr = (document.getElementById('testEmailInput') || { value: '' }).value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(addr)) { toast('Please enter a valid email address.', 'err'); return; }
+  localStorage.setItem('testEmailAddr', addr);
+  $('sendingText').textContent = 'Sending test email…';
+  $('sendingOverlay').classList.add('show');
+  try {
+    const res = await fetch('/newAdmin/sendTestEmail', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: addr })
+    });
+    const data = await res.json();
+    if (data !== 'test sent') throw new Error();
+    toast('Test email sent to ' + addr + ' 📬', 'gold');
+  } catch (e) {
+    toast('The test email could not be sent. Check the server logs.', 'err');
+  } finally {
+    $('sendingOverlay').classList.remove('show');
+    $('sendingText').textContent = 'Sending email…';
+  }
 }
 
 /* ================= send emails ================= */

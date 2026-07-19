@@ -25,6 +25,12 @@ router.post('/sendNewsletter', adminAuth, adminController.sendNewsletter);
 router.post('/uploadAnnouncement', adminAuth, upload.single('file'), adminController.uploadAnnouncement)
 router.post('/sendNewNewsletter', adminAuth, adminController.sendNewNewsletter)
 router.get('/previewEmail', adminAuth, (req, res) => { req.preview = true; return adminController.sendNewNewsletter(req, res) })
+router.post('/sendTestEmail', adminAuth, (req, res) => {
+  const email = String(req.body.email || '').trim()
+  if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json('invalid email')
+  req.testEmail = email
+  return adminController.sendNewNewsletter(req, res)
+})
 // router.get('/unsubscribe', adminController.unsubscribe)
 // router.post('/removeEmailFromList', adminController.removeEmailFromList)
 

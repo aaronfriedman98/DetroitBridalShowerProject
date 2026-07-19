@@ -1080,6 +1080,18 @@ if (req.preview) {
   return res.send(collectionEmail)
 }
 
+// test mode: send the real email to ONE address only, then stop
+if (req.testEmail) {
+  await sgMail.send({
+    to: req.testEmail,
+    from: 'bridalshower@detroitbridalshower.org',
+    subject: '[TEST] Collection Email',
+    html: collectionEmail
+  })
+  console.log('test email sent to ' + req.testEmail)
+  return res.json('test sent')
+}
+
 const personalCollectionEmail = `<!DOCTYPE html>
 
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
@@ -2612,6 +2624,18 @@ const collectionEmail = buildCollectionEmail(newCoupleString, couplesString, uns
 if (req.preview) {
   res.set('Content-Type', 'text/html')
   return res.send(collectionEmail)
+}
+
+// test mode: send the real email to ONE address only, then stop
+if (req.testEmail) {
+  await sgMail.send({
+    to: req.testEmail,
+    from: 'bridalshower@detroitbridalshower.org',
+    subject: '[TEST] Collection Email',
+    html: collectionEmail
+  })
+  console.log('test email sent to ' + req.testEmail)
+  return res.json('test sent')
 }
 
 const personalCollectionEmail = `<!DOCTYPE html>
