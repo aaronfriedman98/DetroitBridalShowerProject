@@ -3800,6 +3800,12 @@ function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
       </table>
     </td></tr>
 
+    <!-- give online button -->
+    <tr><td align="center" style="padding: 26px 40px 4px;">
+      <a href="${site}/give" style="display: inline-block; background-color: ${gold}; color: #ffffff; font-family: ${sans}; font-size: 16px; letter-spacing: 1px; text-decoration: none; border-radius: 999px; padding: 16px 44px;">Give a Gift Online &rarr;</a>
+      <div style="font-family: ${sans}; font-size: 12.5px; color: ${soft}; padding-top: 10px;">Pick your couples in under a minute &mdash; then send payment any way you like below.</div>
+    </td></tr>
+
     <!-- payment methods -->
     ${sectionLabel('Ways to Give')}
     <tr><td class="pad-lg" style="padding: 10px 40px 6px;">
