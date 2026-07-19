@@ -26,6 +26,63 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="stylesheet" href="/assets/css/button.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+      /* ============ 2026 redesign overrides (ivory / sage / gold) ============ */
+      :root { --dbs-ivory:#f4f1ea; --dbs-sage:#494e46; --dbs-sage-dark:#383c36; --dbs-gold:#b3925a; --dbs-gold-soft:#f3ead9;
+        --dbs-ink:#2e2e29; --dbs-soft:#6d6d64; --dbs-line:#e7e2d8; --dbs-serif:'Cormorant Garamond',Georgia,serif; --dbs-sans:'Jost','Segoe UI',sans-serif; }
+      .body { background: var(--dbs-ivory) !important; background-image: none !important; }
+      body { background: var(--dbs-ivory) !important; }
+      .mainSection { display: none !important; }
+      /* nav bar */
+      header .header { background: var(--dbs-ivory) !important; box-shadow: 0 1px 0 var(--dbs-line); }
+      .headerNav ul li a, .headerNav .drop, .headerNav .drop-down span { color: var(--dbs-sage) !important; font-family: var(--dbs-sans) !important; font-weight: 400 !important; letter-spacing: .08em; }
+      .headerNav ul li a:hover { color: var(--dbs-gold) !important; }
+      .headerNav .divider { color: var(--dbs-line) !important; }
+      .logo a, .logo .main-header { color: var(--dbs-sage) !important; font-family: var(--dbs-serif) !important; }
+      .fa-bars, .fa-times { color: var(--dbs-sage) !important; }
+      .dropDown { background: #fff !important; border: 1px solid var(--dbs-line); border-radius: 12px; box-shadow: 0 14px 30px -14px rgba(56,60,54,.3); }
+      .dropDown li a { color: var(--dbs-sage) !important; }
+      /* hero */
+      .dbs-hero { text-align: center; padding: 68px 20px 60px; max-width: 780px; margin: 0 auto; }
+      .dbs-hero img { width: 130px; height: auto; margin: 0 auto 18px; display: block; }
+      .dbs-kicker { font-family: var(--dbs-sans); font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--dbs-gold); font-weight: 500; }
+      .dbs-hero h1 { font-family: var(--dbs-serif); font-weight: 500; font-size: clamp(38px, 6vw, 58px); color: var(--dbs-sage-dark); line-height: 1.12; margin: 16px 0 18px; }
+      .dbs-hero h1 em { font-style: italic; color: var(--dbs-gold); }
+      .dbs-hero p { font-family: var(--dbs-serif); font-size: 20px; color: var(--dbs-soft); line-height: 1.6; max-width: 560px; margin: 0 auto 30px; }
+      .dbs-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+      .dbs-btn { display: inline-block; border-radius: 999px; padding: 15px 34px; font-family: var(--dbs-sans); font-size: 15px; letter-spacing: .06em; text-decoration: none; cursor: pointer; transition: all .18s; }
+      .dbs-btn-gold { background: var(--dbs-gold); color: #fff !important; box-shadow: 0 10px 24px -10px rgba(179,146,90,.7); }
+      .dbs-btn-gold:hover { background: #a3854f; transform: translateY(-1px); }
+      .dbs-btn-ghost { border: 1px solid var(--dbs-sage); color: var(--dbs-sage) !important; }
+      .dbs-btn-ghost:hover { background: var(--dbs-sage); color: #fff !important; }
+      /* services -> cards */
+      .serviceBackground { background: transparent !important; }
+      h1.services { display: none !important; }
+      .dbs-sect-label { text-align: center; font-family: var(--dbs-sans); font-size: 12px; letter-spacing: 5px; text-transform: uppercase; color: var(--dbs-gold); font-weight: 500; }
+      .dbs-sect-label::after { content: ''; display: block; width: 54px; height: 1px; background: #d9c9a6; margin: 14px auto 0; }
+      .dbs-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; max-width: 1060px; margin: 34px auto 70px; padding: 0 20px; }
+      .dbs-card { background: #fff; border: 1px solid var(--dbs-line); border-radius: 18px; padding: 30px 24px 26px; text-align: center;
+        box-shadow: 0 10px 30px -18px rgba(56,60,54,.22); transition: transform .18s, box-shadow .18s; }
+      .dbs-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -18px rgba(56,60,54,.32); }
+      .dbs-card i { font-size: 26px; color: var(--dbs-gold); }
+      .dbs-card h3 { font-family: var(--dbs-serif); font-weight: 600; font-size: 23px; color: var(--dbs-sage-dark); margin: 12px 0 8px; }
+      .dbs-card p { font-family: var(--dbs-sans); font-weight: 300; font-size: 14px; color: var(--dbs-soft); line-height: 1.55; min-height: 44px; }
+      .dbs-card a { display: inline-block; margin-top: 14px; font-family: var(--dbs-sans); font-size: 13.5px; letter-spacing: .08em; color: var(--dbs-gold) !important; text-decoration: none; border: 1px solid var(--dbs-gold); border-radius: 999px; padding: 9px 24px; cursor: pointer; transition: all .15s; }
+      .dbs-card a:hover { background: var(--dbs-gold); color: #fff !important; }
+      /* what-we-do strip */
+      .dbs-strip { max-width: 720px; margin: 0 auto 80px; padding: 0 20px; text-align: center; }
+      .dbs-strip p { font-family: var(--dbs-serif); font-size: 20px; color: var(--dbs-ink); line-height: 1.7; }
+      /* footer */
+      footer { background: linear-gradient(175deg, var(--dbs-sage) 0%, var(--dbs-sage-dark) 100%) !important; }
+      footer h3, footer dt { color: #ecd9b4 !important; font-family: var(--dbs-serif) !important; letter-spacing: .04em; }
+      footer p, footer dd, footer dd a, footer .copyright { color: #d8d7cf !important; font-family: var(--dbs-sans) !important; font-weight: 300; }
+      footer .form input { background: rgba(255,255,255,.08) !important; border: 1px solid rgba(255,255,255,.25) !important; border-radius: 999px !important; color: #fff !important; font-family: var(--dbs-sans) !important; }
+      footer .form input::placeholder { color: rgba(255,255,255,.55) !important; }
+      footer .form button { background: var(--dbs-gold) !important; border-radius: 50% !important; border: none !important; }
+      footer hr { border-color: rgba(255,255,255,.15) !important; }
+      footer .backLogo img, footer .miniLogo { background: #fff; border-radius: 50%; padding: 10px; }
+    </style>
 
     <title>Detroit Bridal Shower Project</title>
 </head>
@@ -231,7 +288,23 @@
                     </div>
                 </div>
             </header>
-    
+
+        <div class="dbs-hero fade-in">
+            <img src="../assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+            <div class="dbs-kicker">A Detroit community tradition</div>
+            <h1>Every new couple begins<br><em>with all of us</em></h1>
+            <p>When a chosson and kallah get engaged, our community comes together to gift them the essentials for their new home &mdash; one simcha at a time.</p>
+            <div class="dbs-ctas">
+                <a id="showForm" class="dbs-btn dbs-btn-gold">Add a Couple</a>
+                <a class="dbs-btn dbs-btn-ghost" href="/give">Give a Gift</a>
+            </div>
+        </div>
+        <script>
+            function openCoupleForm() {
+                document.querySelector('.formPopup').classList.add('active')
+                document.querySelector('.overlay').classList.add('overlayActive')
+            }
+        </script>
 
         <div class="serviceBackground fade-in">
     
@@ -270,39 +343,37 @@
                 <p>A guide to help with shopping</p></a>
             </section> -->
 
-            <ul class="features">
-                <li id="services">
-                    <!-- <span class="icon solid major style1 fa-user-group"></span> -->
-                    <!-- <i class="fa-solid fa-user-group"></i> -->
-                    <!-- <span class="icon solid major style1 fa-user-group serviceIcons"></span> -->
-                    <!-- <img src="images/user-group-solid.svg" style="color: blue;"> -->
-                    <i class="major fa-solid fa-user-group"></i>
-                    <h3>Add A Couple</h3>
-                    <p>Add a chosson and kallah to the upcoming simchos list</p>
-                    <a id="showForm" class="button1">Open</a>
-                </li>
-                <li>
-                    <!-- <span class="icon solid major style3 fa-bullhorn serviceIcons"></span> -->
-                    <i class="major fa-solid fa-bullhorn"></i>
-                    <h3>Announcements</h3>
-                    <p>Thank you to all of the hostesses that took part in each and every simcha</p>
-                    <a href="announcements" class="button1">Visit</a>
-                </li>
-                <li>
-                    <!-- <span class="icon major style5 fa-shopping-bag solid serviceIcons"></span> -->
-                    <i class="major fa-solid fa-bag-shopping"></i>
+            <div class="dbs-sect-label" id="services">How you can take part</div>
+            <div class="dbs-cards">
+                <div class="dbs-card">
+                    <i class="fa-solid fa-user-group"></i>
+                    <h3>Add a Couple</h3>
+                    <p>Just got engaged? Add the chosson and kallah so the community can celebrate with you.</p>
+                    <a onclick="openCoupleForm()">Open the Form</a>
+                </div>
+                <div class="dbs-card">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <h3>Give a Gift</h3>
+                    <p>Choose the couples you'd like to give toward &mdash; it takes under a minute.</p>
+                    <a href="/give">Give Now</a>
+                </div>
+                <div class="dbs-card">
+                    <i class="fa-solid fa-heart"></i>
+                    <h3>With Gratitude</h3>
+                    <p>See the friends and family who contributed to each couple's bridal shower.</p>
+                    <a href="/contributors">View</a>
+                </div>
+                <div class="dbs-card">
+                    <i class="fa-solid fa-bag-shopping"></i>
                     <h3>Shopping Guide</h3>
-                    <p>Enjoy our shopping guide that can make your shopping decisions so much easier</p>
-                    <a href="" onclick="openPDF()" class="button1">Open</a>
-                </li>
-                <!-- <li>
-                    
-                    <i class="major bx bxs-donate-heart"></i>
-                    <h3>Financial Assistance</h3>
-                    <p>Explore wedding resources and receive financial assistance information</p>
-                    <a href="financialAssistance" class="button1">Visit</a>
-                </li> -->
-            </ul>
+                    <p>Setting up a home? Our guide makes the shopping list simple.</p>
+                    <a onclick="openPDF()">Open the Guide</a>
+                </div>
+            </div>
+            <div class="dbs-strip fade-in">
+                <div class="dbs-sect-label" style="margin-bottom:18px;">What we do</div>
+                <p>The Detroit Bridal Shower Project has helped countless newlyweds begin their life together with a fully stocked home. Friends and family give toward each couple's shower, and every dollar goes to the essentials that turn a new apartment into a home. Thank you, Detroit, for making every simcha possible.</p>
+            </div>
 
             <script>
                 function openPDF() {
