@@ -309,6 +309,12 @@
     }
     .field input:focus, .field select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(179,146,90,.13); }
     .field input[readonly], .field select[disabled] { background: #f7f5ef; color: #77766d; border-color: transparent; }
+    .chk-row {
+      display: flex; align-items: center; gap: 8px;
+      margin: 2px 0 10px; cursor: pointer; user-select: none;
+      font-size: 13px; color: var(--sage-deep); letter-spacing: .03em;
+    }
+    .chk-row input { width: 15px; height: 15px; accent-color: var(--gold); cursor: pointer; }
 
     .confirm-msg { font-size: 15px; line-height: 1.55; color: var(--ink); padding-top: 4px; }
 
@@ -797,7 +803,7 @@ function fieldHTML(def, value, editable) {
 
 function sideFormHTML(side, prefix, c, editable) {
   const sel = (opts) => opts.map(o => ({ v: o, t: o }));
-  const showDivorced = editable || c[prefix + 'MotherDivorcedName'] || c[prefix + 'MotherHusbandName'];
+  const hasDivorced = !!(c[prefix + 'MotherDivorcedName'] || c[prefix + 'MotherHusbandName']);
   return `
     <div class="fieldset-label">${side}</div>
     <div class="frow">
@@ -812,19 +818,36 @@ function sideFormHTML(side, prefix, c, editable) {
       ${fieldHTML({ key: prefix + 'MotherTitle', label: 'Title', type: 'select', optional: true, options: sel(TITLE_M) }, c[prefix + 'MotherTitle'], editable)}
       ${fieldHTML({ key: prefix + 'MotherName', label: "Mother's name" }, c[prefix + 'MotherName'], editable)}
     </div>
-    ${showDivorced ? `
-    <div class="frow thirds">
-      ${fieldHTML({ key: prefix + 'MotherDivorcedTitle', label: 'Title', type: 'select', optional: true, options: sel(TITLE_M) }, c[prefix + 'MotherDivorcedTitle'], editable)}
-      ${fieldHTML({ key: prefix + 'MotherDivorcedName', label: 'Mother (if parents divorced)' }, c[prefix + 'MotherDivorcedName'], editable)}
+    ${editable ? `
+    <label class="chk-row">
+      <input type="checkbox" id="chk_${prefix}Divorced" ${hasDivorced ? 'checked' : ''} onchange="toggleDivorced('${prefix}', this.checked)">
+      <span>Parents divorced</span>
+    </label>` : ''}
+    <div id="div_${prefix}Divorced" style="${(editable ? hasDivorced : hasDivorced) ? '' : 'display:none;'}">
+      <div class="frow thirds">
+        ${fieldHTML({ key: prefix + 'MotherDivorcedTitle', label: 'Title', type: 'select', optional: true, options: sel(TITLE_M) }, c[prefix + 'MotherDivorcedTitle'], editable)}
+        ${fieldHTML({ key: prefix + 'MotherDivorcedName', label: "Mother's name (listed separately)" }, c[prefix + 'MotherDivorcedName'], editable)}
+      </div>
+      <div class="frow thirds">
+        ${fieldHTML({ key: prefix + 'MotherHusbandTitle', label: 'Title', type: 'select', optional: true, options: sel(TITLE_F) }, c[prefix + 'MotherHusbandTitle'], editable)}
+        ${fieldHTML({ key: prefix + 'MotherHusbandName', label: "Mother's husband (if remarried)" }, c[prefix + 'MotherHusbandName'], editable)}
+      </div>
     </div>
-    <div class="frow thirds">
-      ${fieldHTML({ key: prefix + 'MotherHusbandTitle', label: 'Title', type: 'select', optional: true, options: sel(TITLE_F) }, c[prefix + 'MotherHusbandTitle'], editable)}
-      ${fieldHTML({ key: prefix + 'MotherHusbandName', label: "Mother's husband (if remarried)" }, c[prefix + 'MotherHusbandName'], editable)}
-    </div>` : ''}
     ${(editable || c[prefix + 'Deceased']) ? `
     <div class="frow" style="grid-template-columns: 1fr;">
       ${fieldHTML({ key: prefix + 'Deceased', label: 'Deceased parent note (optional)' }, c[prefix + 'Deceased'], editable)}
     </div>` : ''}`;
+}
+
+function toggleDivorced(prefix, on) {
+  $('div_' + prefix + 'Divorced').style.display = on ? '' : 'none';
+  if (!on) {
+    // clear the hidden fields so stale values are not saved
+    ['MotherDivorcedTitle', 'MotherDivorcedName', 'MotherHusbandTitle', 'MotherHusbandName'].forEach(k => {
+      const el = $('f_' + prefix + k);
+      if (el) el.value = '';
+    });
+  }
 }
 
 function coupleFormHTML(c, editable) {
@@ -866,6 +889,7 @@ function readForm() {
 function openCoupleModal(id, editable) {
   const c = state.couples.find(x => String(x._id) === String(id));
   if (!c) return;
+  $('addModalBody').innerHTML = '';   // avoid duplicate field ids across modals
   $('coupleModalTitle').textContent = editable ? 'Edit Couple' : (c.chossonName + ' & ' + c.kallahName);
   $('coupleModalBody').innerHTML = coupleFormHTML(c, editable);
   $('coupleModalFoot').innerHTML = editable
@@ -898,6 +922,7 @@ async function saveEdit(id) {
 
 /* ================= add ================= */
 function openAddModal() {
+  $('coupleModalBody').innerHTML = '';   // avoid duplicate field ids across modals
   $('addModalBody').innerHTML = coupleFormHTML({}, true);
   $('addSaveBtn').disabled = false;
   $('addOverlay').classList.add('show');
