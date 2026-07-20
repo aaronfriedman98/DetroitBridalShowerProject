@@ -144,7 +144,7 @@ function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
     <tr><td align="center" class="pad-lg" style="padding: 22px 56px 4px;">
       <div style="font-family: ${serif}; font-size: 20px; color: ${ink}; line-height: 1.6;">
         We are so fortunate for all the future Chossons and Kallahs from our community.
-        If you would like to participate in these bridal showers, simply reply to this email.
+        To take part in these bridal showers, tap the button below to pledge your gift online.
       </div>
     </td></tr>
 

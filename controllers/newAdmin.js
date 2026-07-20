@@ -1102,7 +1102,7 @@ console.log("email created1")
 const instructionsMsg = {
 to: newCouple.email, // bridal shower email
 from: `bridalshower@detroitbridalshower.org`,
-subject: 'Instructions Email',
+subject: 'Your couple has been verified',
 html: instructionsEmail
 }
 
@@ -1111,7 +1111,7 @@ console.log("email created2")
 const msg = {
 to: newCouple.email, // bridal shower email
 from: `bridalshower@detroitbridalshower.org`,
-subject: 'Personal Collection Email',
+subject: 'Your personal collection email - share with family and friends',
 html: personalCollectionEmail
 }
 
@@ -1915,7 +1915,7 @@ instructionsMsg = {
 to: newCouple.email, // bridal shower email
 // to: 'aronfriedman98@gmail.com',
 from: `bridalshower@detroitbridalshower.org`,
-subject: 'Instructions Email',
+subject: 'Your couple has been verified',
 html: instructionsEmail
 }
 
@@ -1923,7 +1923,7 @@ msg = {
 to: newCouple.email, // bridal shower email
 // to: 'aronfriedman98@gmail.com',
 from: `bridalshower@detroitbridalshower.org`,
-subject: 'Personal Collection Email',
+subject: 'Your personal collection email - share with family and friends',
 html: personalCollectionEmail
 }
 }
@@ -1932,7 +1932,7 @@ html: personalCollectionEmail
 //   to: 'aronfriedman98@gmail.com', // bridal shower email
 //   // to: 'aronfriedman98@gmail.com',
 //   from: `bridalshower@detroitbridalshower.org`,
-//   subject: 'Personal Collection Email',
+//   subject: 'Your personal collection email - share with family and friends',
 //   html: collectionEmail
 //   }
 
