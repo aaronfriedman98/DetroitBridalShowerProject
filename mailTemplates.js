@@ -1,5 +1,15 @@
 // Shared branded email templates for the Detroit Bridal Shower site.
 
+// Public-facing base URL used for links and the logo inside emails.
+// NOTE: detroitbridalshower.org is currently only a domain-forwarding stub -
+// it 301s the bare root here and 404s on every path (/give, /assets/...), so
+// it CANNOT be used for email links or images. Once that domain is bound to
+// the app properly in Azure, set SITE_URL and everything switches over.
+function publicSiteURL() {
+  return String(process.env.SITE_URL || process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net')
+    .replace(/['"]/g, '').replace(/\/+$/, '')
+}
+
 // ---------------------------------------------------------------------------
 // Shared branded transactional email (confirmations, verifications).
 // ---------------------------------------------------------------------------
@@ -14,7 +24,7 @@ function emailRows(pairs) {
 }
 
 function buildActionEmail(kicker, title, bodyHtml, buttonText, buttonUrl, footNote) {
-  const site = (process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net').replace(/['"]/g, '')
+  const site = publicSiteURL()
   const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif"
   const sans = "'Jost', 'Segoe UI', Arial, sans-serif"
   return `<!DOCTYPE html>
@@ -61,7 +71,7 @@ function buildActionEmail(kicker, title, bodyHtml, buttonText, buttonUrl, footNo
 // them in the branded layout. Table-based + inline styles for email clients.
 // ---------------------------------------------------------------------------
 function buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL) {
-  const site = (process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net').replace(/['"]/g, '')
+  const site = publicSiteURL()
   const logo = site + '/assets/images/bridalshowerpic.jpg'
   const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif"
   const sans = "'Jost', 'Segoe UI', Arial, sans-serif"

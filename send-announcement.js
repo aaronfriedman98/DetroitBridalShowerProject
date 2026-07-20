@@ -10,7 +10,8 @@ const { buildActionEmail } = require('./mailTemplates');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.API_KEY);
 
-const site = (process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net').replace(/['"]/g, '');
+const site = String(process.env.SITE_URL || process.env.AZURE_URL || 'https://detroit-bridal-shower.azurewebsites.net')
+  .replace(/['"]/g, '').replace(/\/+$/, '');
 const gold = '#b3925a', sage = '#494e46';
 const h = (t) => `<div style="font-family:'Jost','Segoe UI',Arial,sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:${gold}; font-weight:bold; padding:26px 0 6px;">${t}</div>`;
 
