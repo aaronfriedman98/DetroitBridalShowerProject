@@ -18,12 +18,11 @@ const h = (t) => `<div style="font-family:'Jost','Segoe UI',Arial,sans-serif; fo
 const body = `
 We're excited to share that the Detroit Bridal Shower website has been completely rebuilt &mdash; a fresh new look, and some wonderful new ways to take part in every simcha.
 ${h('The big change: pledge online')}
-When you receive a collection email, tap the new <strong style="color:${gold};">&ldquo;Pledge Your Gift Online&rdquo;</strong> button (or visit the website and choose <em>Give a Gift</em>). Pick the couples you'd like to give to &mdash; the suggested $65 is filled in for you and you can adjust it &mdash; and submit. Then send your payment by Zelle, Venmo, PayPal, or check, exactly as you always have.<br/><br/>
-No more back-and-forth messages about who you're giving to &mdash; your pledge tells us everything, and you'll even receive a thank-you email once your gift arrives.
+When you receive a collection email, tap the new <strong style="color:${gold};">&ldquo;Pledge Your Gift Online&rdquo;</strong> button (or visit the website and choose <em>Give a Gift</em>). Pick the couples you'd like to give to &mdash; the suggested $65 is filled in for you, however you can adjust it to your preference and submit. Please note that the website still does not accept payment &mdash; you'll send your gift by Zelle, Venmo, PayPal, or check, exactly as you always have.<br/><br/>
+No more back-and-forth messages via email about who you're giving to. Your pledge tells us everything, and you will still receive a thank-you email once your gift arrives.
 ${h('With gratitude')}
-Our new <a href="${site}/contributors" style="color:${gold};">With Gratitude</a> page lets you search any couple and see the friends and family who gave toward their shower. And under <em>Your Gifts</em>, enter your email to see every couple you've ever contributed to.
-${h('And a fresh new look')}
-The whole website has been redesigned &mdash; adding a newly engaged couple, browsing the shopping guide, and joining this beautiful project are all easier than ever.
+Our new <a href="${site}/contributors" style="color:${gold};">With Gratitude</a> page lets you search any couple and see the friends and family who gave toward their shower. And under <em>Your Gifts</em>, enter your email to see every couple you've ever contributed to.<br/><br/>
+Adding all of the past couples and their contributors is still a work in progress, so please be patient with us as the lists fill in.
 `;
 
 const html = buildActionEmail(
@@ -35,7 +34,7 @@ const html = buildActionEmail(
   'Same project, same community, same payment methods you already use — just much easier.'
 );
 
-const subject = 'The new Detroit Bridal Shower website is here 💛';
+const subject = 'The NEW Detroit Bridal Shower website is here 💛';
 const FROM = 'bridalshower@detroitbridalshower.org';
 
 (async () => {
