@@ -74,7 +74,7 @@
     <div class="label" style="margin-top:22px;">Your details</div>
     <div class="you">
       <input type="text" id="pName" placeholder="Your name (shown to the couple)">
-      <input type="email" id="pEmail" placeholder="Your email (optional)">
+      <input type="email" id="pEmail" placeholder="Your email (for your thank-you note)">
       <input type="tel" id="pPhone" placeholder="Your phone (optional)">
     </div>
 
@@ -120,6 +120,8 @@ async function submitPledge() {
     .map(r => ({ coupleId: r.dataset.id, amount: parseFloat(r.querySelector('.amount').value) || 65 }));
   if (!selections.length) { alert('Please select at least one couple.'); return; }
   if (!name) { alert('Please enter your name.'); return; }
+  const emailVal = document.getElementById('pEmail').value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(emailVal)) { alert('Please enter your email address — it lets us send you a thank-you once your gift arrives.'); return; }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Sending…';
   try {

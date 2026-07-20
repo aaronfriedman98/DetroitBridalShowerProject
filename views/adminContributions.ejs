@@ -38,6 +38,13 @@
   .field label { display:block; font-size:11.5px; color:var(--ink-soft); letter-spacing:.06em; margin:10px 0 4px; }
   .field input, .field select { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background-color:#fff; font-size:14px; outline:none; font-family:var(--sans); }
   .field input:focus, .field select:focus { border-color:var(--gold); }
+  .pick-results { position:absolute; left:0; right:0; top:100%; z-index:20; background:#fff; border:1px solid var(--line);
+    border-radius:12px; margin-top:4px; box-shadow:0 14px 30px -14px rgba(56,60,54,.35); overflow:hidden; display:none; max-height:260px; overflow-y:auto; }
+  .pick-results.show { display:block; }
+  .pick-results button { display:block; width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:10px 14px; font-size:14px; color:var(--ink); border-bottom:1px solid #f0ece3; font-family:var(--sans); }
+  .pick-results button:hover { background:#faf6ee; }
+  .pick-results .tag { font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ok); background:var(--ok-soft); border-radius:999px; padding:2px 8px; margin-left:8px; }
   select { -webkit-appearance:none; appearance:none; cursor:pointer; color:var(--ink);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23b3925a' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat:no-repeat; background-position:right 12px center; padding-right:32px !important; }
@@ -108,7 +115,7 @@
             <select id="coupleFilter" style="padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-size:13px; outline:none;" onchange="renderAll()">
               <option value="">All couples</option>
             </select>
-            <a class="btn btn-ghost" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
+            <a class="btn btn-ghost" id="exportBtn" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
           </div>
         </div>
         <div class="scroll"><table>
@@ -120,10 +127,19 @@
     <div class="card">
       <div class="card-head"><h3>Record a Gift</h3></div>
       <div class="body">
-        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Saved as verified right away.</div>
-        <div class="field"><label>Couple</label><select id="mCouple"></select></div>
+        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Works for any couple &mdash; past or present. Saved as verified right away.</div>
+        <div class="field" style="position:relative;">
+          <label>Couple</label>
+          <input type="text" id="mCoupleSearch" placeholder="Type to search all couples&hellip;" autocomplete="off">
+          <input type="hidden" id="mCoupleId">
+          <div id="mCoupleResults" class="pick-results"></div>
+        </div>
         <div class="field"><label>Contributor name</label><input type="text" id="mName" placeholder="e.g. Sarah Goldberg"></div>
+        <div class="field"><label>Contributor email (for thank-you)</label><input type="email" id="mEmail" placeholder="optional"></div>
         <div class="field"><label>Amount ($)</label><input type="number" id="mAmount" value="65" min="1"></div>
+        <label style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:var(--sage-deep); cursor:pointer;">
+          <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send thank-you email (needs an email above)
+        </label>
         <div style="margin-top:16px;"><button class="btn btn-gold" onclick="addManual()">Add Contributor</button></div>
       </div>
       <div class="card-head" style="border-top:1px solid var(--line);"><h3>Per-Couple Totals</h3><span class="count">private — never shown publicly</span></div>
@@ -146,12 +162,33 @@ async function load() {
   const res = await fetch('/newAdmin/contributionsData');
   const data = await res.json();
   contributions = data.contributions; couples = data.couples;
-  const opts = couples.map(c => `<option value="${c._id}">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}</option>`).join('');
-  $('mCouple').innerHTML = opts;
   const seen = new Map(); contributions.forEach(c => seen.set(c.coupleId, c.coupleNames));
+  const keep = $('coupleFilter').value;
   $('coupleFilter').innerHTML = '<option value="">All couples</option>' + [...seen].map(([id,n]) => `<option value="${id}">${esc(n)}</option>`).join('');
+  $('coupleFilter').value = keep;
   renderPending(); renderAll();
 }
+
+// searchable couple picker (all couples, past and present)
+const pickIn = $('mCoupleSearch'), pickOut = $('mCoupleResults');
+pickIn.addEventListener('input', () => {
+  $('mCoupleId').value = '';
+  const t = pickIn.value.trim().toLowerCase();
+  if (!t) { pickOut.classList.remove('show'); return; }
+  const hits = couples.filter(c => (c.chossonName + ' & ' + c.kallahName).toLowerCase().includes(t)).slice(0, 8);
+  pickOut.innerHTML = hits.length
+    ? hits.map(c => `<button type="button" onclick="pickCouple('${c._id}')">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}${c.collecting ? '<span class="tag">collecting</span>' : ''}</button>`).join('')
+    : '<button type="button" disabled style="color:var(--ink-soft);">No matches</button>';
+  pickOut.classList.add('show');
+});
+function pickCouple(id) {
+  const c = couples.find(x => String(x._id) === String(id));
+  if (!c) return;
+  $('mCoupleId').value = c._id;
+  pickIn.value = c.chossonName + ' & ' + c.kallahName;
+  pickOut.classList.remove('show');
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('#mCoupleSearch') && !e.target.closest('#mCoupleResults')) pickOut.classList.remove('show'); });
 
 function renderPending() {
   const pending = contributions.filter(c => !c.verified);
@@ -201,6 +238,8 @@ function renderTotals() {
 
 function renderAll() {
   const f = $('coupleFilter').value;
+  $('exportBtn').href = '/newAdmin/exportContributions' + (f ? '?coupleId=' + encodeURIComponent(f) : '');
+  $('exportBtn').textContent = f ? '⬇ Export This Couple' : '⬇ Export CSV';
   const rows = contributions.filter(c => !f || c.coupleId === f);
   $('allBody').innerHTML = rows.length ? rows.map(c => `<tr>
     <td>${esc(c.contributorName)}</td>
@@ -245,11 +284,22 @@ async function delOne(id) {
   if ((await res.json()).status) { toast('Deleted.'); await load(); } else toast('Could not delete.', true);
 }
 async function addManual() {
-  const body = { coupleId: $('mCouple').value, contributorName: $('mName').value, amount: $('mAmount').value };
+  const body = {
+    coupleId: $('mCoupleId').value,
+    contributorName: $('mName').value,
+    contributorEmail: $('mEmail').value.trim(),
+    amount: $('mAmount').value,
+    sendThanks: $('mThanks').checked && !!$('mEmail').value.trim()
+  };
+  if (!body.coupleId) { toast('Search for and select a couple first.', true); return; }
   if (!body.contributorName.trim()) { toast('Enter the contributor name.', true); return; }
   const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const d = await res.json();
-  if (d.status) { toast('Added & verified.'); $('mName').value = ''; $('mAmount').value = '65'; await load(); }
+  if (d.status) {
+    toast('Added & verified.' + (body.sendThanks ? ' Thank-you email sent.' : ''));
+    $('mName').value = ''; $('mEmail').value = ''; $('mAmount').value = '65';
+    await load();
+  }
   else toast(d.message || 'Could not add.', true);
 }
 load();

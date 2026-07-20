@@ -70,6 +70,7 @@ module.exports = {
       if (pledgeRateLimited(req)) return res.status(429).json({ status: false, message: 'Too many submissions. Please try again later.' })
 
       if (!name || !String(name).trim()) return res.status(400).json({ status: false, message: 'Please enter your name.' })
+      if (!email || !/^\S+@\S+\.\S+$/.test(String(email).trim())) return res.status(400).json({ status: false, message: 'Please enter a valid email address.' })
       if (!Array.isArray(selections) || !selections.length) return res.status(400).json({ status: false, message: 'Please select at least one couple.' })
       if (selections.length > 100) return res.status(400).json({ status: false, message: 'Too many selections.' })
 
@@ -171,7 +172,8 @@ module.exports = {
   getContributionsData: async (req, res) => {
     try {
       const contributions = await Contribution.find().sort({ _id: -1 })
-      const couples = await Couples.find({ collecting: true }).select('chossonName kallahName').sort({ _id: -1 })
+      // ALL couples so mom can record gifts for past showers too
+      const couples = await Couples.find().select('chossonName kallahName collecting').sort({ _id: -1 })
       res.json({ contributions, couples })
     } catch (err) {
       console.error(err)
@@ -181,7 +183,7 @@ module.exports = {
 
   addContribution: async (req, res) => {
     try {
-      const { coupleId, contributorName, amount } = req.body
+      const { coupleId, contributorName, contributorEmail, amount, sendThanks } = req.body
       if (!coupleId || !contributorName || !String(contributorName).trim()) {
         return res.status(400).json({ status: false, message: 'Couple and name are required.' })
       }
@@ -189,14 +191,19 @@ module.exports = {
       if (!couple) return res.status(404).json({ status: false, message: 'Couple not found.' })
       let amt = parseFloat(amount)
       if (!isFinite(amt) || amt <= 0) amt = 65
+      const email = String(contributorEmail || '').trim()
       const doc = await Contribution.create({
         coupleId: String(couple._id),
         coupleNames: couple.chossonName + ' & ' + couple.kallahName,
         contributorName: String(contributorName).trim(),
+        contributorEmail: email,
         amount: Math.round(amt * 100) / 100,
         verified: true,          // mom entering it = already confirmed
         source: 'manual'
       })
+      if (sendThanks && /^\S+@\S+\.\S+$/.test(email)) {
+        await sendThankYou(email, doc.contributorName, [doc.coupleNames])
+      }
       res.json({ status: true, contribution: doc })
     } catch (err) {
       console.error(err)
@@ -250,10 +257,11 @@ module.exports = {
     }
   },
 
-  // CSV export of all contributions
+  // CSV export of contributions - all, or one couple via ?coupleId=
   exportContributions: async (req, res) => {
     try {
-      const all = await Contribution.find().sort({ _id: -1 })
+      const filter = req.query.coupleId ? { coupleId: String(req.query.coupleId) } : {}
+      const all = await Contribution.find(filter).sort({ _id: -1 })
       const csvCell = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'
       const lines = ['Date,Contributor,Email,Phone,Couple,Amount,Status,Source']
       for (const c of all) {
@@ -261,12 +269,33 @@ module.exports = {
         lines.push([date, c.contributorName, c.contributorEmail, c.contributorPhone, c.coupleNames,
           (c.amount || 0).toFixed(2), c.verified ? 'Verified' : 'Pending', c.source].map(csvCell).join(','))
       }
+      const fname = all.length && req.query.coupleId
+        ? 'contributors - ' + String(all[0].coupleNames || 'couple').replace(/[^\w &-]/g, '') + '.csv'
+        : 'contributions.csv'
       res.set('Content-Type', 'text/csv')
-      res.set('Content-Disposition', 'attachment; filename="contributions.csv"')
+      res.set('Content-Disposition', 'attachment; filename="' + fname + '"')
       res.send('﻿' + lines.join('\r\n'))
     } catch (err) {
       console.error(err)
       res.status(500).send('Export failed')
+    }
+  },
+
+  // public: look up all couples a contributor gave to, by their email
+  lookupContributor: async (req, res) => {
+    try {
+      const email = String(req.body.email || '').trim()
+      if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ status: false, message: 'Please enter a valid email address.' })
+      if (pledgeRateLimited(req)) return res.status(429).json({ status: false, message: 'Too many lookups — please try again later.' })
+      const found = await Contribution.find({
+        verified: true,
+        contributorEmail: new RegExp('^' + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i')
+      }).select('coupleNames').sort({ _id: -1 })
+      const couples = [...new Set(found.map(c => c.coupleNames))]
+      res.json({ status: true, couples })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Something went wrong.' })
     }
   },
 
