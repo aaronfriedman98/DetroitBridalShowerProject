@@ -181,30 +181,51 @@ module.exports = {
     }
   },
 
+  // Record one person's gift to one OR MANY couples in a single entry.
+  // Accepts selections: [{coupleId, amount}], or legacy coupleId + amount.
+  // Any couple in the database is allowed here (admin-only) so past showers
+  // can be backfilled - the public /give page stays limited to collecting.
   addContribution: async (req, res) => {
     try {
-      const { coupleId, contributorName, contributorEmail, amount, sendThanks } = req.body
-      if (!coupleId || !contributorName || !String(contributorName).trim()) {
-        return res.status(400).json({ status: false, message: 'Couple and name are required.' })
+      const { contributorName, contributorEmail, sendThanks } = req.body
+      const name = String(contributorName || '').trim()
+      if (!name) return res.status(400).json({ status: false, message: 'Contributor name is required.' })
+
+      let selections = Array.isArray(req.body.selections) ? req.body.selections : null
+      if (!selections) {
+        if (!req.body.coupleId) return res.status(400).json({ status: false, message: 'Select at least one couple.' })
+        selections = [{ coupleId: req.body.coupleId, amount: req.body.amount }]
       }
-      const couple = await Couples.findById(coupleId).select('chossonName kallahName')
-      if (!couple) return res.status(404).json({ status: false, message: 'Couple not found.' })
-      let amt = parseFloat(amount)
-      if (!isFinite(amt) || amt <= 0) amt = 65
+      if (!selections.length) return res.status(400).json({ status: false, message: 'Select at least one couple.' })
+      if (selections.length > 200) return res.status(400).json({ status: false, message: 'Too many couples in one entry.' })
+
       const email = String(contributorEmail || '').trim()
-      const doc = await Contribution.create({
-        coupleId: String(couple._id),
-        coupleNames: couple.chossonName + ' & ' + couple.kallahName,
-        contributorName: String(contributorName).trim(),
-        contributorEmail: email,
-        amount: Math.round(amt * 100) / 100,
-        verified: true,          // mom entering it = already confirmed
-        source: 'manual'
-      })
-      if (sendThanks && /^\S+@\S+\.\S+$/.test(email)) {
-        await sendThankYou(email, doc.contributorName, [doc.coupleNames])
+      const groupId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+      const docs = []
+      for (const s of selections) {
+        const couple = await Couples.findById(s.coupleId).select('chossonName kallahName')
+        if (!couple) continue
+        let amt = parseFloat(s.amount)
+        if (!isFinite(amt) || amt <= 0) amt = 65
+        docs.push({
+          coupleId: String(couple._id),
+          coupleNames: couple.chossonName + ' & ' + couple.kallahName,
+          contributorName: name,
+          contributorEmail: email,
+          amount: Math.round(amt * 100) / 100,
+          verified: true,          // mom entering it = already confirmed
+          source: 'manual',
+          groupId
+        })
       }
-      res.json({ status: true, contribution: doc })
+      if (!docs.length) return res.status(404).json({ status: false, message: 'No matching couples found.' })
+
+      const created = await Contribution.insertMany(docs)
+      // one combined thank-you covering every couple in this entry
+      if (sendThanks && /^\S+@\S+\.\S+$/.test(email)) {
+        await sendThankYou(email, name, docs.map(d => d.coupleNames))
+      }
+      res.json({ status: true, count: created.length, contributions: created, contribution: created[0] })
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: false, message: 'Could not add contributor.' })

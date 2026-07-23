@@ -250,6 +250,24 @@
     .cf-btn-gold[disabled] { opacity:.55; pointer-events:none; }
     .cf-btn-ghost { background:transparent; border:1px solid var(--line); color:var(--sage); }
     .cf-btn-ghost:hover { background:#eef0ec; }
+    /* Detroit Chesed Package - deliberately stands out as a gifted extra */
+    .cf-chesed { margin-top:22px; border:1.5px solid var(--gold); border-radius:16px; overflow:hidden;
+      background:linear-gradient(160deg, #fdf9f0 0%, #f8f3e8 100%); box-shadow:0 8px 22px -14px rgba(179,146,90,.55); }
+    .cf-chesed-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; padding:18px 20px 12px; flex-wrap:wrap; }
+    .cf-chesed-badge { display:inline-block; background:var(--gold); color:#fff; font-family:var(--sans);
+      font-size:10px; letter-spacing:.18em; text-transform:uppercase; font-weight:500; border-radius:999px; padding:4px 12px; }
+    .cf-chesed h4 { font-family:var(--serif); font-weight:600; font-size:23px; color:var(--sage-dark); margin:9px 0 4px; }
+    .cf-chesed p { font-family:var(--sans); font-weight:300; font-size:13px; color:var(--soft); line-height:1.55; max-width:330px; margin:0; }
+    .cf-chesed-all { border:1px solid var(--gold); background:transparent; color:var(--gold); font-family:var(--sans);
+      font-size:11.5px; letter-spacing:.06em; border-radius:999px; padding:7px 16px; cursor:pointer; white-space:nowrap; }
+    .cf-chesed-all:hover { background:var(--gold); color:#fff; }
+    .cf-chesed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px; padding:4px 20px 20px; }
+    .cf-chesed-item { display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #ecdfc4; border-radius:10px;
+      padding:11px 13px; cursor:pointer; user-select:none; font-family:var(--sans); font-size:14px; color:var(--ink); transition:all .15s; }
+    .cf-chesed-item:hover { border-color:var(--gold); }
+    .cf-chesed-item input { width:16px; height:16px; accent-color:var(--gold); cursor:pointer; flex:none; }
+    .cf-chesed-item:has(input:checked) { border-color:var(--gold); background:#fffaf0; box-shadow:inset 0 0 0 1px var(--gold); }
+
     .cf-done { text-align:center; padding:46px 34px 50px; display:none; }
     .cf-done .big { font-family:var(--serif); font-style:italic; font-size:36px; color:var(--gold); }
     .cf-done p { font-family:var(--serif); font-size:19px; color:var(--ink); line-height:1.65; margin:14px auto 0; max-width:420px; }
@@ -351,16 +369,21 @@
             <div class="cf-f"><label>Personal shopper?</label>
               <select id="cf_personalShopper"><option value="">Choose&hellip;</option><option value="yes">Yes</option><option value="no">No</option></select></div>
           </div>
-          <div class="cf-f" style="margin-top:4px;">
-            <label style="display:flex; align-items:center; justify-content:space-between;">Detroit Chesed Package Gift (optional)
-              <button type="button" class="cf-btn cf-btn-ghost" style="padding:4px 14px; font-size:11.5px;" onclick="cfChesedAll(this)">Select all</button>
-            </label>
-            <div class="cf-grid">
-              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_toaster"> Toaster</label>
-              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_urn"> Urn</label>
-              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_kitchenTowels"> Kitchen towels</label>
-              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_vacuum"> Vacuum</label>
-              <label class="cf-chk" style="margin:0;"><input type="checkbox" id="cf_cholentPot"> Cholent pot</label>
+          <div class="cf-chesed">
+            <div class="cf-chesed-head">
+              <div>
+                <div class="cf-chesed-badge">A gift from us to you</div>
+                <h4>Detroit Chesed Package</h4>
+                <p>Choose any items you'd like included with the couple's gift &mdash; free of charge, courtesy of Detroit Chesed.</p>
+              </div>
+              <button type="button" class="cf-chesed-all" onclick="cfChesedAll(this)">Select all</button>
+            </div>
+            <div class="cf-chesed-grid">
+              <label class="cf-chesed-item"><input type="checkbox" id="cf_toaster"> <span>Toaster</span></label>
+              <label class="cf-chesed-item"><input type="checkbox" id="cf_urn"> <span>Urn</span></label>
+              <label class="cf-chesed-item"><input type="checkbox" id="cf_kitchenTowels"> <span>Kitchen towels</span></label>
+              <label class="cf-chesed-item"><input type="checkbox" id="cf_vacuum"> <span>Vacuum</span></label>
+              <label class="cf-chesed-item"><input type="checkbox" id="cf_cholentPot"> <span>Cholent pot</span></label>
             </div>
           </div>
         </div>
@@ -447,6 +470,13 @@
     ids.forEach(function(i) { document.getElementById(i).checked = !all })
     btn.textContent = all ? 'Select all' : 'Unselect all'
   }
+  // keep the button label honest when items are ticked individually
+  document.addEventListener('change', function(e) {
+    if (!e.target.closest || !e.target.closest('.cf-chesed-grid')) return
+    var ids = ['cf_toaster', 'cf_urn', 'cf_kitchenTowels', 'cf_vacuum', 'cf_cholentPot']
+    var btn = document.querySelector('.cf-chesed-all')
+    if (btn) btn.textContent = ids.every(function(i) { return document.getElementById(i).checked }) ? 'Unselect all' : 'Select all'
+  })
   function cfV(id) { return document.getElementById(id).value }
   function cfC(id) { return document.getElementById(id).checked }
 

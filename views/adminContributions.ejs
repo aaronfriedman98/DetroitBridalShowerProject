@@ -127,20 +127,31 @@
     <div class="card">
       <div class="card-head"><h3>Record a Gift</h3></div>
       <div class="body">
-        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Works for any couple &mdash; past or present. Saved as verified right away.</div>
-        <div class="field" style="position:relative;">
-          <label>Couple</label>
-          <input type="text" id="mCoupleSearch" placeholder="Type to search all couples&hellip;" autocomplete="off">
-          <input type="hidden" id="mCoupleId">
-          <div id="mCoupleResults" class="pick-results"></div>
-        </div>
+        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Enter the person once and add every couple they gave to. Saved as verified right away.</div>
+
         <div class="field"><label>Contributor name</label><input type="text" id="mName" placeholder="e.g. Sarah Goldberg"></div>
         <div class="field"><label>Contributor email (for thank-you)</label><input type="email" id="mEmail" placeholder="optional"></div>
-        <div class="field"><label>Amount ($)</label><input type="number" id="mAmount" value="65" min="1"></div>
+
+        <div class="field" style="position:relative;">
+          <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <span>Add couples</span>
+            <label style="display:flex; align-items:center; gap:6px; font-size:11px; letter-spacing:0; text-transform:none; color:var(--ink-soft); cursor:pointer;">
+              <input type="checkbox" id="mIncludePast" style="accent-color:var(--gold); width:14px; height:14px;"> include past couples
+            </label>
+          </label>
+          <input type="text" id="mCoupleSearch" placeholder="Type to search&hellip;" autocomplete="off">
+          <div id="mCoupleResults" class="pick-results"></div>
+        </div>
+
+        <div id="mPicked"></div>
+
         <label style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:var(--sage-deep); cursor:pointer;">
-          <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send thank-you email (needs an email above)
+          <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send one thank-you email (needs an email above)
         </label>
-        <div style="margin-top:16px;"><button class="btn btn-gold" onclick="addManual()">Add Contributor</button></div>
+        <div style="margin-top:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button class="btn btn-gold" onclick="addManual()">Record Gift</button>
+          <span id="mTotal" style="font-size:13px; color:var(--ink-soft);"></span>
+        </div>
       </div>
       <div class="card-head" style="border-top:1px solid var(--line);"><h3>Per-Couple Totals</h3><span class="count">private — never shown publicly</span></div>
       <div class="scroll" style="max-height:340px;"><table>
@@ -169,24 +180,68 @@ async function load() {
   renderPending(); renderAll();
 }
 
-// searchable couple picker (all couples, past and present)
+// ---- multi-couple picker for one contributor ----
+// Defaults to couples currently collecting (the everyday case); tick
+// "include past couples" to reach the whole database for backfilling history.
+let picked = [];   // [{ _id, names, amount }]
 const pickIn = $('mCoupleSearch'), pickOut = $('mCoupleResults');
-pickIn.addEventListener('input', () => {
-  $('mCoupleId').value = '';
+
+function searchPool() {
+  return $('mIncludePast').checked ? couples : couples.filter(c => c.collecting);
+}
+function runSearch() {
   const t = pickIn.value.trim().toLowerCase();
   if (!t) { pickOut.classList.remove('show'); return; }
-  const hits = couples.filter(c => (c.chossonName + ' & ' + c.kallahName).toLowerCase().includes(t)).slice(0, 8);
+  const hits = searchPool()
+    .filter(c => !picked.some(p => String(p._id) === String(c._id)))
+    .filter(c => (c.chossonName + ' & ' + c.kallahName).toLowerCase().includes(t))
+    .slice(0, 8);
   pickOut.innerHTML = hits.length
     ? hits.map(c => `<button type="button" onclick="pickCouple('${c._id}')">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}${c.collecting ? '<span class="tag">collecting</span>' : ''}</button>`).join('')
-    : '<button type="button" disabled style="color:var(--ink-soft);">No matches</button>';
+    : `<button type="button" disabled style="color:var(--ink-soft);">No matches${$('mIncludePast').checked ? '' : ' — tick "include past couples" to search them all'}</button>`;
   pickOut.classList.add('show');
-});
+}
+pickIn.addEventListener('input', runSearch);
+pickIn.addEventListener('focus', runSearch);
+$('mIncludePast').addEventListener('change', runSearch);
+
 function pickCouple(id) {
   const c = couples.find(x => String(x._id) === String(id));
   if (!c) return;
-  $('mCoupleId').value = c._id;
-  pickIn.value = c.chossonName + ' & ' + c.kallahName;
+  if (!picked.some(p => String(p._id) === String(c._id))) {
+    picked.push({ _id: String(c._id), names: c.chossonName + ' & ' + c.kallahName, amount: 65 });
+  }
+  pickIn.value = '';
   pickOut.classList.remove('show');
+  renderPicked();
+  pickIn.focus();
+}
+function unpick(id) {
+  picked = picked.filter(p => String(p._id) !== String(id));
+  renderPicked();
+}
+function setPickedAmount(id, val) {
+  const p = picked.find(x => String(x._id) === String(id));
+  if (p) { p.amount = val; renderPickedTotal(); }
+}
+function renderPicked() {
+  $('mPicked').innerHTML = picked.length ? `
+    <div style="border:1px solid var(--line); border-radius:12px; margin-top:10px; overflow:hidden;">
+      ${picked.map(p => `
+      <div style="display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #f0ece3;">
+        <span style="flex:1; font-size:13.5px; color:var(--ink);">${esc(p.names)}</span>
+        <span style="color:var(--ink-soft); font-size:13px;">$</span>
+        <input type="number" min="1" step="0.01" value="${p.amount}" onchange="setPickedAmount('${p._id}', this.value)" oninput="setPickedAmount('${p._id}', this.value)"
+               style="width:74px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; font-size:13px; text-align:right; outline:none; font-family:var(--sans);">
+        <button class="mini danger" title="Remove" onclick="unpick('${p._id}')">✕</button>
+      </div>`).join('')}
+    </div>` : '';
+  renderPickedTotal();
+}
+function renderPickedTotal() {
+  if (!picked.length) { $('mTotal').textContent = ''; return; }
+  const total = picked.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+  $('mTotal').textContent = picked.length + ' couple' + (picked.length === 1 ? '' : 's') + ' · $' + total.toFixed(2).replace(/\.00$/, '');
 }
 document.addEventListener('click', (e) => { if (!e.target.closest('#mCoupleSearch') && !e.target.closest('#mCoupleResults')) pickOut.classList.remove('show'); });
 
@@ -285,19 +340,19 @@ async function delOne(id) {
 }
 async function addManual() {
   const body = {
-    coupleId: $('mCoupleId').value,
     contributorName: $('mName').value,
     contributorEmail: $('mEmail').value.trim(),
-    amount: $('mAmount').value,
+    selections: picked.map(p => ({ coupleId: p._id, amount: p.amount })),
     sendThanks: $('mThanks').checked && !!$('mEmail').value.trim()
   };
-  if (!body.coupleId) { toast('Search for and select a couple first.', true); return; }
   if (!body.contributorName.trim()) { toast('Enter the contributor name.', true); return; }
+  if (!body.selections.length) { toast('Add at least one couple.', true); return; }
   const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const d = await res.json();
   if (d.status) {
-    toast('Added & verified.' + (body.sendThanks ? ' Thank-you email sent.' : ''));
-    $('mName').value = ''; $('mEmail').value = ''; $('mAmount').value = '65';
+    toast('Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + '.' + (body.sendThanks ? ' Thank-you email sent.' : ''));
+    $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
+    picked = []; renderPicked();
     await load();
   }
   else toast(d.message || 'Could not add.', true);
