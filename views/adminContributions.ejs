@@ -116,6 +116,7 @@
               <option value="">All couples</option>
             </select>
             <a class="btn btn-ghost" id="exportBtn" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
+            <button class="btn btn-ghost" onclick="printList()">🖨 Print</button>
           </div>
         </div>
         <div class="scroll"><table>
@@ -129,7 +130,11 @@
       <div class="body">
         <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Enter the person once and add every couple they gave to. Saved as verified right away.</div>
 
-        <div class="field"><label>Contributor name</label><input type="text" id="mName" placeholder="e.g. Sarah Goldberg"></div>
+        <div class="field" style="position:relative;">
+          <label>Contributor name</label>
+          <input type="text" id="mName" placeholder="e.g. Sarah Goldberg" autocomplete="off">
+          <div id="mNameResults" class="pick-results"></div>
+        </div>
         <div class="field"><label>Contributor email (for thank-you)</label><input type="email" id="mEmail" placeholder="optional"></div>
 
         <div class="field" style="position:relative;">
@@ -178,6 +183,43 @@ async function load() {
   $('coupleFilter').innerHTML = '<option value="">All couples</option>' + [...seen].map(([id,n]) => `<option value="${id}">${esc(n)}</option>`).join('');
   $('coupleFilter').value = keep;
   renderPending(); renderAll();
+}
+
+// ---- contributor memory: suggest known people as mom types (or on focus) ----
+// Derived from every saved contribution, newest first, so the system "learns"
+// each person's name + email after the first entry.
+function knownContributors() {
+  const seen = new Map();   // norm name -> { name, email, gifts }
+  for (const c of contributions) {           // contributions is newest-first
+    const key = String(c.contributorName || '').trim().toLowerCase();
+    if (!key) continue;
+    if (!seen.has(key)) seen.set(key, { name: c.contributorName.trim(), email: (c.contributorEmail || '').trim(), gifts: 0 });
+    const e = seen.get(key);
+    e.gifts++;
+    if (!e.email && c.contributorEmail) e.email = String(c.contributorEmail).trim();
+  }
+  return [...seen.values()];
+}
+const nameIn = $('mName'), nameOut = $('mNameResults');
+function runNameSearch() {
+  const t = nameIn.value.trim().toLowerCase();
+  const pool = knownContributors();
+  const hits = (t ? pool.filter(p => p.name.toLowerCase().includes(t) || p.email.toLowerCase().includes(t)) : pool).slice(0, 8);
+  if (!hits.length) { nameOut.classList.remove('show'); return; }
+  nameOut.innerHTML = hits.map(p =>
+    `<button type="button" onclick="pickContributor(${JSON.stringify(p.name).replace(/"/g, '&quot;')}, ${JSON.stringify(p.email).replace(/"/g, '&quot;')})">
+      ${esc(p.name)}<span style="float:right; color:var(--ink-soft); font-size:11px;">${p.gifts} gift${p.gifts === 1 ? '' : 's'}</span>
+      <div style="font-size:11.5px; color:var(--ink-soft);">${esc(p.email) || 'no email on file'}</div>
+    </button>`).join('');
+  nameOut.classList.add('show');
+}
+nameIn.addEventListener('input', runNameSearch);
+nameIn.addEventListener('focus', runNameSearch);
+function pickContributor(name, email) {
+  nameIn.value = name;
+  if (email) $('mEmail').value = email;
+  nameOut.classList.remove('show');
+  $('mCoupleSearch').focus();
 }
 
 // ---- multi-couple picker for one contributor ----
@@ -243,7 +285,10 @@ function renderPickedTotal() {
   const total = picked.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
   $('mTotal').textContent = picked.length + ' couple' + (picked.length === 1 ? '' : 's') + ' · $' + total.toFixed(2).replace(/\.00$/, '');
 }
-document.addEventListener('click', (e) => { if (!e.target.closest('#mCoupleSearch') && !e.target.closest('#mCoupleResults')) pickOut.classList.remove('show'); });
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#mCoupleSearch') && !e.target.closest('#mCoupleResults')) pickOut.classList.remove('show');
+  if (!e.target.closest('#mName') && !e.target.closest('#mNameResults')) nameOut.classList.remove('show');
+});
 
 function renderPending() {
   const pending = contributions.filter(c => !c.verified);
@@ -338,6 +383,57 @@ async function delOne(id) {
   const res = await fetch('/newAdmin/deleteContribution', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
   if ((await res.json()).status) { toast('Deleted.'); await load(); } else toast('Could not delete.', true);
 }
+// ---- printable contributor list (respects the couple filter) ----
+// Checkboxes on the print page let mom include/exclude emails and amounts,
+// so the same button covers "names only" and "names + emails" lists.
+function printList() {
+  const f = $('coupleFilter').value;
+  const rows = contributions.filter(c => !f || c.coupleId === f);
+  if (!rows.length) { toast('Nothing to print for this selection.', true); return; }
+  const title = f ? rows[0].coupleNames : 'All Couples';
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const tr = rows.map(c => `
+    <tr>
+      <td>${esc(c.contributorName)}</td>
+      <td class="col-email">${esc(c.contributorEmail || '')}</td>
+      ${f ? '' : `<td>${esc(c.coupleNames)}</td>`}
+      <td class="col-amt">$${(c.amount || 0).toFixed(2)}</td>
+      <td class="col-amt">${c.verified ? 'Verified' : 'Pending'}</td>
+    </tr>`).join('');
+  const w = window.open('', '_blank');
+  if (!w) { toast('Your browser blocked the print window — allow popups for this site.', true); return; }
+  w.document.write(`<!DOCTYPE html><html><head><title>Contributors — ${esc(title)}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    body { font-family:'Jost','Segoe UI',sans-serif; color:#2e2e29; margin:40px; }
+    h1 { font-family:'Cormorant Garamond',Georgia,serif; font-weight:600; color:#383c36; margin:0 0 2px; }
+    .sub { color:#6d6d64; font-size:13px; margin-bottom:18px; }
+    .controls { background:#f4f1ea; border:1px solid #e7e2d8; border-radius:10px; padding:10px 14px; margin-bottom:18px; font-size:13.5px; display:flex; gap:22px; align-items:center; }
+    .controls label { display:flex; gap:6px; align-items:center; cursor:pointer; }
+    .controls input { accent-color:#b3925a; }
+    .controls .go { margin-left:auto; background:#b3925a; color:#fff; border:none; border-radius:999px; padding:8px 22px; font-family:inherit; font-size:13.5px; cursor:pointer; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; }
+    th { text-align:left; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:#6d6d64; border-bottom:1.5px solid #b3925a; padding:6px 8px; }
+    td { padding:7px 8px; border-bottom:1px solid #eee7d9; }
+    body.no-email .col-email, body.no-amt .col-amt { display:none; }
+    @media print { .controls { display:none; } body { margin:16px; } }
+  </style></head>
+  <body>
+    <h1>Contributors &mdash; ${esc(title)}</h1>
+    <div class="sub">Detroit Bridal Shower &middot; ${rows.length} entr${rows.length === 1 ? 'y' : 'ies'} &middot; printed ${today}</div>
+    <div class="controls">
+      <label><input type="checkbox" checked onchange="document.body.classList.toggle('no-email', !this.checked)"> Include emails</label>
+      <label><input type="checkbox" checked onchange="document.body.classList.toggle('no-amt', !this.checked)"> Include amounts &amp; status</label>
+      <button class="go" onclick="window.print()">Print</button>
+    </div>
+    <table>
+      <thead><tr><th>Name</th><th class="col-email">Email</th>${f ? '' : '<th>Couple</th>'}<th class="col-amt">Amount</th><th class="col-amt">Status</th></tr></thead>
+      <tbody>${tr}</tbody>
+    </table>
+  </body></html>`);
+  w.document.close();
+}
+
 async function addManual() {
   const body = {
     contributorName: $('mName').value,
@@ -350,10 +446,15 @@ async function addManual() {
   const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
   const d = await res.json();
   if (d.status) {
-    toast('Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + '.' + (body.sendThanks ? ' Thank-you email sent.' : ''));
+    const who = body.contributorName.trim();
+    toast('Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + ' from ' + who + '.' + (body.sendThanks ? ' Thank-you email sent.' : ''));
     $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
     picked = []; renderPicked();
+    // show the new rows: clear any couple filter that would hide them
+    $('coupleFilter').value = '';
     await load();
+    const scroll = document.querySelector('.scroll');
+    if (scroll) scroll.scrollTop = 0;
   }
   else toast(d.message || 'Could not add.', true);
 }
