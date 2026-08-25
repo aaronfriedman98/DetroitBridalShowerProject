@@ -154,7 +154,7 @@
           <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send one thank-you email (needs an email above)
         </label>
         <div style="margin-top:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <button class="btn btn-gold" onclick="addManual()">Record Gift</button>
+          <button class="btn btn-gold" id="mRecordBtn" onclick="addManual()">Record Gift</button>
           <span id="mTotal" style="font-size:13px; color:var(--ink-soft);"></span>
         </div>
       </div>
@@ -455,7 +455,13 @@ function printList() {
   w.document.close();
 }
 
+let recordInFlight = false;
 async function addManual() {
+  // guard against rapid repeat-clicks firing multiple submissions while the
+  // first request is still pending (this is what caused duplicate entries
+  // before the server-side duplicate guard existed)
+  if (recordInFlight) return;
+
   const body = {
     contributorName: $('mName').value,
     contributorEmail: $('mEmail').value.trim(),
@@ -464,23 +470,37 @@ async function addManual() {
   };
   if (!body.contributorName.trim()) { toast('Enter the contributor name.', true); return; }
   if (!body.selections.length) { toast('Add at least one couple.', true); return; }
-  const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  const d = await res.json();
-  if (d.status) {
-    const who = body.contributorName.trim();
-    let msg = 'Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + ' from ' + who + '.';
-    if (d.skipped && d.skipped.length) msg += ' Skipped ' + d.skipped.length + ' already recorded.';
-    if (body.sendThanks) msg += ' Thank-you email sent.';
-    toast(msg);
-    $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
-    picked = []; renderPicked();
-    // show the new rows: clear any couple filter that would hide them
-    $('coupleFilter').value = '';
-    await load();
-    const scroll = document.querySelector('.scroll');
-    if (scroll) scroll.scrollTop = 0;
+
+  const btn = $('mRecordBtn');
+  recordInFlight = true;
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Saving…';
+  try {
+    const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const d = await res.json();
+    if (d.status) {
+      const who = body.contributorName.trim();
+      let msg = 'Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + ' from ' + who + '.';
+      if (d.skipped && d.skipped.length) msg += ' Skipped ' + d.skipped.length + ' already recorded.';
+      if (body.sendThanks) msg += ' Thank-you email sent.';
+      toast(msg);
+      $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
+      picked = []; renderPicked();
+      // show the new rows: clear any couple filter that would hide them
+      $('coupleFilter').value = '';
+      await load();
+      const scroll = document.querySelector('.scroll');
+      if (scroll) scroll.scrollTop = 0;
+    }
+    else toast(d.message || 'Could not add.', true);
+  } catch (e) {
+    toast('Could not reach the server — please try again.', true);
+  } finally {
+    recordInFlight = false;
+    btn.disabled = false;
+    btn.textContent = originalLabel;
   }
-  else toast(d.message || 'Could not add.', true);
 }
 load();
 </script>
