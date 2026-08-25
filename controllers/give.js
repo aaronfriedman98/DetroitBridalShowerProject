@@ -149,9 +149,15 @@ module.exports = {
       // group names by couple; names only, never amounts
       const map = new Map()
       for (const c of verified) {
-        if (!map.has(c.coupleId)) map.set(c.coupleId, { coupleId: c.coupleId, coupleNames: c.coupleNames, contributors: [] })
-        map.get(c.coupleId).contributors.push(c.contributorName)
+        if (!map.has(c.coupleId)) map.set(c.coupleId, { coupleId: c.coupleId, coupleNames: c.coupleNames, contributors: [], _seen: new Set() })
+        const entry = map.get(c.coupleId)
+        const key = String(c.contributorName || '').trim().toLowerCase()
+        if (key && !entry._seen.has(key)) {          // never list the same name twice
+          entry._seen.add(key)
+          entry.contributors.push(c.contributorName)
+        }
       }
+      map.forEach(e => delete e._seen)
       res.render('contributors.ejs', { couples: [...map.values()] })
     } catch (err) {
       console.error(err)
@@ -201,10 +207,22 @@ module.exports = {
 
       const email = String(contributorEmail || '').trim()
       const groupId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+      const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const docs = []
+      const skipped = []
       for (const s of selections) {
         const couple = await Couples.findById(s.coupleId).select('chossonName kallahName')
         if (!couple) continue
+        // hard duplicate guard: same person (by email when present, else by
+        // name) may only be recorded once per couple
+        const identity = email
+          ? { contributorEmail: new RegExp('^' + escRe(email) + '$', 'i') }
+          : { contributorName: new RegExp('^' + escRe(name) + '$', 'i') }
+        const dup = await Contribution.findOne({ coupleId: String(couple._id), ...identity })
+        if (dup) {
+          skipped.push(couple.chossonName + ' & ' + couple.kallahName)
+          continue
+        }
         let amt = parseFloat(s.amount)
         if (!isFinite(amt) || amt <= 0) amt = 65
         docs.push({
@@ -218,14 +236,22 @@ module.exports = {
           groupId
         })
       }
-      if (!docs.length) return res.status(404).json({ status: false, message: 'No matching couples found.' })
+      if (!docs.length) {
+        return res.status(409).json({
+          status: false,
+          skipped,
+          message: skipped.length
+            ? 'Already recorded for ' + skipped.join(', ') + ' — nothing was added.'
+            : 'No matching couples found.'
+        })
+      }
 
       const created = await Contribution.insertMany(docs)
       // one combined thank-you covering every couple in this entry
       if (sendThanks && /^\S+@\S+\.\S+$/.test(email)) {
         await sendThankYou(email, name, docs.map(d => d.coupleNames))
       }
-      res.json({ status: true, count: created.length, contributions: created, contribution: created[0] })
+      res.json({ status: true, count: created.length, skipped, contributions: created, contribution: created[0] })
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: false, message: 'Could not add contributor.' })
