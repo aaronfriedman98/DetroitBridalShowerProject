@@ -1,5 +1,7 @@
 const Couples = require('../models/couplesList')
 const Contribution = require('../models/contribution')
+const Emails = require('../models/emailList')
+const { buildContributorListEmail } = require('../mailTemplates')
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.API_KEY)
 
@@ -321,6 +323,102 @@ module.exports = {
         : 'contributions.csv'
       res.set('Content-Type', 'text/csv')
       res.set('Content-Disposition', 'attachment; filename="' + fname + '"')
+      res.send('﻿' + lines.join('\r\n'))
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Export failed')
+    }
+  },
+
+  // Email the finished contributor list for one couple (names only, never
+  // amounts) - mom sends this to the couple along with the check.
+  sendContributorList: async (req, res) => {
+    try {
+      const { coupleId, to, preview } = req.body
+      const couple = await Couples.findById(coupleId).select('chossonName kallahName')
+      if (!couple) return res.status(404).json({ status: false, message: 'Couple not found.' })
+
+      // NOTE: Cosmos DB refuses to sort on non-indexed fields, so sort in JS
+      const rows = await Contribution.find({ coupleId: String(coupleId), verified: true })
+        .select('contributorName')
+      // unique names, alphabetical, no amounts anywhere
+      const names = [...new Set(rows.map(r => String(r.contributorName || '').trim()).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b))
+      if (!names.length) return res.status(400).json({ status: false, message: 'No verified contributors for this couple yet.' })
+
+      const coupleNames = couple.chossonName + ' & ' + couple.kallahName
+      const html = buildContributorListEmail(coupleNames, names)
+
+      if (preview) {
+        res.set('Content-Type', 'text/html')
+        return res.send(html)
+      }
+
+      const dest = String(to || '').trim()
+      if (!/^\S+@\S+\.\S+$/.test(dest)) return res.status(400).json({ status: false, message: 'Please enter a valid email address.' })
+
+      await sgMail.send({
+        to: dest,
+        from: MOM_EMAIL,
+        subject: 'With gratitude — your bridal shower contributors',
+        html
+      })
+      res.json({ status: true, count: names.length, to: dest })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Could not send the list.' })
+    }
+  },
+
+  // ---------- mailing list management (admin) ----------
+  getSubscribers: async (req, res) => {
+    try {
+      const rows = await Emails.find().select('email').sort({ _id: -1 })
+      res.json({ subscribers: rows.map(r => ({ _id: r._id, email: r.email })) })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ error: 'Could not load subscribers' })
+    }
+  },
+
+  addSubscriber: async (req, res) => {
+    try {
+      const email = String(req.body.email || '').trim()
+      if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ status: false, message: 'Please enter a valid email address.' })
+      const pattern = new RegExp('^\\s*' + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i')
+      const existing = await Emails.findOne({ email: pattern })
+      if (existing) return res.status(409).json({ status: false, message: 'That email is already on the list.' })
+      const doc = await Emails.create({ email })
+      res.json({ status: true, subscriber: doc })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Could not add subscriber.' })
+    }
+  },
+
+  removeSubscriber: async (req, res) => {
+    try {
+      // remove by id, but also sweep any duplicate rows of the same address
+      const doc = await Emails.findById(req.body.id)
+      if (!doc) return res.status(404).json({ status: false, message: 'Not found.' })
+      const pattern = new RegExp('^\\s*' + String(doc.email).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i')
+      const r = await Emails.deleteMany({ email: pattern })
+      res.json({ status: true, removed: r.deletedCount, email: doc.email })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Could not remove subscriber.' })
+    }
+  },
+
+  exportSubscribers: async (req, res) => {
+    try {
+      // NOTE: Cosmos DB refuses to sort on non-indexed fields, so sort in JS
+      const rows = await Emails.find().select('email')
+      rows.sort((a, b) => String(a.email || '').localeCompare(String(b.email || '')))
+      const lines = ['Email']
+      rows.forEach(r => lines.push('"' + String(r.email || '').replace(/"/g, '""') + '"'))
+      res.set('Content-Type', 'text/csv')
+      res.set('Content-Disposition', 'attachment; filename="mailing-list.csv"')
       res.send('﻿' + lines.join('\r\n'))
     } catch (err) {
       console.error(err)

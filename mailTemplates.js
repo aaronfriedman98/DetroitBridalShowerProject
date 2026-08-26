@@ -244,4 +244,67 @@ function buildInstructionsEmail() {
   )
 }
 
-module.exports = { emailRows, buildActionEmail, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail }
+// The finished contributor list for a couple, sent to them with their gift.
+// Names only - amounts are never included anywhere in this email.
+function buildContributorListEmail(coupleNames, names) {
+  const site = publicSiteURL()
+  const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif"
+  const sans = "'Jost', 'Segoe UI', Arial, sans-serif"
+
+  const list = names.map(n =>
+    `<tr><td align="center" style="padding:7px 10px; border-bottom:1px solid #f2ede2; font-family:${serif}; font-size:19px; color:#2e2e29;">${n}</td></tr>`
+  ).join('')
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" type="text/css"/>
+</head>
+<body style="margin:0; padding:0; background-color:#f4f1ea;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f1ea;">
+<tr><td align="center" style="padding:34px 12px 44px;">
+  <table role="presentation" align="center" width="100%" cellpadding="0" cellspacing="0" style="width:100%; max-width:560px; margin:0 auto; background-color:#ffffff; border:1px solid #e7e2d8; border-radius:18px;">
+
+    <tr><td align="center" style="padding:40px 34px 0;">
+      <img src="${site}/assets/images/bridalshowerpic.jpg" width="96" alt="Detroit Bridal Shower" style="display:block; margin:0 auto; border:0;"/>
+      <div style="font-family:${sans}; font-size:11px; letter-spacing:5px; text-transform:uppercase; color:#494e46; padding-top:14px;">Detroit Bridal Shower</div>
+      <div style="font-family:${serif}; font-style:italic; font-size:40px; color:#b3925a; padding-top:18px; line-height:1.15;">Mazel Tov!</div>
+      <div style="font-family:${serif}; font-size:25px; color:#383c36; padding-top:6px; line-height:1.3;">${coupleNames}</div>
+    </td></tr>
+
+    <tr><td align="center" style="padding:20px 44px 0;">
+      <div style="font-family:${serif}; font-size:19px; color:#2e2e29; line-height:1.65;">
+        With tremendous gratitude, here are the friends and family whose generosity made your bridal shower possible.
+      </div>
+    </td></tr>
+
+    <tr><td align="center" style="padding:30px 34px 6px;">
+      <div style="font-family:${sans}; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#b3925a; font-weight:bold;">With Thanks To</div>
+      <div style="width:54px; height:1px; background-color:#d9c9a6; margin:12px auto 0; font-size:0; line-height:0;">&nbsp;</div>
+    </td></tr>
+
+    <tr><td style="padding:8px 30px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${list}</table>
+    </td></tr>
+
+    <tr><td align="center" style="padding:26px 44px 0;">
+      <div style="font-family:${serif}; font-size:18px; color:#6d6d64; line-height:1.65;">
+        May you build a beautiful bayis ne'eman b'Yisroel together, and may we share in many more simchas.
+      </div>
+    </td></tr>
+
+    <tr><td align="center" style="padding:26px 34px 38px;">
+      <div style="width:54px; height:1px; background-color:#d9c9a6; margin:0 auto 16px; font-size:0;">&nbsp;</div>
+      <div style="font-family:${serif}; font-style:italic; font-size:20px; color:#494e46;">Becky Friedman</div>
+      <div style="font-family:${sans}; font-size:11.5px; color:#9b998e; padding-top:8px;">Detroit Bridal Shower Project</div>
+    </td></tr>
+  </table>
+</td></tr>
+</table>
+</body>
+</html>`
+}
+
+module.exports = { emailRows, buildActionEmail, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail, buildContributorListEmail }

@@ -93,6 +93,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7s-2-4-5-4-3 4 0 4h5zM12 7s2-4 5-4 3 4 0 4h-5z"/></svg>
       Contributions
     </a>
+    <a href="/newAdmin/mailingList">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+      Mailing List
+    </a>
     <a href="/" target="_blank">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
       View Website
@@ -116,6 +120,7 @@
               <option value="">All couples</option>
             </select>
             <a class="btn btn-ghost" id="exportBtn" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
+            <button class="btn btn-ghost" id="emailListBtn" onclick="openSendList()" style="display:none;">✉ Email List to Couple</button>
             <button class="btn btn-ghost" onclick="printList()">🖨 Print</button>
           </div>
         </div>
@@ -166,6 +171,29 @@
     </div>
   </div>
 </main>
+<!-- send contributor list modal -->
+<div id="sendListOverlay" style="position:fixed; inset:0; z-index:90; background:rgba(40,42,38,.45); backdrop-filter:blur(3px); display:none; align-items:flex-start; justify-content:center; padding:8vh 16px 16px;">
+  <div style="background:var(--card); border-radius:20px; box-shadow:0 24px 60px -20px rgba(40,42,38,.4); width:100%; max-width:460px; overflow:hidden;">
+    <div style="padding:24px 26px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:14px;">
+      <div>
+        <h3 style="font-family:var(--serif); font-size:24px; font-weight:600; color:var(--sage-darker); margin:0;">Email the Contributor List</h3>
+        <div style="font-family:var(--serif); font-size:17px; color:var(--gold); margin-top:4px;" id="sendListNames"></div>
+      </div>
+      <button onclick="closeSendList()" style="border:none; background:var(--sage-soft); color:var(--sage-deep); width:32px; height:32px; border-radius:50%; font-size:16px; flex:none;">&times;</button>
+    </div>
+    <div style="padding:16px 26px 24px;">
+      <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.55;" id="sendListCount"></div>
+      <div class="field"><label>Send to</label><input type="email" id="sendListTo" placeholder="couple@example.com"></div>
+      <div style="margin-top:8px;"><a id="sendListPreview" href="#" target="_blank" style="font-size:12.5px; color:var(--gold);">Preview the email first &rarr;</a></div>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:10px; padding:0 26px 24px;">
+      <button class="btn btn-ghost" onclick="closeSendList()">Cancel</button>
+      <button class="btn btn-gold" id="sendListBtn" onclick="doSendList()">Send Email</button>
+    </div>
+  </div>
+</div>
+<style>#sendListOverlay.show { display:flex !important; }</style>
+
 <div class="toasts" id="toasts"></div>
 <script>
 let contributions = [], couples = [];
@@ -174,8 +202,20 @@ const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'
 const when = id => new Date(parseInt(String(id).substring(0,8),16)*1000).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 function toast(m, err) { const t = document.createElement('div'); t.className = 'toast' + (err ? ' err' : ''); t.textContent = m; $('toasts').appendChild(t); setTimeout(() => t.remove(), 3500); }
 
+// If the admin session expires while the page is open, send her straight to
+// the login screen instead of failing silently behind the scenes.
+const _fetch = window.fetch;
+window.fetch = async (url, opts) => {
+  const res = await _fetch(url, opts);
+  if (res.status === 401 && String(url).startsWith('/newAdmin')) {
+    window.location.href = '/login?expired=1&next=' + encodeURIComponent(window.location.pathname);
+  }
+  return res;
+};
+
 async function load() {
   const res = await fetch('/newAdmin/contributionsData');
+  if (res.status === 401) return;
   const data = await res.json();
   contributions = data.contributions; couples = data.couples;
   const seen = new Map(); contributions.forEach(c => seen.set(c.coupleId, c.coupleNames));
@@ -361,6 +401,8 @@ function renderAll() {
   const f = $('coupleFilter').value;
   $('exportBtn').href = '/newAdmin/exportContributions' + (f ? '?coupleId=' + encodeURIComponent(f) : '');
   $('exportBtn').textContent = f ? '⬇ Export This Couple' : '⬇ Export CSV';
+  // emailing the finished list only makes sense for one specific couple
+  $('emailListBtn').style.display = f ? 'inline-flex' : 'none';
   const rows = contributions.filter(c => !f || c.coupleId === f);
   $('allBody').innerHTML = rows.length ? rows.map(c => `<tr>
     <td>${esc(c.contributorName)}</td>
@@ -453,6 +495,37 @@ function printList() {
     </table>
   </body></html>`);
   w.document.close();
+}
+
+// ---- email the finished contributor list to the couple ----
+function openSendList() {
+  const id = $('coupleFilter').value;
+  if (!id) { toast('Choose a couple first.', true); return; }
+  const names = (contributions.find(c => String(c.coupleId) === String(id)) || {}).coupleNames || 'this couple';
+  const verified = contributions.filter(c => String(c.coupleId) === String(id) && c.verified).length;
+  if (!verified) { toast('No verified contributors for this couple yet.', true); return; }
+  $('sendListNames').textContent = names;
+  $('sendListCount').textContent = verified + ' contributor' + (verified === 1 ? '' : 's') + ' will be listed (no amounts shown).';
+  $('sendListPreview').href = '/newAdmin/previewContributorList?coupleId=' + encodeURIComponent(id);
+  $('sendListTo').value = '';
+  $('sendListOverlay').classList.add('show');
+}
+function closeSendList() { $('sendListOverlay').classList.remove('show'); }
+let sendListInFlight = false;
+async function doSendList() {
+  if (sendListInFlight) return;
+  const to = $('sendListTo').value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(to)) { toast('Enter a valid email address.', true); return; }
+  const btn = $('sendListBtn');
+  sendListInFlight = true; btn.disabled = true; const label = btn.textContent; btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('/newAdmin/sendContributorList', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ coupleId: $('coupleFilter').value, to }) });
+    const d = await res.json();
+    if (d.status) { toast('Sent the list of ' + d.count + ' contributors to ' + d.to + '.'); closeSendList(); }
+    else toast(d.message || 'Could not send.', true);
+  } catch (e) { toast('Could not reach the server.', true); }
+  finally { sendListInFlight = false; btn.disabled = false; btn.textContent = label; }
 }
 
 let recordInFlight = false;

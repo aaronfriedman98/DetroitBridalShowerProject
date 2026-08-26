@@ -408,6 +408,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7s-2-4-5-4-3 4 0 4h5zM12 7s2-4 5-4 3 4 0 4h-5z"/></svg>
         Contributions
       </a>
+      <a href="/newAdmin/mailingList">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+        Mailing List
+      </a>
       <a href="/" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
         View Website
@@ -670,9 +674,21 @@ function resolveConfirm(val) {
   if (confirmResolver) { confirmResolver(val); confirmResolver = null; }
 }
 
+// If the admin session expires while the page is open, send her straight to
+// the login screen instead of failing silently behind the scenes.
+const _fetch = window.fetch;
+window.fetch = async (url, opts) => {
+  const res = await _fetch(url, opts);
+  if (res.status === 401 && String(url).startsWith('/newAdmin')) {
+    window.location.href = '/login?expired=1&next=' + encodeURIComponent(window.location.pathname);
+  }
+  return res;
+};
+
 async function refreshData() {
   try {
     const res = await fetch('/newAdmin/data');
+    if (res.status === 401) return;
     if (!res.ok) throw new Error();
     const data = await res.json();
     state.couples = data.couples;

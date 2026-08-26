@@ -33,6 +33,18 @@ router.post('/addContribution', adminAuth, give.addContribution)
 router.put('/verifyContribution', adminAuth, give.verifyContribution)
 router.post('/verifyGroup', adminAuth, give.verifyGroup)
 router.get('/exportContributions', adminAuth, give.exportContributions)
+router.post('/sendContributorList', adminAuth, give.sendContributorList)
+router.get('/previewContributorList', adminAuth, (req, res) => {
+  req.body = { coupleId: req.query.coupleId, preview: true }
+  return give.sendContributorList(req, res)
+})
+
+// mailing list management
+router.get('/mailingList', adminAuth, (req, res) => res.render('adminMailingList.ejs'))
+router.get('/subscribers', adminAuth, give.getSubscribers)
+router.post('/addSubscriber', adminAuth, give.addSubscriber)
+router.delete('/removeSubscriber', adminAuth, give.removeSubscriber)
+router.get('/exportSubscribers', adminAuth, give.exportSubscribers)
 router.delete('/deleteContribution', adminAuth, give.deleteContribution)
 
 router.post('/sendTestEmail', adminAuth, (req, res) => {

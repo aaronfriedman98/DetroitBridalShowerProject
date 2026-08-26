@@ -21,6 +21,14 @@
     <body>
       <div class="wrapper">
         <div class="title">Login Form</div>
+        <div id="expiredNote" style="display:none; background:#f3ead9; color:#8a6d3b; border:1px solid #e5d5b4; border-radius:8px; padding:10px 14px; margin:0 20px 14px; font-size:14px; text-align:center;">
+          Your session expired &mdash; please log in again to continue.
+        </div>
+        <script>
+          if (new URLSearchParams(location.search).get('expired')) {
+            document.getElementById('expiredNote').style.display = 'block';
+          }
+        </script>
         <form action="#">
           <div class="field">
             <input type="text" id="username" required>
@@ -218,7 +226,11 @@ form .signup-link a:hover{
         if (res.status === 400 || res.status === 401) {
           return display.textContent = `${data.message}. ${data.error ? data.error : ''}`
         }
-        data.role === "admin" ? location.assign('/newAdmin') : location.assign('/')
+        // return her to the page she was on when the session expired
+        const nextUrl = new URLSearchParams(location.search).get('next')
+        data.role === "admin"
+          ? location.assign(nextUrl && nextUrl.startsWith('/') ? nextUrl : '/newAdmin')
+          : location.assign('/')
       } catch (err) {
         console.log(err.message)
       }

@@ -212,19 +212,24 @@ module.exports = {
     },
     removeEmailFromList : async (req, res) => {
       try {
-        //search the emailDB for the inputed email
-        const email = req.body.email
-        console.log(email)
-        // const count = await Emails.countDocuments({})
-        // console.log(count)
-        const result = await Emails.findOneAndDelete({ email: email });
+        // Match case-insensitively and ignore stray whitespace - people rarely
+        // retype their address with the exact casing it was stored in. Delete
+        // EVERY matching row so old duplicates can't keep the emails coming.
+        const email = String(req.body.email || '').trim()
+        if (!email) {
+          return res.render('message.ejs', { title: 'Oops!', message: 'Please enter your email address.' })
+        }
+        const pattern = new RegExp('^\\s*' + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*$', 'i')
+        const result = await Emails.deleteMany({ email: pattern })
+        console.log('unsubscribe:', email, '-> removed', result.deletedCount)
 
-    if (result) {
-      return res.render('message.ejs', {title: '', message: 'You have been unsubscribed from the mailing list.'})
-    } else {
-      return res.render('message.ejs', {title: 'Oops!', message: 'We could not find your email in our mailing list.'})
-    }
+        if (result.deletedCount > 0) {
+          return res.render('message.ejs', {title: '', message: 'You have been unsubscribed from the mailing list.'})
+        } else {
+          return res.render('message.ejs', {title: 'Oops!', message: 'We could not find your email in our mailing list.'})
+        }
       } catch (err) {
+        console.error(err)
         if (err) return res.status(500).send(err)
       }
     },

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mailing List &mdash; Detroit Bridal Shower</title>
+<link rel="icon" href="/assets/images/bridalshowerpic.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ivory:#faf7f2; --card:#fffdfa; --sage:#6b7066; --sage-deep:#494e46; --sage-darker:#383c36; --sage-soft:#eef0ec;
+    --gold:#b3925a; --gold-soft:#f3ead9; --ink:#2e2e29; --ink-soft:#6d6d64; --line:#e7e2d8; --danger:#b05252; --danger-soft:#f6e4e4;
+    --ok:#5f7d5f; --ok-soft:#e5eee5; --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif;
+    --shadow:0 1px 2px rgba(56,60,54,.05), 0 8px 24px -12px rgba(56,60,54,.18); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:var(--sans); background:var(--ivory); color:var(--ink); }
+  button { font-family:var(--sans); cursor:pointer; }
+  .sidebar { width:232px; background:linear-gradient(175deg,var(--sage-deep) 0%,var(--sage-darker) 100%); color:#efeee9;
+    position:fixed; inset:0 auto 0 0; padding:28px 18px 22px; display:flex; flex-direction:column; }
+  .brand { text-align:center; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,.12); }
+  .medallion { width:92px; height:92px; border-radius:50%; background:#fff; margin:0 auto 12px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 4px rgba(255,255,255,.12); overflow:hidden; }
+  .medallion img { width:74%; height:74%; object-fit:contain; }
+  .brand h1 { font-family:var(--serif); font-weight:600; font-size:21px; letter-spacing:.12em; text-transform:uppercase; line-height:1.35; }
+  .brand span { display:block; font-weight:300; font-size:10.5px; letter-spacing:.38em; text-transform:uppercase; color:#cdbf9d; margin-top:6px; }
+  .nav { margin-top:26px; display:flex; flex-direction:column; gap:4px; }
+  .nav a { display:flex; align-items:center; gap:12px; color:#d8d7cf; text-decoration:none; font-size:14.5px; padding:11px 14px; border-radius:10px; letter-spacing:.04em; }
+  .nav a svg { width:17px; height:17px; flex:none; opacity:.8; }
+  .nav a:hover { background:rgba(255,255,255,.07); color:#fff; }
+  .nav a.active { background:rgba(179,146,90,.18); color:#ecd9b4; }
+  .nav a.active svg { opacity:1; }
+  .main { margin-left:232px; padding:26px 36px 60px; }
+  h2 { font-family:var(--serif); font-weight:600; font-size:34px; color:var(--sage-darker); margin-bottom:4px; }
+  .subtitle { color:var(--ink-soft); font-weight:300; font-size:14px; margin-bottom:22px; }
+  .grid { display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); margin-bottom:22px; overflow:hidden; }
+  .card-head { padding:18px 22px 12px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .card-head h3 { font-family:var(--serif); font-size:22px; font-weight:600; color:var(--sage-darker); }
+  .count { font-size:12px; color:var(--ink-soft); font-weight:300; }
+  .body { padding:0 22px 20px; }
+  .field label { display:block; font-size:11.5px; color:var(--ink-soft); letter-spacing:.06em; margin:10px 0 4px; text-transform:uppercase; }
+  .field input { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:14px; outline:none; font-family:var(--sans); }
+  .field input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(179,146,90,.13); }
+  .btn { display:inline-flex; align-items:center; gap:7px; border:none; border-radius:999px; padding:10px 18px; font-size:13.5px; font-weight:500; text-decoration:none; }
+  .btn-gold { background:var(--gold); color:#fff; } .btn-gold:hover { background:#a3854f; }
+  .btn-gold[disabled] { opacity:.55; pointer-events:none; }
+  .btn-ghost { background:transparent; border:1px solid var(--line); color:var(--sage-deep); } .btn-ghost:hover { background:var(--sage-soft); }
+  .search { position:relative; }
+  .search input { width:250px; padding:9px 14px 9px 34px; border:1px solid var(--line); border-radius:999px; background:#fff; font-size:13.5px; outline:none; font-family:var(--sans); }
+  .search input:focus { border-color:var(--gold); }
+  .search svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--ink-soft); }
+  table { width:100%; border-collapse:collapse; }
+  td, th { padding:10px 14px; font-size:13.5px; border-bottom:1px solid #f0ece3; text-align:left; }
+  th { font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); font-weight:500; }
+  tbody tr:hover { background:#fbf8f1; }
+  .scroll { max-height:600px; overflow-y:auto; }
+  .mini { border:none; background:transparent; border-radius:8px; width:28px; height:28px; display:grid; place-items:center; color:#8b8b80; font-size:14px; }
+  .mini:hover { background:var(--danger-soft); color:var(--danger); }
+  .empty { padding:26px 22px; text-align:center; color:var(--ink-soft); font-weight:300; font-size:14px; }
+  .toasts { position:fixed; bottom:22px; right:22px; z-index:200; display:flex; flex-direction:column; gap:10px; }
+  .toast { background:var(--sage-darker); color:#f4f3ee; border-radius:12px; padding:13px 18px; font-size:14px; max-width:340px; }
+  .toast.err { background:var(--danger); }
+  .stat { display:flex; align-items:center; gap:14px; padding:18px 22px; }
+  .stat b { font-family:var(--serif); font-size:34px; color:var(--gold); line-height:1; }
+  .stat span { font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); }
+  @media (max-width:1080px){ .grid{grid-template-columns:1fr;} }
+  @media (max-width:860px){ .sidebar{display:none;} .main{margin-left:0; padding:20px 14px;} .search input{width:100%;} }
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="medallion"><img src="/assets/images/bridalshowerpic.jpg" alt=""></div>
+    <h1>Detroit<br>Bridal Shower</h1><span>Admin</span>
+  </div>
+  <nav class="nav">
+    <a href="/newAdmin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <a href="/newAdmin/contributions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7s-2-4-5-4-3 4 0 4h5zM12 7s2-4 5-4 3 4 0 4h-5z"/></svg>
+      Contributions
+    </a>
+    <a href="/newAdmin/mailingList" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+      Mailing List
+    </a>
+    <a href="/" target="_blank">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
+      View Website
+    </a>
+  </nav>
+</aside>
+<main class="main">
+  <h2>Mailing List</h2>
+  <div class="subtitle">Everyone who receives the collection emails. Add or remove addresses here &mdash; removing sweeps every copy of that address.</div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="card-head">
+          <h3>Subscribers</h3>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="count" id="listCount"></span>
+            <div class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+              <input type="search" id="q" placeholder="Search email&hellip;" autocomplete="off">
+            </div>
+            <a class="btn btn-ghost" href="/newAdmin/exportSubscribers">&#11015; Export CSV</a>
+          </div>
+        </div>
+        <div class="scroll"><table>
+          <thead><tr><th>Email</th><th style="width:60px;"></th></tr></thead>
+          <tbody id="listBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="stat"><b id="totalCount">—</b><span>Total<br>subscribers</span></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Add Subscriber</h3></div>
+        <div class="body">
+          <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">Add someone who asked to join the list. Duplicates are refused automatically.</div>
+          <div class="field"><label>Email address</label><input type="email" id="newEmail" placeholder="name@example.com"></div>
+          <div style="margin-top:14px;"><button class="btn btn-gold" id="addBtn" onclick="addOne()">Add to List</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="toasts" id="toasts"></div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function toast(m, err) { const t = document.createElement('div'); t.className = 'toast' + (err ? ' err' : ''); t.textContent = m; $('toasts').appendChild(t); setTimeout(() => t.remove(), 3800); }
+
+// session-expiry redirect, same as the other dashboard pages
+const _fetch = window.fetch;
+window.fetch = async (url, opts) => {
+  const res = await _fetch(url, opts);
+  if (res.status === 401 && String(url).startsWith('/newAdmin')) {
+    window.location.href = '/login?expired=1&next=' + encodeURIComponent(window.location.pathname);
+  }
+  return res;
+};
+
+let subscribers = [];
+async function load() {
+  const res = await fetch('/newAdmin/subscribers');
+  if (res.status === 401) return;
+  const d = await res.json();
+  subscribers = d.subscribers || [];
+  $('totalCount').textContent = subscribers.length;
+  render();
+}
+function render() {
+  const q = $('q').value.trim().toLowerCase();
+  const rows = q ? subscribers.filter(s => String(s.email).toLowerCase().includes(q)) : subscribers;
+  $('listCount').textContent = rows.length + ' of ' + subscribers.length;
+  $('listBody').innerHTML = rows.length
+    ? rows.map(s => `<tr>
+        <td>${esc(s.email)}</td>
+        <td style="text-align:right;"><button class="mini" title="Remove" onclick="removeOne('${s._id}', ${JSON.stringify(s.email).replace(/"/g, '&quot;')})">&#10005;</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="2" class="empty">No matching subscribers.</td></tr>';
+}
+$('q').addEventListener('input', render);
+
+let addInFlight = false;
+async function addOne() {
+  if (addInFlight) return;
+  const email = $('newEmail').value.trim();
+  if (!/^\S+@\S+\.\S+$/.test(email)) { toast('Enter a valid email address.', true); return; }
+  addInFlight = true;
+  const btn = $('addBtn'); btn.disabled = true; const label = btn.textContent; btn.textContent = 'Adding…';
+  try {
+    const res = await fetch('/newAdmin/addSubscriber', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+    const d = await res.json();
+    if (d.status) { toast('Added ' + email + '.'); $('newEmail').value = ''; await load(); }
+    else toast(d.message || 'Could not add.', true);
+  } catch (e) { toast('Could not reach the server.', true); }
+  finally { addInFlight = false; btn.disabled = false; btn.textContent = label; }
+}
+
+async function removeOne(id, email) {
+  if (!confirm('Remove ' + email + ' from the mailing list?')) return;
+  const res = await fetch('/newAdmin/removeSubscriber', { method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id }) });
+  const d = await res.json();
+  if (d.status) { toast('Removed ' + email + (d.removed > 1 ? ' (' + d.removed + ' copies)' : '') + '.'); await load(); }
+  else toast(d.message || 'Could not remove.', true);
+}
+load();
+</script>
+</body>
+</html>
