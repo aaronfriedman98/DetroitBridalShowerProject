@@ -180,8 +180,10 @@ module.exports = {
   getContributionsData: async (req, res) => {
     try {
       const contributions = await Contribution.find().sort({ _id: -1 })
-      // ALL couples so mom can record gifts for past showers too
-      const couples = await Couples.find().select('chossonName kallahName collecting').sort({ _id: -1 })
+      // ALL couples so mom can record gifts for past showers too.
+      // email/name come from whoever submitted the couple - used to prefill
+      // the "send contributor list" destination.
+      const couples = await Couples.find().select('chossonName kallahName collecting email name').sort({ _id: -1 })
       res.json({ contributions, couples })
     } catch (err) {
       console.error(err)
