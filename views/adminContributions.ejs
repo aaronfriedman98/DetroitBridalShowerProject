@@ -115,8 +115,17 @@
       <div class="card">
         <div class="card-head">
           <h3>All Contributions</h3>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <select id="coupleFilter" style="padding:8px 12px; border:1px solid var(--line); border-radius:999px; font-size:13px; outline:none;" onchange="renderAll()">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <div style="position:relative;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                   style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--ink-soft); pointer-events:none;"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+              <input type="search" id="filterSearch" placeholder="Search couples…" autocomplete="off"
+                     style="width:220px; padding:8px 28px 8px 32px; border:1px solid var(--line); border-radius:999px; font-size:13px; outline:none; font-family:var(--sans); background:#fff;">
+              <button id="filterClear" onclick="clearCoupleFilter()" title="Show all couples"
+                      style="display:none; position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:transparent; color:var(--ink-soft); font-size:14px; cursor:pointer;">&times;</button>
+              <div id="filterResults" class="pick-results"></div>
+            </div>
+            <select id="coupleFilter" style="display:none;" onchange="renderAll()">
               <option value="">All couples</option>
             </select>
             <a class="btn btn-ghost" id="exportBtn" href="/newAdmin/exportContributions" style="text-decoration:none;">⬇ Export CSV</a>
@@ -183,8 +192,16 @@
     </div>
     <div style="padding:16px 26px 24px;">
       <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.55;" id="sendListCount"></div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-ghost" onclick="togglePreview()" id="previewToggleBtn" style="width:100%; justify-content:center;">
+          &#128065; Preview the Email
+        </button>
+      </div>
+      <div id="previewBox" style="display:none; margin-top:12px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;">
+        <div id="previewLoading" style="padding:40px 0; text-align:center; font-size:13px; color:var(--ink-soft);">Building preview&hellip;</div>
+        <iframe id="previewFrame" title="Email preview" style="display:none; width:100%; height:340px; border:none; background:#fff;"></iframe>
+      </div>
       <div class="field"><label>Send to</label><input type="email" id="sendListTo" placeholder="couple@example.com"></div>
-      <div style="margin-top:8px;"><a id="sendListPreview" href="#" target="_blank" style="font-size:12.5px; color:var(--gold);">Preview the email first &rarr;</a></div>
     </div>
     <div style="display:flex; justify-content:flex-end; gap:10px; padding:0 26px 24px;">
       <button class="btn btn-ghost" onclick="closeSendList()">Cancel</button>
@@ -497,6 +514,51 @@ function printList() {
   w.document.close();
 }
 
+// ---- searchable couple filter for the contributions table ----
+// The hidden <select> stays the single source of truth so every other
+// function keeps working; this just drives it by search instead of scrolling.
+const fSearch = $('filterSearch'), fResults = $('filterResults');
+function couplesWithContributions() {
+  const seen = new Map();
+  contributions.forEach(c => { if (!seen.has(c.coupleId)) seen.set(c.coupleId, c.coupleNames); });
+  return [...seen].map(([id, names]) => ({ id, names }));
+}
+function runFilterSearch() {
+  const t = fSearch.value.trim().toLowerCase();
+  if (!t) { fResults.classList.remove('show'); return; }
+  const hits = couplesWithContributions()
+    .filter(c => String(c.names).toLowerCase().includes(t))
+    .sort((a, b) => a.names.localeCompare(b.names))
+    .slice(0, 8);
+  fResults.innerHTML = hits.length
+    ? hits.map(c => {
+        const n = contributions.filter(x => String(x.coupleId) === String(c.id)).length;
+        return `<button type="button" onclick="applyCoupleFilter('${c.id}')">${esc(c.names)}<span style="float:right; color:var(--ink-soft); font-size:11px;">${n}</span></button>`;
+      }).join('')
+    : '<button type="button" disabled style="color:var(--ink-soft);">No couples match</button>';
+  fResults.classList.add('show');
+}
+fSearch.addEventListener('input', runFilterSearch);
+fSearch.addEventListener('focus', runFilterSearch);
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#filterSearch') && !e.target.closest('#filterResults')) fResults.classList.remove('show');
+});
+function applyCoupleFilter(id) {
+  $('coupleFilter').value = id;
+  const c = couplesWithContributions().find(x => String(x.id) === String(id));
+  fSearch.value = c ? c.names : '';
+  $('filterClear').style.display = 'block';
+  fResults.classList.remove('show');
+  renderAll();
+}
+function clearCoupleFilter() {
+  $('coupleFilter').value = '';
+  fSearch.value = '';
+  $('filterClear').style.display = 'none';
+  fResults.classList.remove('show');
+  renderAll();
+}
+
 // ---- email the finished contributor list to the couple ----
 function openSendList() {
   const id = $('coupleFilter').value;
@@ -506,11 +568,31 @@ function openSendList() {
   if (!verified) { toast('No verified contributors for this couple yet.', true); return; }
   $('sendListNames').textContent = names;
   $('sendListCount').textContent = verified + ' contributor' + (verified === 1 ? '' : 's') + ' will be listed (no amounts shown).';
-  $('sendListPreview').href = '/newAdmin/previewContributorList?coupleId=' + encodeURIComponent(id);
   $('sendListTo').value = '';
+  // reset the preview each time so it always reflects the chosen couple
+  $('previewBox').style.display = 'none';
+  $('previewFrame').style.display = 'none';
+  $('previewFrame').removeAttribute('src');
+  $('previewLoading').style.display = 'block';
+  $('previewToggleBtn').innerHTML = '&#128065; Preview the Email';
   $('sendListOverlay').classList.add('show');
 }
 function closeSendList() { $('sendListOverlay').classList.remove('show'); }
+
+function togglePreview() {
+  const box = $('previewBox'), frame = $('previewFrame'), btn = $('previewToggleBtn');
+  if (box.style.display === 'block') {
+    box.style.display = 'none';
+    btn.innerHTML = '&#128065; Preview the Email';
+    return;
+  }
+  box.style.display = 'block';
+  btn.innerHTML = '&#9650; Hide Preview';
+  if (!frame.getAttribute('src')) {
+    frame.onload = () => { $('previewLoading').style.display = 'none'; frame.style.display = 'block'; };
+    frame.src = '/newAdmin/previewContributorList?coupleId=' + encodeURIComponent($('coupleFilter').value) + '&t=' + Date.now();
+  }
+}
 let sendListInFlight = false;
 async function doSendList() {
   if (sendListInFlight) return;
