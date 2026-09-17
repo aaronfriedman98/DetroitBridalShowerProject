@@ -1102,17 +1102,47 @@ console.log("after uppercasing, before params")
         }
         
         
-        await sgMail.send(msg)
-
-        const text = {
-          to: '2485147963@vtext.com',
-          from: 'bridalshower@detroitbridalshower.org',
-          subject: 'New Couple Submission',
-          html: `${req.body.name} has submitted a new couple.`
+        // Notifications must never block the couple from being saved, so each
+        // send is isolated - a mail failure used to abort the whole submission.
+        try {
+          await sgMail.send(msg)
+        } catch (e) {
+          console.error('submitter confirmation email failed:', e?.response?.body || e.message)
         }
 
-        await sgMail.send(text)
-
+        // Heads-up to the office the moment a couple is submitted.
+        // NOTE: this replaced a text to 2485147963@vtext.com - carrier
+        // email-to-SMS gateways are no longer deliverable and SendGrid has
+        // that address permanently suppressed as "Invalid address", so every
+        // one of those notifications was silently dropped.
+        try {
+          await sgMail.send({
+            to: 'bridalshower@detroitbridalshower.org',
+            from: 'bridalshower@detroitbridalshower.org',
+            replyTo: req.body.email,
+            subject: `New couple submitted: ${chossonName} & ${kallahName}`,
+            html: buildActionEmail(
+              'New Submission',
+              `${chossonName} & ${kallahName}`,
+              `<strong>${name}</strong> just submitted this couple.` +
+              emailRows([
+                ['Chosson', `${chossonName} (${req.body.chossonOrigin || ''})`],
+                ['Kallah', `${kallahName} (${req.body.kallahOrigin || ''})`],
+                ['Submitted by', name],
+                ['Email', req.body.email],
+                ['Phone', req.body.phoneNumber],
+                ['Wedding date', req.body.weddingDate]
+              ]) +
+              `<div style="font-size:15px; color:#6d6d64; padding-top:10px;">They still need to click the confirmation link in their own email before this couple is finalized.</div>`,
+              'Open the Dashboard',
+              (process.env.AZURE_URL || '').replace(/['"]/g, '') + '/newAdmin',
+              null
+            )
+          })
+          console.log('new-submission notification sent')
+        } catch (e) {
+          console.error('new-couple notification email failed:', e?.response?.body || e.message)
+        }
 
         console.log('email sent')
 
@@ -2404,8 +2434,12 @@ console.log("after uppercasing, before params")
       )
             }
             
-            await sgMail.send(msg)
-            console.log('Verification email sent')
+            try {
+              await sgMail.send(msg)
+              console.log('Verification email sent')
+            } catch (e) {
+              console.error('verification email to office failed:', e?.response?.body || e.message)
+            }
           // res.render('message', {message: 'Thank you for signing up for our newsletter! Please complete the process by confirming the subscription in your email inbox.'})
         
         // fix chesed package
