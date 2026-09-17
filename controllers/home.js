@@ -1087,16 +1087,27 @@ console.log("after uppercasing, before params")
               
                   
 
+        // Short link: only confNum is needed - confirmEntry loads the rest from
+        // the saved record. Keeps the URL ~60 chars instead of ~900 and keeps
+        // names, addresses and phone numbers out of mail logs and link scanners.
+        const shortConfirmURL = String(process.env.AZURE_URL || '').replace(/['"]/g, '') + '/confirmEntry?confNum=' + confNum
+
         const msg = {
           to: req.body.email,
           from: 'bridalshower@detroitbridalshower.org',
-          subject: 'Confirm your subscription to Detroit Bridal Shower',
+          subject: `Confirm your couple submission: ${chossonName} & ${kallahName}`,
+          // SendGrid click tracking rewrites links through a bare sendgrid.net
+          // domain (no branded link domain is configured on this account), which
+          // spam filters and mail clients frequently block - the reported
+          // "can't click the confirmation button". Send the real link instead.
+          trackingSettings: { clickTracking: { enable: false, enableText: false } },
           html: buildActionEmail(
         'One More Step',
         `${chossonName} & ${kallahName}`,
-        `Mazel tov, ${name}! Thank you for adding this couple to the Detroit Bridal Shower list.<br/>Please confirm your submission below &mdash; once confirmed, it will be reviewed and shared with the community.`,
+        `Mazel tov, ${name}! Thank you for adding this couple to the Detroit Bridal Shower list.<br/>Please confirm your submission below &mdash; once confirmed, it will be reviewed and shared with the community.` +
+        `<div style="font-size:14px; color:#6d6d64; padding-top:14px;">If the button does not work, copy and paste this link into your browser:<br><span style="color:#b3925a; word-break:break-all;">${shortConfirmURL}</span></div>`,
         'Confirm Submission',
-        confirmationURL,
+        shortConfirmURL,
         'If you did not submit this couple, you can simply ignore this email.'
       )
         }
@@ -1777,7 +1788,41 @@ console.log("after uppercasing, before params")
           //   confNum: req.query.confNum
           // }
           const dbCouple = await Couples.find({ confNumber: req.query.confNum })
-          if (dbCouple == null) throw `Contact not found.`
+          // find() returns [] (not null) when nothing matches, so the old
+          // null-check let an undefined dbCouple[0] through and crashed below
+          if (!dbCouple || !dbCouple.length) {
+            return res.render('message.ejs', {
+              title: 'Link expired',
+              message: 'We could not find that submission. It may have already been confirmed — please contact us at bridalshower@detroitbridalshower.org and we will take care of it.'
+            })
+          }
+
+          // Confirmation links used to carry all ~30 fields in the query string,
+          // which made them ~900 characters and easy for mail clients and link
+          // scanners to mangle. New links carry only confNum, so hydrate the
+          // rest from the stored record. Older long links keep working because
+          // their own values simply stay in place.
+          const rec = dbCouple[0]
+          const isShortLink = !req.query.name
+          if (isShortLink) {
+            const pkg = String(rec.chesedPackage || '').toLowerCase()
+            req.query = Object.assign({}, req.query, {
+              name: rec.name, email: rec.email, phoneNumber: rec.phoneNumber, address: rec.address,
+              chossonName: rec.chossonName, chossonFatherTitle: rec.chossonFatherTitle, chossonFatherName: rec.chossonFatherName,
+              chossonMotherTitle: rec.chossonMotherTitle, chossonMotherName: rec.chossonMotherName, chossonOrigin: rec.chossonOrigin,
+              kallahName: rec.kallahName, kallahFatherTitle: rec.kallahFatherTitle, kallahFatherName: rec.kallahFatherName,
+              kallahMotherTitle: rec.kallahMotherTitle, kallahMotherName: rec.kallahMotherName, kallahOrigin: rec.kallahOrigin,
+              weddingDate: rec.weddingDate, personalShopper: rec.personalShopper,
+              chossonMotherDivorcedTitle: rec.chossonMotherDivorcedTitle, chossonMotherDivorcedName: rec.chossonMotherDivorcedName,
+              chossonMotherHusbandTitle: rec.chossonMotherHusbandTitle, chossonMotherHusbandName: rec.chossonMotherHusbandName,
+              kallahMotherDivorcedTitle: rec.kallahMotherDivorcedTitle, kallahMotherDivorcedName: rec.kallahMotherDivorcedName,
+              kallahMotherHusbandTitle: rec.kallahMotherHusbandTitle, kallahMotherHusbandName: rec.kallahMotherHusbandName,
+              chossonDeceased: rec.chossonDeceased, kallahDeceased: rec.kallahDeceased,
+              toaster: String(pkg.includes('toaster')), urn: String(pkg.includes('urn')),
+              kitchenTowels: String(pkg.includes('kitchen towels')), vacuum: String(pkg.includes('vacuum')),
+              cholentPot: String(pkg.includes('cholent pot'))
+            })
+          }
           console.log(req.query)
           // console.log(dbCouple)
 
@@ -2411,6 +2456,8 @@ console.log("after uppercasing, before params")
               // from: `${req.query.email}`,
               from: 'bridalshower@detroitbridalshower.org',
               subject: 'New Couple Submission',
+              // don't let click tracking rewrite the verify link (see addEntry)
+              trackingSettings: { clickTracking: { enable: false, enableText: false } },
               html: buildActionEmail(
         'New Couple Submitted',
         `${req.query.chossonName} & ${req.query.kallahName}`,
