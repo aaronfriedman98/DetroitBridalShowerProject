@@ -7,6 +7,19 @@ sgMail.setApiKey(process.env.API_KEY)
 
 const MOM_EMAIL = 'bridalshower@detroitbridalshower.org'
 
+// Becky organises every shower, so she is a contributor to each couple by
+// definition and should never have to add herself. Credited at display time
+// rather than stored as rows: that way it can never create duplicates, it
+// covers every future couple automatically, and it leaves her real monetary
+// contributions (which do have rows and amounts) untouched.
+const ALWAYS_CREDITED = 'Becky Friedman'
+
+// Append the organiser unless she is already credited for this couple.
+function withOrganiser(names) {
+  const already = names.some(n => String(n || '').trim().toLowerCase() === ALWAYS_CREDITED.toLowerCase())
+  return already ? names : [...names, ALWAYS_CREDITED]
+}
+
 // thank-you email sent (optionally) when mom verifies a gift
 async function sendThankYou(to, name, coupleNamesList) {
   const couples = coupleNamesList.map(n =>
@@ -159,7 +172,10 @@ module.exports = {
           entry.contributors.push(c.contributorName)
         }
       }
-      map.forEach(e => delete e._seen)
+      map.forEach(e => {
+        delete e._seen
+        e.contributors = withOrganiser(e.contributors)
+      })
       res.render('contributors.ejs', { couples: [...map.values()] })
     } catch (err) {
       console.error(err)
@@ -344,9 +360,9 @@ module.exports = {
       const rows = await Contribution.find({ coupleId: String(coupleId), verified: true })
         .select('contributorName')
       // unique names, alphabetical, no amounts anywhere
-      const names = [...new Set(rows.map(r => String(r.contributorName || '').trim()).filter(Boolean))]
-        .sort((a, b) => a.localeCompare(b))
-      if (!names.length) return res.status(400).json({ status: false, message: 'No verified contributors for this couple yet.' })
+      const found = [...new Set(rows.map(r => String(r.contributorName || '').trim()).filter(Boolean))]
+      if (!found.length) return res.status(400).json({ status: false, message: 'No verified contributors for this couple yet.' })
+      const names = withOrganiser(found).sort((a, b) => a.localeCompare(b))
 
       const coupleNames = couple.chossonName + ' & ' + couple.kallahName
       const html = buildContributorListEmail(coupleNames, names)
