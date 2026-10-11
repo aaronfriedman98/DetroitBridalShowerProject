@@ -278,6 +278,26 @@ module.exports = {
     }
   },
 
+  // Change just the dollar amount on an existing contribution - lets the
+  // organiser raise her automatic $0 to a real figure if she does give money,
+  // without deleting and re-adding (which is what duplicates her).
+  updateContributionAmount: async (req, res) => {
+    try {
+      const amt = parseFloat(req.body.amount)
+      if (!isFinite(amt) || amt < 0) return res.status(400).json({ status: false, message: 'Enter a valid amount.' })
+      const c = await Contribution.findByIdAndUpdate(
+        req.body.id,
+        { $set: { amount: Math.round(amt * 100) / 100 } },
+        { new: true }
+      )
+      if (!c) return res.status(404).json({ status: false, message: 'Contribution not found.' })
+      res.json({ status: true, amount: c.amount })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Could not update the amount.' })
+    }
+  },
+
   verifyContribution: async (req, res) => {
     try {
       const c = await Contribution.findById(req.body.id)

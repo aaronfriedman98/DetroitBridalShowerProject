@@ -1,6 +1,7 @@
 const Couples = require('../models/couplesList')
 const Announcements = require('../models/newAnnouncements')
 const NewCouple = require('../models/newCouple')
+const Contribution = require('../models/contribution')
 const Emails = require('../models/emailList')
 
 //test emails
@@ -289,8 +290,33 @@ module.exports = {
             if (newCollectingValue) {
 
               await Couples.updateOne({ _id: req.body.id }, { $set: { verified: true } });
-              
-        
+
+              // Becky organises every shower, so she is credited on each couple
+              // automatically. The row is created at $0 - her contribution is the
+              // work, not money - and she can raise the amount later if she does
+              // give. Created only when absent, so toggling collecting off and on,
+              // or a couple she already added herself to, never duplicates her.
+              try {
+                const already = await Contribution.findOne({
+                  coupleId: String(couple._id),
+                  contributorName: new RegExp('^\\s*Becky Friedman\\s*$', 'i')
+                })
+                if (!already) {
+                  await Contribution.create({
+                    coupleId: String(couple._id),
+                    coupleNames: couple.chossonName + ' & ' + couple.kallahName,
+                    contributorName: 'Becky Friedman',
+                    amount: 0,
+                    verified: true,
+                    source: 'manual'
+                  })
+                  console.log('auto-credited organiser for', couple.chossonName, '&', couple.kallahName)
+                }
+              } catch (e) {
+                // never let this block verifying a couple
+                console.error('organiser auto-credit failed:', e.message)
+              }
+
               const newCouple = new NewCouple(
                 {
                   chosson: couple.chossonName,
