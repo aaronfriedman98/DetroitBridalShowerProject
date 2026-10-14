@@ -211,11 +211,30 @@ module.exports = {
   // Accepts selections: [{coupleId, amount}], or legacy coupleId + amount.
   // Any couple in the database is allowed here (admin-only) so past showers
   // can be backfilled - the public /give page stays limited to collecting.
+  // Records gifts that came in directly. Handles any mix of people and
+  // couples in one go: every person in `contributors` is recorded for every
+  // couple in `selections`, so mom can enter a whole batch at once instead of
+  // one person at a time. A single contributorName/coupleId still works.
   addContribution: async (req, res) => {
     try {
-      const { contributorName, contributorEmail, sendThanks } = req.body
-      const name = String(contributorName || '').trim()
-      if (!name) return res.status(400).json({ status: false, message: 'Contributor name is required.' })
+      const { sendThanks } = req.body
+
+      // who is giving - an array of people, or the single-person fields
+      let people = Array.isArray(req.body.contributors) ? req.body.contributors : null
+      if (!people) people = [{ name: req.body.contributorName, email: req.body.contributorEmail }]
+      people = people
+        .map(p => ({ name: String((p && p.name) || '').trim(), email: String((p && p.email) || '').trim() }))
+        .filter(p => p.name)
+      // the same person typed twice in one batch should only count once
+      const seenPerson = new Set()
+      people = people.filter(p => {
+        const key = (p.email || p.name).toLowerCase()
+        if (seenPerson.has(key)) return false
+        seenPerson.add(key)
+        return true
+      })
+      if (!people.length) return res.status(400).json({ status: false, message: 'Contributor name is required.' })
+      if (people.length > 100) return res.status(400).json({ status: false, message: 'Too many contributors in one entry.' })
 
       let selections = Array.isArray(req.body.selections) ? req.body.selections : null
       if (!selections) {
@@ -225,36 +244,57 @@ module.exports = {
       if (!selections.length) return res.status(400).json({ status: false, message: 'Select at least one couple.' })
       if (selections.length > 200) return res.status(400).json({ status: false, message: 'Too many couples in one entry.' })
 
-      const email = String(contributorEmail || '').trim()
       const groupId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
       const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      const docs = []
-      const skipped = []
+
+      // resolve each selected couple once, however many people are being added
+      const targets = []
       for (const s of selections) {
         const couple = await Couples.findById(s.coupleId).select('chossonName kallahName')
         if (!couple) continue
-        // hard duplicate guard: same person (by email when present, else by
-        // name) may only be recorded once per couple
-        const identity = email
-          ? { contributorEmail: new RegExp('^' + escRe(email) + '$', 'i') }
-          : { contributorName: new RegExp('^' + escRe(name) + '$', 'i') }
-        const dup = await Contribution.findOne({ coupleId: String(couple._id), ...identity })
-        if (dup) {
-          skipped.push(couple.chossonName + ' & ' + couple.kallahName)
-          continue
-        }
         let amt = parseFloat(s.amount)
         if (!isFinite(amt) || amt <= 0) amt = 65
-        docs.push({
-          coupleId: String(couple._id),
-          coupleNames: couple.chossonName + ' & ' + couple.kallahName,
-          contributorName: name,
-          contributorEmail: email,
-          amount: Math.round(amt * 100) / 100,
-          verified: true,          // mom entering it = already confirmed
-          source: 'manual',
-          groupId
+        targets.push({
+          id: String(couple._id),
+          names: couple.chossonName + ' & ' + couple.kallahName,
+          amount: Math.round(amt * 100) / 100
         })
+      }
+      if (!targets.length) return res.status(400).json({ status: false, skipped: [], message: 'No matching couples found.' })
+
+      const docs = []
+      const skipped = []
+      const thanksFor = new Map()   // person -> couples actually recorded for them
+      for (const person of people) {
+        // hard duplicate guard: same person (by email when present, else by
+        // name) may only be recorded once per couple
+        const identity = person.email
+          ? { contributorEmail: new RegExp('^' + escRe(person.email) + '$', 'i') }
+          : { contributorName: new RegExp('^' + escRe(person.name) + '$', 'i') }
+        const existing = await Contribution.find({
+          coupleId: { $in: targets.map(t => t.id) },
+          ...identity
+        }).select('coupleId')
+        const taken = new Set(existing.map(e => String(e.coupleId)))
+
+        for (const t of targets) {
+          if (taken.has(t.id)) {
+            skipped.push(people.length > 1 ? person.name + ' — ' + t.names : t.names)
+            continue
+          }
+          docs.push({
+            coupleId: t.id,
+            coupleNames: t.names,
+            contributorName: person.name,
+            contributorEmail: person.email,
+            amount: t.amount,
+            verified: true,          // mom entering it = already confirmed
+            source: 'manual',
+            groupId
+          })
+          if (!thanksFor.has(person)) thanksFor.set(person, [])
+          thanksFor.get(person).push(t.names)
+        }
       }
       if (!docs.length) {
         return res.status(409).json({
@@ -267,11 +307,20 @@ module.exports = {
       }
 
       const created = await Contribution.insertMany(docs)
-      // one combined thank-you covering every couple in this entry
-      if (sendThanks && /^\S+@\S+\.\S+$/.test(email)) {
-        await sendThankYou(email, name, docs.map(d => d.coupleNames))
+      // one combined thank-you per person, covering every couple they gave to
+      if (sendThanks) {
+        for (const [person, coupleNames] of thanksFor) {
+          if (/^\S+@\S+\.\S+$/.test(person.email)) await sendThankYou(person.email, person.name, coupleNames)
+        }
       }
-      res.json({ status: true, count: created.length, skipped, contributions: created, contribution: created[0] })
+      res.json({
+        status: true,
+        count: created.length,
+        people: people.length,
+        skipped,
+        contributions: created,
+        contribution: created[0]
+      })
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: false, message: 'Could not add contributor.' })

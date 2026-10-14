@@ -142,7 +142,7 @@
     <div class="card">
       <div class="card-head"><h3>Record a Gift</h3></div>
       <div class="body">
-        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Enter the person once and add every couple they gave to. Saved as verified right away.</div>
+        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">For gifts that came in directly (Zelle, check&hellip;) without a website pledge. Add one person or several, then add every couple they gave to &mdash; each person is recorded for every couple. Saved as verified right away.</div>
 
         <div class="field" style="position:relative;">
           <label>Contributor name</label>
@@ -150,6 +150,11 @@
           <div id="mNameResults" class="pick-results"></div>
         </div>
         <div class="field"><label>Contributor email (for thank-you)</label><input type="email" id="mEmail" placeholder="optional"></div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-ghost" id="mAddPersonBtn" onclick="addPerson()" style="font-size:12px; padding:6px 12px;">+ Add another person</button>
+          <span style="font-size:11.5px; color:var(--ink-soft);">for several people who gave to the same couples</span>
+        </div>
+        <div id="mPeople"></div>
 
         <div class="field" style="position:relative;">
           <label style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
@@ -165,7 +170,7 @@
         <div id="mPicked"></div>
 
         <label style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:13px; color:var(--sage-deep); cursor:pointer;">
-          <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send one thank-you email (needs an email above)
+          <input type="checkbox" id="mThanks" checked style="accent-color:var(--gold); width:15px; height:15px;"> Send a thank-you email to each person who has one on file
         </label>
         <div style="margin-top:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
           <button class="btn btn-gold" id="mRecordBtn" onclick="addManual()">Record Gift</button>
@@ -288,15 +293,73 @@ function pickContributor(name, email) {
   renderPicked();               // re-badge picked couples for this person
   $('mCoupleSearch').focus();
 }
-// couples this contributor already has a recorded/pledged gift for
+// ---- several contributors in one entry ----
+// People parked in this list are recorded for every couple picked below, so a
+// whole batch (say four relatives who each gave to the same three couples)
+// goes in as one entry. The name/email fields hold the person being typed
+// right now and count as one of them, so a single contributor needs no extra
+// click - the form behaves exactly as it did before.
+let people = [];   // [{ name, email }]
+
+function peopleForSubmit() {
+  const typed = { name: nameIn.value.trim(), email: $('mEmail').value.trim() };
+  const all = typed.name ? [...people, typed] : [...people];
+  const seen = new Set();
+  return all.filter(p => {
+    const key = (p.email || p.name).toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+function addPerson() {
+  const name = nameIn.value.trim();
+  if (!name) { toast('Type a name first.', true); nameIn.focus(); return; }
+  const email = $('mEmail').value.trim();
+  const key = (email || name).toLowerCase();
+  if (people.some(p => (p.email || p.name).toLowerCase() === key)) {
+    toast(name + ' is already on this entry.', true);
+  } else {
+    people.push({ name, email });
+  }
+  nameIn.value = ''; $('mEmail').value = '';
+  nameOut.classList.remove('show');
+  renderPeople(); renderPicked();
+  nameIn.focus();
+}
+function removePerson(i) { people.splice(i, 1); renderPeople(); renderPicked(); }
+function renderPeople() {
+  $('mPeople').innerHTML = people.length ? `
+    <div style="border:1px solid var(--line); border-radius:12px; margin-top:10px; overflow:hidden;">
+      ${people.map((p, i) => `
+      <div style="display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #f0ece3;">
+        <span style="flex:1; font-size:13.5px; color:var(--ink);">${esc(p.name)}
+          <span style="color:var(--ink-soft); font-size:11.5px; margin-left:6px;">${p.email ? esc(p.email) : 'no email'}</span>
+        </span>
+        <button class="mini danger" title="Remove" onclick="removePerson(${i})">&times;</button>
+      </div>`).join('')}
+    </div>` : '';
+  renderPickedTotal();
+}
+// Enter in the name or email field parks that person instead of submitting
+[nameIn, $('mEmail')].forEach(el => el.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); addPerson(); }
+}));
+
+// how many people on this entry already have a gift recorded for this couple
+function dupCount(coupleId) {
+  return peopleForSubmit().filter(p => {
+    const n = p.name.toLowerCase(), e = p.email.toLowerCase();
+    return contributions.some(c =>
+      String(c.coupleId) === String(coupleId) &&
+      ((e && String(c.contributorEmail || '').trim().toLowerCase() === e) ||
+       (!e && n && String(c.contributorName || '').trim().toLowerCase() === n)));
+  }).length;
+}
+// true only when every person on the entry already gave - nothing left to add
 function alreadyGaveTo(coupleId) {
-  const n = nameIn.value.trim().toLowerCase();
-  const e = $('mEmail').value.trim().toLowerCase();
-  if (!n && !e) return false;
-  return contributions.some(c =>
-    String(c.coupleId) === String(coupleId) &&
-    ((e && String(c.contributorEmail || '').trim().toLowerCase() === e) ||
-     (!e && n && String(c.contributorName || '').trim().toLowerCase() === n)));
+  const total = peopleForSubmit().length;
+  return total > 0 && dupCount(coupleId) === total;
 }
 
 // ---- multi-couple picker for one contributor ----
@@ -317,10 +380,10 @@ function runSearch() {
     .slice(0, 8);
   pickOut.innerHTML = hits.length
     ? hits.map(c => {
-        const dup = alreadyGaveTo(c._id);
-        return dup
+        const dups = dupCount(c._id), total = peopleForSubmit().length;
+        return alreadyGaveTo(c._id)
           ? `<button type="button" disabled style="color:var(--ink-soft); cursor:not-allowed;">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}<span class="tag" style="background:var(--gold-soft); color:var(--gold);">already recorded</span></button>`
-          : `<button type="button" onclick="pickCouple('${c._id}')">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}${c.collecting ? '<span class="tag">collecting</span>' : ''}</button>`;
+          : `<button type="button" onclick="pickCouple('${c._id}')">${esc(c.chossonName)} &amp; ${esc(c.kallahName)}${c.collecting ? '<span class="tag">collecting</span>' : ''}${dups ? `<span class="tag" style="background:var(--gold-soft); color:var(--gold);">${dups} of ${total} already recorded</span>` : ''}</button>`;
       }).join('')
     : `<button type="button" disabled style="color:var(--ink-soft);">No matches${$('mIncludePast').checked ? '' : ' — tick "include past couples" to search them all'}</button>`;
   pickOut.classList.add('show');
@@ -349,11 +412,13 @@ function setPickedAmount(id, val) {
   if (p) { p.amount = val; renderPickedTotal(); }
 }
 function renderPicked() {
+  const nPeople = peopleForSubmit().length;
   $('mPicked').innerHTML = picked.length ? `
+    ${nPeople > 1 ? `<div style="font-size:11.5px; color:var(--ink-soft); margin-top:10px;">Each amount is what <strong>one</strong> person gave to that couple.</div>` : ''}
     <div style="border:1px solid var(--line); border-radius:12px; margin-top:10px; overflow:hidden;">
       ${picked.map(p => `
       <div style="display:flex; align-items:center; gap:8px; padding:9px 12px; border-bottom:1px solid #f0ece3;">
-        <span style="flex:1; font-size:13.5px; color:var(--ink);">${esc(p.names)}</span>
+        <span style="flex:1; font-size:13.5px; color:var(--ink);">${esc(p.names)}${dupCount(p._id) ? ` <span style="color:var(--gold); font-size:11.5px;">${dupCount(p._id)} already recorded &mdash; will be skipped</span>` : ''}</span>
         <span style="color:var(--ink-soft); font-size:13px;">$</span>
         <input type="number" min="1" step="0.01" value="${p.amount}" onchange="setPickedAmount('${p._id}', this.value)" oninput="setPickedAmount('${p._id}', this.value)"
                style="width:74px; padding:6px 8px; border:1px solid var(--line); border-radius:8px; font-size:13px; text-align:right; outline:none; font-family:var(--sans);">
@@ -364,8 +429,13 @@ function renderPicked() {
 }
 function renderPickedTotal() {
   if (!picked.length) { $('mTotal').textContent = ''; return; }
-  const total = picked.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
-  $('mTotal').textContent = picked.length + ' couple' + (picked.length === 1 ? '' : 's') + ' · $' + total.toFixed(2).replace(/\.00$/, '');
+  const perPerson = picked.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+  const n = Math.max(peopleForSubmit().length, 1);
+  const money = (v) => '$' + v.toFixed(2).replace(/\.00$/, '');
+  const couples = picked.length + ' couple' + (picked.length === 1 ? '' : 's');
+  $('mTotal').textContent = n > 1
+    ? n + ' people × ' + couples + ' · ' + money(perPerson * n) + ' total (' + money(perPerson) + ' each)'
+    : couples + ' · ' + money(perPerson);
 }
 document.addEventListener('click', (e) => {
   if (!e.target.closest('#mCoupleSearch') && !e.target.closest('#mCoupleResults')) pickOut.classList.remove('show');
@@ -645,13 +715,13 @@ async function addManual() {
   // before the server-side duplicate guard existed)
   if (recordInFlight) return;
 
+  const list = peopleForSubmit();
   const body = {
-    contributorName: $('mName').value,
-    contributorEmail: $('mEmail').value.trim(),
+    contributors: list,
     selections: picked.map(p => ({ coupleId: p._id, amount: p.amount })),
-    sendThanks: $('mThanks').checked && !!$('mEmail').value.trim()
+    sendThanks: $('mThanks').checked
   };
-  if (!body.contributorName.trim()) { toast('Enter the contributor name.', true); return; }
+  if (!list.length) { toast('Enter the contributor name.', true); return; }
   if (!body.selections.length) { toast('Add at least one couple.', true); return; }
 
   const btn = $('mRecordBtn');
@@ -663,12 +733,13 @@ async function addManual() {
     const res = await fetch('/newAdmin/addContribution', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
     const d = await res.json();
     if (d.status) {
-      const who = body.contributorName.trim();
+      const who = list.length === 1 ? list[0].name : list.length + ' people';
       let msg = 'Recorded ' + d.count + ' gift' + (d.count === 1 ? '' : 's') + ' from ' + who + '.';
       if (d.skipped && d.skipped.length) msg += ' Skipped ' + d.skipped.length + ' already recorded.';
       if (body.sendThanks) msg += ' Thank-you email sent.';
       toast(msg);
       $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
+      people = []; renderPeople();
       picked = []; renderPicked();
       // show the new rows: clear any couple filter that would hide them
       $('coupleFilter').value = '';
