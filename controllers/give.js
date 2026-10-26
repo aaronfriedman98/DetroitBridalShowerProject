@@ -1,7 +1,7 @@
 const Couples = require('../models/couplesList')
 const Contribution = require('../models/contribution')
 const Emails = require('../models/emailList')
-const { buildContributorListEmail } = require('../mailTemplates')
+const { buildContributorListEmail, publicSiteURL } = require('../mailTemplates')
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.API_KEY)
 
@@ -27,7 +27,7 @@ async function sendThankYou(to, name, coupleNamesList) {
   const html = `
   <div style="background:#f4f1ea; padding:30px 12px; font-family: Arial, sans-serif;">
     <div style="max-width:520px; margin:0 auto; background:#fff; border:1px solid #e7e2d8; border-radius:14px; padding:34px 32px; text-align:center;">
-      <img src="${(process.env.AZURE_URL || '').replace(/['"]/g, '')}/assets/images/bridalshowerpic.jpg" width="90" alt="Detroit Bridal Shower" style="display:block; margin:0 auto;">
+      <img src="${publicSiteURL()}/assets/images/bridalshowerpic.jpg" width="90" alt="Detroit Bridal Shower" style="display:block; margin:0 auto;">
       <div style="font-size:11px; letter-spacing:4px; text-transform:uppercase; color:#494e46; margin-top:14px;">Detroit Bridal Shower</div>
       <h2 style="font-family: Georgia, serif; font-style:italic; font-weight:normal; color:#b3925a; font-size:34px; margin:16px 0 6px;">Thank You!</h2>
       <div style="font-family: Georgia, serif; font-size:18px; color:#2e2e29; line-height:1.6; margin-top:8px;">
@@ -139,7 +139,7 @@ module.exports = {
           </table>
           <div style="margin-top:16px; font-size:13px; color:#6d6d64; line-height:1.6;">
             They were shown your payment methods (Zelle / Venmo / PayPal / Check) after submitting.
-            Once the money arrives, verify this pledge on the <a href="${(process.env.AZURE_URL || '').replace(/['"]/g, '')}/newAdmin/contributions" style="color:#b3925a;">Contributions dashboard</a> and their name will appear on the public contributors page.
+            Once the money arrives, verify this pledge on the <a href="${publicSiteURL()}/newAdmin/contributions" style="color:#b3925a;">Contributions dashboard</a> and their name will appear on the public contributors page.
           </div>
         </div>
       </div>`

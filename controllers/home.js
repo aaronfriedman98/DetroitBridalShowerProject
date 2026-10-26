@@ -9,7 +9,7 @@ const TestEmails = require('../models/testEmails')
 
 const sgMail = require('@sendgrid/mail')
 const sgClient = require('@sendgrid/client')
-const { buildActionEmail, emailRows, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail } = require('../mailTemplates')
+const { buildActionEmail, emailRows, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail, publicSiteURL } = require('../mailTemplates')
 const expressFileUpload = require('express-fileupload')
 // const { unsubscribe } = require('./newAdmin')
 
@@ -205,7 +205,8 @@ module.exports = {
     },
     unsubscribe : async (req, res) => {
         try {
-            res.render('unsubscribe.ejs')
+            // prefill when the link carries the address, so the page is one click
+            res.render('unsubscribe.ejs', { email: String(req.query.email || '').trim() })
         } catch (err) {
             if (err) return res.status(500).send(err)
         }
@@ -270,7 +271,7 @@ module.exports = {
             conf_num: confNum,
             email: req.body.email
           })
-          const confirmationURL = process.env.AZURE_URL + '/confirm?' + params
+          const confirmationURL = publicSiteURL() + '/confirm?' + params
           // const unsubscribeURL = req.protocol + '://' + req.get('host') + '/unsubscribe?' + params
           console.log('Confirmation URL = ' + confirmationURL);
           const msg = {
@@ -615,7 +616,7 @@ module.exports = {
         res.render('message.ejs', { title: 'Thank you!', message: 'You are now subscribed to our newsletter. We can\'t wait for you to hear from us!' });
       } catch (error) {
         console.error(error);
-        const url = process.env.AZURE_URL
+        const url = publicSiteURL()
         res.render('message.ejs', { title: 'Thank you!', message: `Subscription was unsuccessful. Please <a href="${url}">try again.</a>` });
       }
     },
@@ -898,7 +899,7 @@ console.log("after uppercasing, before params")
         // const confirmationURL = req.protocol + '://' + req.get('host') + '/confirmEntry?' + params
         // console.log("after confirmationURL")
 
-        const confirmationURL = process.env.AZURE_URL + '/confirmEntry?' + params
+        const confirmationURL = publicSiteURL() + '/confirmEntry?' + params
 
 
         
@@ -1090,7 +1091,7 @@ console.log("after uppercasing, before params")
         // Short link: only confNum is needed - confirmEntry loads the rest from
         // the saved record. Keeps the URL ~60 chars instead of ~900 and keeps
         // names, addresses and phone numbers out of mail logs and link scanners.
-        const shortConfirmURL = String(process.env.AZURE_URL || '').replace(/['"]/g, '') + '/confirmEntry?confNum=' + confNum
+        const shortConfirmURL = publicSiteURL() + '/confirmEntry?confNum=' + confNum
 
         const msg = {
           to: req.body.email,
@@ -1146,7 +1147,7 @@ console.log("after uppercasing, before params")
               ]) +
               `<div style="font-size:15px; color:#6d6d64; padding-top:10px;">They still need to click the confirmation link in their own email before this couple is finalized.</div>`,
               'Open the Dashboard',
-              (process.env.AZURE_URL || '').replace(/['"]/g, '') + '/newAdmin',
+              publicSiteURL() + '/newAdmin',
               null
             )
           })
@@ -2286,8 +2287,8 @@ console.log("after uppercasing, before params")
           // let verificationURL = req.protocol + '://' + req.get('host') + '/verifyCouple?' + params
           // let adminURL = req.protocol + '://' + req.get('host') + '/admin'
 
-          let verificationURL = process.env.AZURE_URL + '/verifyCouple?' + params
-          let adminURL = process.env.AZURE_URL + '/login'
+          let verificationURL = publicSiteURL() + '/verifyCouple?' + params
+          let adminURL = publicSiteURL() + '/login'
 
           
                         //deal with regular parents variables
@@ -3145,7 +3146,7 @@ console.log("after uppercasing, before params")
 
         //unsubscribe code
 
-        const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
+        const unsubscribeURL = publicSiteURL() + '/unsubscribe'
 
       const collectionEmail = buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL)
 

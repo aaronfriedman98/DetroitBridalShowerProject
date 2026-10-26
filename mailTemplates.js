@@ -307,4 +307,4 @@ function buildContributorListEmail(coupleNames, names) {
 </html>`
 }
 
-module.exports = { emailRows, buildActionEmail, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail, buildContributorListEmail }
+module.exports = { publicSiteURL, emailRows, buildActionEmail, buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail, buildContributorListEmail }

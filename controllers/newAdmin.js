@@ -11,7 +11,7 @@ const TestEmails = require('../models/testEmails')
 
 const sgMail = require('@sendgrid/mail')
 const sgClient = require('@sendgrid/client')
-const { buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail } = require('../mailTemplates')
+const { buildCollectionEmail, buildPersonalCollectionEmail, buildInstructionsEmail, publicSiteURL } = require('../mailTemplates')
 // const expressFileUpload = require('express-fileupload')
 
 const fs = require('fs');
@@ -1097,7 +1097,7 @@ for(let i = 0; i < databaseCouples.length; i++) {
   }
 }
 
-const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
+const unsubscribeURL = publicSiteURL() + '/unsubscribe'
 
 const collectionEmail = buildCollectionEmail(newCoupleString, couplesString, unsubscribeURL)
 
@@ -1899,7 +1899,7 @@ for(let i = 0; i < databaseCouples.length; i++) {
 console.log("hi")
 console.log(couplesString)
 
-const unsubscribeURL = process.env.AZURE_URL + '/unsubscribe'
+const unsubscribeURL = publicSiteURL() + '/unsubscribe'
 // const unsubscribeURL = req.protocol + '://' + req.get('host') + '/unsubscribe'
 
 

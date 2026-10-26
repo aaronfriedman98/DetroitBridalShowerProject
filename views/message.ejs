@@ -1,18 +1,40 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Newsletter</title>
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-   <link href="http://fonts.cdnfonts.com/css/whitney-2" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detroit Bridal Shower</title>
+  <link rel="icon" href="/assets/images/bridalshowerpic.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ivory:#f4f1ea; --sage:#494e46; --sage-dark:#383c36; --gold:#b3925a; --ink:#2e2e29; --soft:#6d6d64; --line:#e7e2d8;
+      --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--ivory); font-family:var(--sans); color:var(--ink); min-height:100vh;
+           display:flex; align-items:center; justify-content:center; padding:40px 16px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:20px; width:100%; max-width:460px;
+            padding:40px 34px; text-align:center; box-shadow:0 24px 60px -30px rgba(56,60,54,.3); }
+    .card img { width:72px; height:72px; object-fit:contain; }
+    .kicker { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); font-weight:500; margin-top:14px; }
+    h1 { font-family:var(--serif); font-style:italic; font-weight:500; font-size:34px; color:var(--sage-dark); margin:8px 0 0; }
+    .rule { width:54px; height:1px; background:#d9c9a6; margin:22px auto; }
+    .msg { font-family:var(--serif); font-size:19px; line-height:1.65; color:var(--sage); }
+    .msg a { color:var(--gold); }
+    .back { display:inline-block; margin-top:26px; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+            color:var(--sage); text-decoration:none; }
+    .back:hover { color:var(--gold); }
+  </style>
 </head>
-<body style="box-sizing: border-box; font-family: 'Whitney'; background: #648880;">
-   <div style="width: 30%; height: 35%; border-radius:10px; background: #f9f9f9;  position: absolute; top:0; bottom: 20%; left: 0; right: 0; margin: auto; min-width: 450px; min-height:250px;">
-       <div class="header" style=" text-align: center; padding-top: 8%; color:#0D122B">
-           <h1><%- title %></h1>
-           <p style="width: 75%; margin: auto; margin-top:10%;"><%- message %></p>
-       </div>
-   </div>
-   </div>
+<body>
+  <div class="card">
+    <img src="/assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+    <div class="kicker">Detroit Bridal Shower</div>
+    <% if (typeof title !== 'undefined' && title && String(title).trim()) { %>
+      <h1><%- title %></h1>
+    <% } %>
+    <div class="rule"></div>
+    <div class="msg"><%- message %></div>
+    <a class="back" href="/">&larr; Back to the website</a>
+  </div>
 </body>
 </html>

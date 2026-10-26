@@ -3,56 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unsubscribe</title>
+  <title>Unsubscribe &middot; Detroit Bridal Shower</title>
+  <link rel="icon" href="/assets/images/bridalshowerpic.jpg">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    form {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 300px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #007BFF;
-      color: #fff;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    :root { --ivory:#f4f1ea; --sage:#494e46; --sage-dark:#383c36; --gold:#b3925a; --ink:#2e2e29; --soft:#6d6d64; --line:#e7e2d8;
+      --serif:'Cormorant Garamond',Georgia,serif; --sans:'Jost','Segoe UI',sans-serif; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background:var(--ivory); font-family:var(--sans); color:var(--ink); min-height:100vh;
+           display:flex; align-items:center; justify-content:center; padding:40px 16px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:20px; width:100%; max-width:440px;
+            padding:38px 34px; text-align:center; box-shadow:0 24px 60px -30px rgba(56,60,54,.3); }
+    .card img { width:72px; height:72px; object-fit:contain; }
+    .kicker { font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--gold); font-weight:500; margin-top:14px; }
+    h1 { font-family:var(--serif); font-style:italic; font-weight:500; font-size:34px; color:var(--sage-dark); margin:8px 0 10px; }
+    p { font-family:var(--serif); font-size:17.5px; line-height:1.6; color:var(--soft); }
+    .rule { width:54px; height:1px; background:#d9c9a6; margin:22px auto; }
+    label { display:block; text-align:left; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--soft); margin-bottom:7px; }
+    input { width:100%; padding:13px 16px; border:1px solid var(--line); border-radius:11px; background:#fdfcf9;
+            font-family:var(--serif); font-size:17px; color:var(--sage-dark); outline:none; }
+    input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(179,146,90,.14); }
+    button { width:100%; margin-top:16px; border:none; background:var(--gold); color:#fff; padding:14px;
+             border-radius:999px; font-family:var(--sans); font-size:14px; letter-spacing:.06em; cursor:pointer; }
+    button:hover { background:#a0824d; }
+    .back { display:inline-block; margin-top:20px; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+            color:var(--sage); text-decoration:none; }
+    .back:hover { color:var(--gold); }
   </style>
 </head>
 <body>
-  <form action="/removeEmailFromList" method="POST">
-    <h2 style="text-align: center;">Unsubscribe</h2>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-    <button type="submit">Unsubscribe</button>
-  </form>
+  <div class="card">
+    <img src="/assets/images/bridalshowerpic.jpg" alt="Detroit Bridal Shower">
+    <div class="kicker">Detroit Bridal Shower</div>
+    <h1>Unsubscribe</h1>
+    <p>Enter the email address you receive our notices at and we&rsquo;ll take it off the list right away.</p>
+    <div class="rule"></div>
+    <form action="/removeEmailFromList" method="POST">
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" placeholder="you@example.com"
+             value="<%= typeof email !== 'undefined' && email ? email : '' %>" required autofocus>
+      <button type="submit">Unsubscribe</button>
+    </form>
+    <a class="back" href="/">&larr; Back to the website</a>
+  </div>
 </body>
 </html>
