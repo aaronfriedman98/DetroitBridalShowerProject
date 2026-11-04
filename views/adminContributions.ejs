@@ -189,6 +189,16 @@
           <span id="mTotal" style="font-size:13px; color:var(--ink-soft);"></span>
         </div>
       </div>
+      <div class="card-head" style="border-top:1px solid var(--line);">
+        <h3>Still Collecting</h3><span class="count" id="openCount"></span>
+      </div>
+      <div class="body" style="padding-top:0;">
+        <div style="font-size:12.5px; color:var(--ink-soft); font-weight:300; line-height:1.5;">
+          Couples still on the pledge form and in every collection email, longest first. Closing one leaves their
+          contributors page and totals exactly as they are.
+        </div>
+      </div>
+      <div class="scroll" style="max-height:300px;"><div id="openList"></div></div>
       <div class="card-head" style="border-top:1px solid var(--line);"><h3>Per-Couple Totals</h3><span class="count">private — never shown publicly</span></div>
       <div class="scroll" style="max-height:340px;"><table>
         <thead><tr><th>Couple</th><th>Received</th><th>Pending</th></tr></thead>
@@ -516,6 +526,20 @@ document.addEventListener('click', (e) => {
   if (!e.target.closest('#mName') && !e.target.closest('#mNameResults')) nameOut.classList.remove('show');
 });
 
+// toast with an Undo, so closing the wrong couple costs one click to fix
+function toastUndo(msg, undo) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.appendChild(document.createTextNode(msg + ' '));
+  const b = document.createElement('button');
+  b.textContent = 'Undo';
+  b.style.cssText = 'margin-left:10px; border:none; background:transparent; color:var(--gold); font-family:inherit; font-size:inherit; text-decoration:underline; cursor:pointer;';
+  b.onclick = () => { t.remove(); undo(); };
+  t.appendChild(b);
+  $('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 9000);
+}
+
 function renderPending() {
   const pending = contributions.filter(c => !c.verified);
   $('pendingCount').textContent = pending.length + ' awaiting verification';
@@ -555,6 +579,7 @@ function renderTotals() {
     if (c.verified) t.verified += c.amount || 0; else t.pending += c.amount || 0;
   });
   const rows = [...map.values()].sort((a,b) => (b.verified+b.pending) - (a.verified+a.pending));
+  renderOpen();
   $('totalsBody').innerHTML = rows.length ? rows.map(t => `<tr>
     <td>${esc(t.names)}</td>
     <td style="color:var(--ok); font-weight:500; white-space:nowrap;">$${t.verified.toFixed(2)}</td>
@@ -781,6 +806,63 @@ async function doSendList() {
   } catch (e) { toast('Could not reach the server.', true); }
   finally { sendListInFlight = false; btn.disabled = false; btn.textContent = label; }
 }
+
+// ---- still collecting: what is open, for how long, and how to close it ----
+// A couple stays on the public pledge form and in every collection email
+// until collecting is switched off, and nothing switched it off automatically,
+// so the list only ever grew. Showing the age and the money next to each one
+// is what makes it obvious which are finished.
+function coupleStarted(id) {            // record date, from the mongo id
+  return new Date(parseInt(String(id).slice(0, 8), 16) * 1000);
+}
+function daysOpen(id) {
+  return Math.max(0, Math.round((Date.now() - coupleStarted(id)) / 86400000));
+}
+function renderOpen() {
+  const open = couples.filter(c => c.collecting)
+    .map(c => {
+      const names = c.chossonName + ' & ' + c.kallahName;
+      const rows = contributions.filter(x => String(x.coupleId) === String(c._id));
+      return {
+        id: String(c._id), names, days: daysOpen(c._id),
+        givers: rows.length,
+        money: rows.filter(r => r.verified).reduce((s, r) => s + (r.amount || 0), 0)
+      };
+    })
+    .sort((a, b) => b.days - a.days);
+
+  $('openCount').textContent = open.length ? open.length + ' open' : '';
+  $('openList').innerHTML = open.length ? open.map(o => `
+    <div style="display:flex; align-items:center; gap:10px; padding:10px 20px; border-bottom:1px solid #f4f1e9;">
+      <div style="flex:1; min-width:0;">
+        <div style="font-family:var(--serif); font-size:16px; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(o.names)}</div>
+        <div style="font-size:11.5px; color:var(--ink-soft); margin-top:2px;">
+          <span style="color:${o.days >= 180 ? 'var(--gold)' : 'var(--ink-soft)'};">${o.days} days</span>
+          &middot; ${o.givers} gave &middot; $${o.money.toFixed(2).replace(/\.00$/, '')}
+        </div>
+      </div>
+      <button class="mini" onclick="closeCollection('${o.id}', this)" title="Take them off the pledge form and the collection email">Close</button>
+    </div>`).join('')
+    : '<div style="padding:14px 20px; font-size:13px; color:var(--ink-soft);">No couples are collecting right now.</div>';
+}
+async function setCollecting(id, open, btn) {
+  if (btn) { btn.disabled = true; btn.textContent = open ? 'Reopening…' : 'Closing…'; }
+  try {
+    const res = await fetch('/newAdmin/setCollecting', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, collecting: open })
+    });
+    const d = await res.json();
+    if (!d.status) { toast(d.message || 'Could not update the collection.', true); await load(); return; }
+    await load();
+    if (open) toast('Collecting again for ' + d.names + '.');
+    else toastUndo('Collection closed for ' + d.names + '.', () => setCollecting(id, true));
+  } catch (e) {
+    toast('Could not reach the server — please try again.', true);
+    await load();
+  }
+}
+function closeCollection(id, btn) { setCollecting(id, false, btn); }
 
 let recordInFlight = false;
 async function addManual() {

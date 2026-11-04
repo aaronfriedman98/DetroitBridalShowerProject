@@ -1,4 +1,5 @@
 const Couples = require('../models/couplesList')
+const NewCouple = require('../models/newCouple')
 const Contribution = require('../models/contribution')
 const Emails = require('../models/emailList')
 const { buildContributorListEmail, publicSiteURL } = require('../mailTemplates')
@@ -343,6 +344,32 @@ module.exports = {
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: false, message: 'Could not update the amount.' })
+    }
+  },
+
+  // Close out a couple's collection. They drop off the public pledge form
+  // and out of the collection email, but keep their contributors page, their
+  // totals and their verified status. Reopening only puts them back on those
+  // two lists - it never re-announces them as the newest couple.
+  setCollecting: async (req, res) => {
+    try {
+      const open = !!req.body.collecting
+      const couple = await Couples.findById(req.body.id)
+      if (!couple) return res.status(404).json({ status: false, message: 'Couple not found.' })
+      await Couples.updateOne({ _id: couple._id }, { $set: { collecting: open } })
+
+      // the featured "newest couple" must not outlive its own collection
+      if (!open) {
+        const featured = await NewCouple.findOne()
+        if (featured && featured.chosson === couple.chossonName && featured.kallah === couple.kallahName) {
+          await NewCouple.findOneAndDelete({}, { sort: { _id: 1 } })
+        }
+      }
+
+      res.json({ status: true, collecting: open, names: couple.chossonName + ' & ' + couple.kallahName })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: false, message: 'Could not update the collection.' })
     }
   },
 
