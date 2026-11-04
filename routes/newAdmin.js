@@ -42,6 +42,7 @@ router.get('/previewContributorList', adminAuth, (req, res) => {
 })
 
 // mailing list management
+router.get('/shoppingList', adminAuth, (req, res) => res.render('adminShoppingList.ejs'))
 router.get('/mailingList', adminAuth, (req, res) => res.render('adminMailingList.ejs'))
 router.get('/subscribers', adminAuth, give.getSubscribers)
 router.post('/addSubscriber', adminAuth, give.addSubscriber)
