@@ -154,6 +154,18 @@
           <button class="btn btn-ghost" id="mAddPersonBtn" onclick="addPerson()" style="font-size:12px; padding:6px 12px;">+ Add another person</button>
           <span style="font-size:11.5px; color:var(--ink-soft);">for several people who gave to the same couples</span>
         </div>
+        <div style="margin-top:12px;">
+          <button class="btn btn-ghost" id="mRegBtn" onclick="toggleRegulars()" style="font-size:12px; padding:6px 12px;">&#9733; Regulars</button>
+          <span id="mRegHint" style="font-size:11.5px; color:var(--ink-soft); margin-left:8px;"></span>
+          <div id="mRegPanel" style="display:none; margin-top:10px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fdfcf9;">
+            <div style="padding:9px 11px; border-bottom:1px solid #f0ece3; display:flex; gap:8px; align-items:center;">
+              <input type="text" id="mRegSearch" placeholder="Filter&hellip;" autocomplete="off" oninput="renderRegulars()"
+                     style="flex:1; padding:7px 10px; border:1px solid var(--line); border-radius:8px; font-size:13px; font-family:var(--sans); outline:none; background:#fff;">
+              <button class="btn btn-ghost" onclick="clearRegulars()" style="font-size:11.5px; padding:5px 10px;">Clear all</button>
+            </div>
+            <div id="mRegList" style="max-height:230px; overflow:auto;"></div>
+          </div>
+        </div>
         <div id="mPeople"></div>
 
         <div class="field" style="position:relative;">
@@ -249,6 +261,7 @@ async function load() {
   $('coupleFilter').innerHTML = '<option value="">All couples</option>' + [...seen].map(([id,n]) => `<option value="${id}">${esc(n)}</option>`).join('');
   $('coupleFilter').value = keep;
   renderPending(); renderAll();
+  if (typeof renderRegulars === 'function') renderRegulars();
 }
 
 // ---- contributor memory: suggest known people as mom types (or on focus) ----
@@ -324,10 +337,70 @@ function addPerson() {
   }
   nameIn.value = ''; $('mEmail').value = '';
   nameOut.classList.remove('show');
-  renderPeople(); renderPicked();
+  renderPeople(); renderRegulars(); renderPicked();
   nameIn.focus();
 }
 function removePerson(i) { people.splice(i, 1); renderPeople(); renderPicked(); }
+
+// ---- regulars: the people who give again and again ----
+// Most of what mom records is the same few dozen names, so they are offered
+// as a tick list built from the contributions already in the database - no
+// separate list to maintain, and someone becomes a regular just by giving.
+let regularsOpen = false;
+function regulars() {
+  return knownContributors()
+    .filter(p => p.gifts > 1)
+    .sort((a, b) => b.gifts - a.gifts || a.name.localeCompare(b.name));
+}
+function personKey(p) { return String((p.email || p.name) || '').trim().toLowerCase(); }
+function isPicked(p) {
+  const k = personKey(p);
+  return people.some(x => personKey(x) === k) ||
+         personKey({ name: nameIn.value, email: $('mEmail').value }) === k;
+}
+function toggleRegulars() {
+  regularsOpen = !regularsOpen;
+  $('mRegPanel').style.display = regularsOpen ? 'block' : 'none';
+  if (regularsOpen) { renderRegulars(); $('mRegSearch').focus(); }
+}
+function toggleRegular(key) {
+  const p = regulars().find(x => personKey(x) === key);
+  if (!p) return;
+  // if they are sitting in the typed fields rather than the list, clear those
+  if (personKey({ name: nameIn.value, email: $('mEmail').value }) === key) {
+    nameIn.value = ''; $('mEmail').value = '';
+  }
+  const at = people.findIndex(x => personKey(x) === key);
+  if (at >= 0) people.splice(at, 1);
+  else people.push({ name: p.name, email: p.email || '' });
+  renderPeople(); renderRegulars(); renderPicked();
+}
+function clearRegulars() {
+  people = [];
+  renderPeople(); renderRegulars(); renderPicked();
+}
+function renderRegulars() {
+  const all = regulars();
+  $('mRegHint').textContent = all.length
+    ? (people.length ? people.length + ' selected' : all.length + ' people give regularly')
+    : '';
+  if (!regularsOpen) return;
+  const t = ($('mRegSearch').value || '').trim().toLowerCase();
+  const hits = t ? all.filter(p => p.name.toLowerCase().includes(t) || (p.email || '').toLowerCase().includes(t)) : all;
+  $('mRegList').innerHTML = hits.length ? hits.map(p => {
+    const on = isPicked(p);
+    return `<button type="button" onclick="toggleRegular('${personKey(p).replace(/'/g, "\\'")}')"
+      style="display:flex; align-items:center; gap:9px; width:100%; text-align:left; border:none; cursor:pointer;
+             padding:8px 11px; border-bottom:1px solid #f4f1e9; background:${on ? 'var(--gold-soft)' : 'transparent'};
+             font-family:var(--sans); font-size:13px; color:var(--ink);">
+      <span style="width:15px; height:15px; border-radius:4px; flex:none; display:inline-flex; align-items:center; justify-content:center;
+                   border:1.5px solid ${on ? 'var(--gold)' : 'var(--line)'}; background:${on ? 'var(--gold)' : '#fff'};
+                   color:#fff; font-size:10px; line-height:1;">${on ? '&#10003;' : ''}</span>
+      <span style="flex:1;">${esc(p.name)}</span>
+      <span style="color:var(--ink-soft); font-size:11px;">${p.gifts} gifts</span>
+    </button>`;
+  }).join('') : '<div style="padding:12px; font-size:12.5px; color:var(--ink-soft);">No regulars match that.</div>';
+}
 function renderPeople() {
   $('mPeople').innerHTML = people.length ? `
     <div style="border:1px solid var(--line); border-radius:12px; margin-top:10px; overflow:hidden;">
@@ -340,6 +413,7 @@ function renderPeople() {
       </div>`).join('')}
     </div>` : '';
   renderPickedTotal();
+  if (typeof renderRegulars === 'function') renderRegulars();
 }
 // Enter in the name or email field parks that person instead of submitting
 [nameIn, $('mEmail')].forEach(el => el.addEventListener('keydown', (e) => {
@@ -740,6 +814,7 @@ async function addManual() {
       toast(msg);
       $('mName').value = ''; $('mEmail').value = ''; pickIn.value = '';
       people = []; renderPeople();
+      if (typeof renderRegulars === 'function') renderRegulars();
       picked = []; renderPicked();
       // show the new rows: clear any couple filter that would hide them
       $('coupleFilter').value = '';

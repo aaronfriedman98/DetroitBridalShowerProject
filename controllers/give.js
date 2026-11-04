@@ -268,12 +268,11 @@ module.exports = {
       for (const person of people) {
         // hard duplicate guard: same person (by email when present, else by
         // name) may only be recorded once per couple
-        const identity = person.email
-          ? { contributorEmail: new RegExp('^' + escRe(person.email) + '$', 'i') }
-          : { contributorName: new RegExp('^' + escRe(person.name) + '$', 'i') }
+        const identity = [{ contributorName: new RegExp('^' + escRe(person.name) + '$', 'i') }]
+        if (person.email) identity.push({ contributorEmail: new RegExp('^' + escRe(person.email) + '$', 'i') })
         const existing = await Contribution.find({
           coupleId: { $in: targets.map(t => t.id) },
-          ...identity
+          $or: identity
         }).select('coupleId')
         const taken = new Set(existing.map(e => String(e.coupleId)))
 
